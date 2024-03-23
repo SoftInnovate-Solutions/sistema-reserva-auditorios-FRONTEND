@@ -1,10 +1,13 @@
 import './App.css'
+import RegistrarAmbiente from './pages/Registrar ambiente/Registrar ambiente'
+// import Pru from './pages/pruebas'
 
 function App() {
 
   return (
     <>
-    <h1>Comenzando...</h1>
+    <RegistrarAmbiente/>
+    {/* <Pru/> */}
     </>
   )
 }
