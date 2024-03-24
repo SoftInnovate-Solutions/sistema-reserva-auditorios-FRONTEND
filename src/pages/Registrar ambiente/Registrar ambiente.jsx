@@ -97,6 +97,7 @@ function RegistrarAmbiente() {
   const [nombreAmbiente, setNombreAmbiente] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [ubicacion, setUbicacion] = useState('');
+  const [capacidad, setCapacidad] = useState('');
 
   const manejadorCambiosNombreAmbiente = (event) => {
     setNombreAmbiente(event.target.value);
@@ -110,23 +111,78 @@ function RegistrarAmbiente() {
     setUbicacion(event.target.value);
   };
 
+  const manejadorCambiosCapacidad = (event) => {
+    setCapacidad(event.target.value);
+  };
 
-  const [formData, setFormData] = useState({
-    nombre_amb: '',
-    capacidad_amb: 0,
-    ubicacion_amb: '',
-    descripcion_amb: '',
-    cod_estado_ambiente: 1,
-    cod_piso: 1,
-    cod_edificio: 1,
-    cod_facultad: 1,
-    cod_tipo_ambiente: 1
-  });
 
-  const manejarEnvio  = async (e) => {
-    e.preventDefault();
+
+  const obtenerIdCampoAutocompletado = (label) => {
+    let codigoTipoAmbiente = null;
+  
+    tiposEdificios.forEach(opcion => {
+      if (opcion.nombre_edi === label) {
+        codigoTipoAmbiente = opcion.cod_edificio;
+        return; // Sale del bucle forEach cuando se encuentra el valor
+      }
+    });
+  
+    tiposFacultad.forEach(opcion => {
+      if (opcion.nombre_fac === label) {
+        codigoTipoAmbiente = opcion.cod_facultad;
+        return;
+      }
+    });
+  
+    tiposNumeroPiso.forEach(opcion => {
+      if (opcion.nombre_piso === label) {
+        codigoTipoAmbiente = opcion.cod_piso;
+        return;
+      }
+    });
+  
+    tiposAmbiente.forEach(opcion => {
+      if (opcion.nombre_ta === label) {
+        codigoTipoAmbiente = opcion.cod_tipo_ambiente;
+        return;
+      }
+    });
+  
+    tiposEstadoAmbiente.forEach(opcion => {
+      if (opcion.nombre_ea === label) {
+        codigoTipoAmbiente = opcion.cod_estado_ambiente;
+        return;
+      }
+    });
+  
+    return codigoTipoAmbiente;
+  };
+  
+  
+
+  const [formData, setFormData] = useState("");
+  const rellenarDatos = () => {
+    const datosAutocompletados = {
+      nombre_amb: nombreAmbiente,
+      capacidad_amb: capacidad,
+      ubicacion_amb: ubicacion,
+      descripcion_amb: descripcion,
+      cod_estado_ambiente: obtenerIdCampoAutocompletado(contenidoEstadoAmbiente.label),
+      cod_piso: obtenerIdCampoAutocompletado(contenidoNumeroPiso.label),
+      cod_edificio: obtenerIdCampoAutocompletado(contenidoTipoEdificio.label),
+      cod_facultad: obtenerIdCampoAutocompletado(contenidoFacultad.label),
+      cod_tipo_ambiente: obtenerIdCampoAutocompletado(contenidoTipoAmbiente.label)
+    };
+
+    setFormData(datosAutocompletados);
     
+  };
+
+  const manejarEnvio = async (e) => {
+    e.preventDefault();
+
     try {
+      rellenarDatos();
       const response = await fetch('http://127.0.0.1:5000/ambiente/add', {
         method: 'POST',
         headers: {
@@ -183,6 +239,13 @@ function RegistrarAmbiente() {
                 value={ubicacion}
                 onChange={manejadorCambiosUbicacion}
                 label="Ubicación: "
+                variant="standard"
+              />
+              <TextField
+                sx={{ mb: 2, width: 300 }}
+                value={capacidad}
+                onChange={manejadorCambiosCapacidad}
+                label="Capacidad: "
                 variant="standard"
               />
             </Grid>
