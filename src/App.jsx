@@ -18,7 +18,7 @@ import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
 
 import MisReservas from './pages/MisReservas';
-import Historial from './pages/Historial';
+import Historial from './pages/historial';
 import NotificacionesUsuario from './pages/NotificacionesUsuario';
 
 function App() {
