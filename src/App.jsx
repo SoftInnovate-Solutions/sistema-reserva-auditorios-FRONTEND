@@ -1,39 +1,86 @@
+import React, { useEffect, useState } from 'react';
+
+
 import Layaut from "./components/layaut";
 import Button from "./components/button";
 import NavBar from "./components/navbar";
 import Bloques from "./components/bloques";
-import {Navigate, Routes,Route  } from "react-router-dom";
+
+import { Navigate, Routes, Route } from "react-router-dom";
 import Inicio from './pages/inicio';
-import Registro from './pages/registro';
-import Reserva from './pages/reserva';
-import Historial from './pages/historial';
-import Contacto from './pages/contacto';
 import Footer from "./components/footer";
 
+import IniciarSesion from './pages/IniciarSesion';
+
+import GestionAmbiente from './pages/GestionarAmbiente';
+import AjustarReserva from './pages/AjustarReserva';
+import Dashboard from './pages/Dashboard';
+import Notificaciones from './pages/Notificaciones';
+
+import MisReservas from './pages/MisReservas';
+import Historial from './pages/Historial';
+import NotificacionesUsuario from './pages/NotificacionesUsuario';
+
 function App() {
-  
+  const [rol, setRol] = useState(localStorage.getItem('saveRol'));
+
+  const handleLogin = (userData) => {
+    setRol(userData.codigoSis);
+    if (localStorage.getItem('saveRol') == null) {
+      localStorage.setItem('saveRol', userData.codigoSis)
+    } 
+  };
 
   return (
     <>
-      <div className="bg-casas min-h-screen">
-        <NavBar></NavBar>
-        <Layaut>
-       
-            <Routes>  
-              <Route path = '/' element ={<Inicio></Inicio>}></Route>
-              <Route path = '/registro' element={<Registro></Registro>}></Route>
-              <Route path = '/Reserva' element={<Reserva></Reserva>}></Route>
-              <Route path = '/Historial' element={<Historial></Historial>}></Route>
-              <Route path = '/Contacto' element={<Contacto></Contacto>}></Route>
-              <Route path = '*' element={<Navigate to= "/"></Navigate>}></Route>
+      {rol === null ? (
+        <>
+          <Routes>
+            <Route path="/iniciar-sesion" element={<IniciarSesion login={handleLogin} />} />
+            <Route path='*' element={<Navigate to="/iniciar-sesion"></Navigate>}></Route>
+          </Routes>
+        </>
+      ) : (
+        <>
+          {rol === 'admi' ? (
+            <>
+              <div className="bg-casas min-h-screen">
+                <NavBar></NavBar>
+                <Layaut>
 
+                  <Routes>
+                    <Route path='/' element={<Inicio />}></Route>
+                    <Route path='/gestionar-ambiente' element={<GestionAmbiente />}></Route>
+                    <Route path='/ajustar-reserva' element={<AjustarReserva />}></Route>
+                    <Route path='/dashboard' element={<Dashboard />}></Route>
+                    <Route path='/notificaciones' element={<Notificaciones />}></Route>
+                    <Route path='*' element={<Navigate to="/"></Navigate>}></Route>
+                  </Routes>
+                </Layaut>
+                <Footer />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="bg-casas min-h-screen">
+                <NavBar></NavBar>
+                <Layaut>
 
-              
-            </Routes>
-          
-        </Layaut>
-        <Footer/>
-      </div>
+                  <Routes>
+                    <Route path='/' element={<Inicio />}></Route>
+                    <Route path='/mis-reservas' element={<MisReservas />}></Route>
+                    <Route path='/historial' element={<Historial />}></Route>
+                    <Route path='/notificaciones' element={<NotificacionesUsuario />}></Route>
+                    <Route path='*' element={<Navigate to="/"></Navigate>}></Route>
+                  </Routes>
+                </Layaut>
+                <Footer />
+              </div>
+            </>
+          )}
+        </>
+      )}
+
     </>
   )
 }
