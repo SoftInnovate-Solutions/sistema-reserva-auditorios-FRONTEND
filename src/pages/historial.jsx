@@ -1,6 +1,6 @@
 const Historial = () => {
     return (
-      <div>Historial</div>
+      <div>Historial  2</div>
     )
   }
   
