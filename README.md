@@ -74,3 +74,9 @@ proyecto/
 ├── README.md
 └── .gitignore
 
+Breakpoint	Rango de Ancho de Pantalla
+xs	0px o más
+sm	600px o más
+md	900px o más
+lg	1200px o más
+xl	1536px o más

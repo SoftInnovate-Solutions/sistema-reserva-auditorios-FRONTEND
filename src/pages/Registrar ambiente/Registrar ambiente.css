@@ -1,0 +1,20 @@
+/* Estilos para los inputs y el cuadro de autocomplementado */
+.form-inputs {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.formboton {
+    width: 80%;
+}
+/* Responsive */
+@media (min-width: 600px) {
+    .form-inputs {
+        margin-bottom: 20px;
+        width: 400px;
+    }
+
+    .formboton{
+        width: 30%;
+    }
+}

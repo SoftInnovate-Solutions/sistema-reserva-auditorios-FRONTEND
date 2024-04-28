@@ -4,20 +4,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Typography, useTheme } from '@mui/material';
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
+import Autocompletado from '../../components/autocompletado';
 import { Grid } from "@mui/material";
 import Alert from '@mui/material/Alert';
-// import { styled } from "@mui/material/styles";
-// import Paper from "@mui/material/Paper";
+import './Registrar ambiente.css'
 
+import { getAllFacultades } from '../../api/formulario-api'
+import { dark } from '@mui/material/styles/createPalette';
 
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: "center",
-//   color: theme.palette.text.secondary,
-// }));
 
 // Estilo para el modal
 const style = {
@@ -38,80 +32,13 @@ const style = {
 function RegistrarAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => { manejarEnvio(); setOpen(false); window.location.reload(); }
+  const handleClose = () => {setOpen(false); window.location.reload(); }
   const theme = useTheme();
 
-  //#region - LLAMADAS API Y CREACIÓN DE VARIABLES - CUADRO CON AUTOCOMPLETADO
-
-  // Creando variable para campos de entrada con autocompletado a través de llamadas API
-  const [tiposEdificios, setTiposEdificios] = useState([]);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/edificio/all')
-      .then(response => response.json())
-      .then(data => setTiposEdificios(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, []);
-
-  const [tiposFacultad, setTiposFacultad] = useState([]);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/facultad/all')
-      .then(response => response.json())
-      .then(data => setTiposFacultad(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, []);
-
-  const [tiposNumeroPiso, setTiposNumeroPiso] = useState([]);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/piso/all')
-      .then(response => response.json())
-      .then(data => setTiposNumeroPiso(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, []);
-
-  const [tiposAmbiente, setTiposAmbiente] = useState([]);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/tipo_ambiente/all')
-      .then(response => response.json())
-      .then(data => setTiposAmbiente(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, []);
-
-  const [tiposEstadoAmbiente, setTiposEstadoAmbiente] = useState([]);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/estado_ambiente/all')
-      .then(response => response.json())
-      .then(data => setTiposEstadoAmbiente(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, []);
-
-
-  // Crear una variable con una lista de etiquetas para cada campo de entrada con autocompletado.
-  const opcionesTipoEdificio = tiposEdificios.map(tipo => ({
-    label: tipo.nombre_edi,
-  }));
-
-  const opcionesFacultad = tiposFacultad.map(tipo => ({
-    label: tipo.nombre_fac,
-  }));
-
-  const opcionesNumeroPiso = tiposNumeroPiso.map(tipo => ({
-    label: tipo.nombre_piso,
-  }));
-
-
-  const opcionesTipoAmbiente = tiposAmbiente.map(tipo => ({
-    label: tipo.nombre_ta,
-  }));
-
-  const opcionesEstadoAmbiente = tiposEstadoAmbiente.map(tipo => ({
-    label: tipo.nombre_ea,
-  }));
-  //#endregion
-
-  //#region - PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO:
+  //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
 
   // Declarar variables para el cuadro de entrada con autocompletado
-  const [contenidoTipoEdificio, setContenidoTipoEdificio] = useState(null);
+  const [contenidoTipoEdificacion, setContenidoTipoEdificacion] = useState(null);
   const [contenidoFacultad, setContenidoFacultad] = useState(null);
   const [contenidoNumeroPiso, setContenidoNumeroPiso] = useState(null);
   const [contenidoTipoAmbiente, setContenidoTipoAmbiente] = useState(null);
@@ -150,7 +77,7 @@ function RegistrarAmbiente() {
 
   //#endregion
 
-  //#region - VALIDACIONES DE LOS CUADROS DE ENTRADA DE TEXTO 
+  //#region ----------------- VALIDACIONES DE LOS CUADROS DE ENTRADA DE TEXTO -------------------------------------------------------------------------------------
 
   // Declaracion de 4 tipos de errores y 4 tipos de mensaje de errores
   const [errorAmbiente, setErrorAmbiente] = useState(false);
@@ -239,79 +166,18 @@ function RegistrarAmbiente() {
     return !validarNombreAmbiente() && !validarDescripcion() && !validarUbicacion() && !validarCapacidad();
   }
 
+  // useEffect(() => {
+  //   validarTodosLosInputs();
+  // }, [nombreAmbiente, capacidad, ubicacion, descripcion]);
   //#endregion
 
-  //#region - IMPLEMENTACIÓN DE SELECCIÓN DE ID CON AUTOCOMPLETADO EN FORMULARIO PARA ENVIÓ A API
-
-  // Funcionalidad de captura de IDs en "campos de entrada con autocompletado" para luego enviar el formulario mediante una API a la base de datos
-  // en el formulario, solo se permiten IDs, por ejemplo: 1-> Laboratorio, 2-> Aulas, 3-> Auditorio.
-  const obtenerIdCampoAutocompletado = (label) => {
-    let codigoTipoAmbiente = null;
-
-    tiposEdificios.forEach(opcion => {
-      if (opcion.nombre_edi === label) {
-        codigoTipoAmbiente = opcion.cod_edificio;
-        return;
-      }
-    });
-
-    tiposFacultad.forEach(opcion => {
-      if (opcion.nombre_fac === label) {
-        codigoTipoAmbiente = opcion.cod_facultad;
-        return;
-      }
-    });
-
-    tiposNumeroPiso.forEach(opcion => {
-      if (opcion.nombre_piso === label) {
-        codigoTipoAmbiente = opcion.cod_piso;
-        return;
-      }
-    });
-
-    tiposAmbiente.forEach(opcion => {
-      if (opcion.nombre_ta === label) {
-        codigoTipoAmbiente = opcion.cod_tipo_ambiente;
-        return;
-      }
-    });
-
-    tiposEstadoAmbiente.forEach(opcion => {
-      if (opcion.nombre_ea === label) {
-        codigoTipoAmbiente = opcion.cod_estado_ambiente;
-        return;
-      }
-    });
-
-    return codigoTipoAmbiente;
-  };
-  //#endregion
-
-  //#region - INICIALIZACIÓN Y ENVIO DEL FORMULARIO
-
-  // Declaración, añadir varibales necesarias y uso de funcionalidad 
-  const [formData, setFormData] = useState("");
-
-  const rellenarDatos = () => {
-    const datosAutocompletados = {
-      nombre_amb: nombreAmbiente,
-      capacidad_amb: capacidad,
-      ubicacion_amb: ubicacion,
-      descripcion_amb: descripcion,
-      cod_estado_ambiente: obtenerIdCampoAutocompletado(contenidoEstadoAmbiente.label),
-      cod_piso: obtenerIdCampoAutocompletado(contenidoNumeroPiso.label),
-      cod_edificio: obtenerIdCampoAutocompletado(contenidoTipoEdificio.label),
-      cod_facultad: obtenerIdCampoAutocompletado(contenidoFacultad.label),
-      cod_tipo_ambiente: obtenerIdCampoAutocompletado(contenidoTipoAmbiente.label)
-    };
-
-    setFormData(datosAutocompletados);
-  };
+  //#region ----------------- INICIALIZACIÓN Y ENVIO DEL FORMULARIO -------------------------------------------------------------------------------------
 
   // Guardar el formData mediante una llamada post a la base de datos 
   const manejarEnvio = async () => {
+
     if (validarTodosLosInputs()) {
-      if (contenidoTipoAmbiente != null && contenidoEstadoAmbiente != null && contenidoTipoEdificio != null &&
+      if (contenidoTipoAmbiente != null && contenidoEstadoAmbiente != null && contenidoTipoEdificacion != null &&
         contenidoFacultad != null && contenidoNumeroPiso != null) {
         try {
           await mandarFormulario();
@@ -334,7 +200,7 @@ function RegistrarAmbiente() {
 
   const mandarFormulario = async () => {
     try {
-      rellenarDatos(); // Asegúrate de que esta función esté definida y haga lo esperado
+      rellenarDatos();
       const response = await fetch('http://127.0.0.1:5000/ambiente/add', {
         method: 'POST',
         headers: {
@@ -342,11 +208,9 @@ function RegistrarAmbiente() {
         },
         body: JSON.stringify(formData),
       });
-
       if (response.ok) {
         console.log('Ambiente creado exitosamente');
       } else {
-        // Si la respuesta no es ok, mostramos el mensaje de error del servidor si está disponible
         const errorMessage = await response.text();
         console.error('Error al crear el ambiente:', errorMessage);
       }
@@ -354,9 +218,33 @@ function RegistrarAmbiente() {
       console.error('Error de red:', error);
     }
   };
+
+    // Declaración, añadir varibales necesarias y uso de funcionalidad 
+    const [formData, setFormData] = useState("");
+
+    const rellenarDatos = () => {
+      const datosAutocompletados = {
+        nombre_amb: nombreAmbiente,
+        capacidad_amb: capacidad,
+        ubicacion_amb: ubicacion,
+        descripcion_amb: descripcion,
+        albergacion_max_amb: 1,
+        albergacion_min_amb: 1,
+        cod_estado_ambiente: contenidoEstadoAmbiente,
+        cod_piso: contenidoNumeroPiso,
+        cod_edificacion: contenidoTipoEdificacion,
+        cod_facultad: contenidoFacultad,
+        cod_tipo_ambiente: contenidoTipoAmbiente
+      };
+      setFormData(datosAutocompletados);
+    };
+
+  useEffect(() => {
+    rellenarDatos();
+}, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente, contenidoNumeroPiso, contenidoTipoEdificacion, contenidoFacultad, contenidoTipoAmbiente, setFormData]); 
   //#endregion
 
-  //#region - IMPLEMENTACIÓN DEL ALERT Y MODAL 
+  //#region ----------------- IMPLEMENTACIÓN DEL ALERT Y MODAL ------------------------------------------------------------------------------------------------------ 
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
   const ChildModal = forwardRef(({ handleClose }, ref) => {
@@ -372,176 +260,195 @@ function RegistrarAmbiente() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setMostrarAlerta(false);
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timeout);
   }, [mostrarAlerta]);
   //#endregion
 
+  //#region ----------------- TRAER IDS PARA CADA OPCION DEL CUADRO CON ATOCOMPLETAOD -------------------------------------------------------------------------------------
+  const obtenerIdTipoAmbiente = (dato) => {
+    setContenidoTipoAmbiente(dato);
+  };
+
+  const obtenerIdEstadoAmbiente = (dato) => {
+    setContenidoEstadoAmbiente(dato);
+  };
+
+  const obtenerIdPerteneceA = (dato) => {
+    setContenidoTipoEdificacion(dato);
+  };
+
+  const obtenerIdFacultad = (dato) => {
+    setContenidoFacultad(dato);
+  };
+
+  const obtenerIdPiso = (dato) => {
+    setContenidoNumeroPiso(dato);
+  };
+
+  //#endregion
+
   return (
-    <div>
+    <>
       <Box
         //estilo
         sx={{
-          p: 10, // padding
+          p: 4, // padding
           bgcolor: "background.paper",
           boxShadow: 8,
-          height: "auto",
         }}
       >
-        <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRAR AMBIENTE</Typography>
+        <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
 
-        <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 3 }}>
-          <Grid item xs={12} sm={6}>
 
-            <TextField
-              sx={{ mb: 2, width: 300 }}
-              // id="nombreAmbiente"
-              value={nombreAmbiente}
-              onChange={manejadorCambiosNombreAmbiente}
-              onBlur={validarNombreAmbiente}
-              error={errorAmbiente}
-              helperText={errorAmbiente ? mensajeErrorAmbiente : ''}
-              label="Nombre de ambiente: "
-              variant="standard"
-            />
-            <TextField
-              sx={{ mb: 2, width: 300 }}
-              value={descripcion}
-              onChange={manejadorCambiosDescripcion}
-              onBlur={validarDescripcion}
-              error={errorDescripcion}
-              helperText={errorDescripcion ? mensajeErrorDescripcion : ''}
-              label="Descripción"
-              multiline
-              maxRows={3}
-              variant="standard"
-            />
-            <TextField
-              sx={{ mb: 2, width: 300 }}
-              value={ubicacion}
-              onChange={manejadorCambiosUbicacion}
-              onBlur={validarUbicacion}
-              error={errorUbicacion}
-              helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
-              label="Ubicación: "
-              multiline
-              maxRows={2}
-              variant="standard"
-            />
-            <TextField
-              sx={{ mb: 2, width: 300 }}
-              value={capacidad}
-              onChange={manejadorCambiosCapacidad}
-              onBlur={validarCapacidad}
-              error={errorCapacidad}
-              helperText={errorCapacidad ? mensajeErrorCapacidad : ''}
-              label="Capacidad: "
-              variant="standard"
-            />
-          </Grid>
+        <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column"
+          justifyContent="center"
+          alignItems="center">
 
-          <Grid item xs={12} sm={6} sx={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={opcionesTipoAmbiente}
-              value={contenidoTipoAmbiente}
-              onChange={(event, newValue) => setContenidoTipoAmbiente(newValue)}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, contenidoTipoAmbiente) => option.label === contenidoTipoAmbiente.label}
-              sx={{ mb: 2, width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Tipo de ambiente:" />
-              )}
-            />
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={opcionesEstadoAmbiente}
-              value={contenidoEstadoAmbiente}
-              onChange={(event, newValue) => setContenidoEstadoAmbiente(newValue)}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, contenidoEstadoAmbiente) => option.label === contenidoEstadoAmbiente.label}
-              sx={{ mb: 2, width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Estado de ambiente:" />
-              )}
-            />
-          </Grid>
+          <TextField
+            className='form-inputs'
+            // id="nombreAmbiente"
+            value={nombreAmbiente}
+            onChange={manejadorCambiosNombreAmbiente}
+            onBlur={validarNombreAmbiente}
+            error={errorAmbiente}
+            helperText={errorAmbiente ? mensajeErrorAmbiente : ''}
+            label="Nombre de ambiente: "
+            variant="standard"
+          />
+          <TextField
+            className='form-inputs'
+            value={descripcion}
+            onChange={manejadorCambiosDescripcion}
+            onBlur={validarDescripcion}
+            error={errorDescripcion}
+            helperText={errorDescripcion ? mensajeErrorDescripcion : ''}
+            label="Descripción"
+            multiline
+            maxRows={3}
+            variant="standard"
+          />
+          <TextField
+            className='form-inputs'
+            value={ubicacion}
+            onChange={manejadorCambiosUbicacion}
+            onBlur={validarUbicacion}
+            error={errorUbicacion}
+            helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
+            label="Ubicación: "
+            multiline
+            maxRows={2}
+            variant="standard"
+          />
+          <TextField
+          sx={{mb: 3}}
+            className='form-inputs'
+            value={capacidad}
+            onChange={manejadorCambiosCapacidad}
+            onBlur={validarCapacidad}
+            error={errorCapacidad}
+            helperText={errorCapacidad ? mensajeErrorCapacidad : ''}
+            label="Capacidad: "
+            variant="standard"
+          />
 
-          <Grid item xs={12} sm={12} sx={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={opcionesTipoEdificio}
-              value={contenidoTipoEdificio}
-              onChange={(event, newValue) => setContenidoTipoEdificio(newValue)}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, contenidoTipoEdificio) => option.label === contenidoTipoEdificio.label}
-              sx={{ mb: 2, width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Pertenece a:" />
-              )}
-            />
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={opcionesFacultad}
-              value={contenidoFacultad}
-              onChange={(event, newValue) => setContenidoFacultad(newValue)}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, contenidoFacultad) => option.label === contenidoFacultad.label}
-              sx={{ mb: 2, width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Facultad:" />
-              )}
-            />
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={opcionesNumeroPiso}
-              value={contenidoNumeroPiso}
-              onChange={(event, newValue) => setContenidoNumeroPiso(newValue)}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, contenidoNumeroPiso) => option.label === contenidoNumeroPiso.label}
-              sx={{ mb: 2, width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Piso:" />}
-            />
-          </Grid>
-        </Grid>
-        <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ width: "30%" }}>
-          REGISTRAR
-        </Button>
-      </Box>
-      <div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <ChildModal handleClose={handleClose} />
-        </Modal>
-      </div>
-      {mostrarAlerta && (
-        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <Alert
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '20%',
-              margin: 'auto',
-            }}
-            variant="filled"
-            severity="error"
+          <Autocompletado
+            disablePortal
+            idOptionSelec={obtenerIdTipoAmbiente}
+            id="combo-box-demo"
+            options={'opcionesTipoAmbiente'}
+            value={contenidoTipoAmbiente}
+            onChange={(event, newValue) => setContenidoTipoAmbiente(newValue)} // Cambio aquí
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, contenidoTipoAmbiente) => option.label === contenidoTipoAmbiente.label}
+            className='form-inputs'
+            etiqueta="Tipo de ambiente:"
+          />
+          <Autocompletado
+            disablePortal
+            idOptionSelec={obtenerIdEstadoAmbiente}
+            id="combo-box-demo"
+            options={'opcionesEstadoAmbiente'}
+            value={contenidoEstadoAmbiente}
+            onChange={(event, newValue) => setContenidoEstadoAmbiente(newValue)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, contenidoEstadoAmbiente) => option.label === contenidoEstadoAmbiente.label}
+            className='form-inputs'
+            etiqueta="Estado de ambiente:"
+          />
+
+          <Autocompletado
+            disablePortal
+            idOptionSelec={obtenerIdPerteneceA}
+            id="combo-box-demo"
+            options={'opcionesTipoEdificacion'}
+            value={contenidoTipoEdificacion}
+            onChange={(event, newValue) => setContenidoTipoEdificacion(newValue)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, contenidoTipoEdificacion) => option.label === contenidoTipoEdificacion.label}
+            className='form-inputs'
+            etiqueta="Tipo de edificación:"
+          />
+          <Autocompletado
+            disablePortal
+            idOptionSelec={obtenerIdFacultad}
+            id="combo-box-demo"
+            options={'opcionesFacultad'}
+            value={contenidoFacultad}
+            onChange={(event, newValue) => setContenidoFacultad(newValue)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, contenidoFacultad) => option.label === contenidoFacultad.label}
+            className='form-inputs'
+            etiqueta="Facultad:"
+          />
+          <Autocompletado
+            disablePortal
+            idOptionSelec={obtenerIdPiso}
+            id="combo-box-demo"
+            options={'opcionesNumeroPiso'}
+            value={contenidoNumeroPiso}
+            onChange={(event, newValue) => setContenidoNumeroPiso(newValue)}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, contenidoNumeroPiso) => option.label === contenidoNumeroPiso.label}
+            className='form-inputs'
+            etiqueta="Piso:" />
+
+          <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
+            REGISTRAR
+          </Button>
+
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
           >
-            Verifique los datos.
-          </Alert>
-        </div>
-      )}
-    </div>
+            <ChildModal handleClose={handleClose} />
+          </Modal>
+
+          {mostrarAlerta && (
+            <Alert
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '1rem',
+
+              }}
+              variant="filled"
+              severity="error"
+            >
+              Verifique los datos.
+            </Alert>
+
+          )}
+        </Grid>
+
+
+
+      </Box>
+    </>
   );
 }
 
