@@ -16,6 +16,7 @@ import GestionAmbiente from './pages/GestionarAmbiente';
 import AjustarReserva from './pages/AjustarReserva';
 import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
+import RegistrarAmbiente from './pages/Registrar ambiente';
 
 import MisReservas from './pages/MisReservas';
 import Historial from './pages/historial';
@@ -51,6 +52,7 @@ function App() {
                   <Routes>
                     <Route path='/' element={<Inicio />}></Route>
                     <Route path='/gestionar-ambiente' element={<GestionAmbiente />}></Route>
+                    <Route path='/registrar-ambiente' element={<RegistrarAmbiente />}></Route>
                     <Route path='/ajustar-reserva' element={<AjustarReserva />}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
                     <Route path='/notificaciones' element={<Notificaciones />}></Route>

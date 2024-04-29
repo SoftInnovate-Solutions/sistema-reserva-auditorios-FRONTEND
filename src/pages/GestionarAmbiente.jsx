@@ -1,6 +1,9 @@
+import ListarFiltrarAmbiente from './ListarFiltrarAmbiente'
+
 const GestionarAmbiente = () => {
     return (
-      <div>GestionarAmbiente</div>
+    
+      <ListarFiltrarAmbiente/>
     )
   }
   
