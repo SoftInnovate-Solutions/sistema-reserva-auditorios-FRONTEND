@@ -17,4 +17,9 @@
     .formboton{
         width: 30%;
     }
+
+    .form-inputs-corto{
+        margin-bottom: 20px;
+        width: 30%;
+    }
 }

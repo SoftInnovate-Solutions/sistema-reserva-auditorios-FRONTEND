@@ -1,0 +1,29 @@
+.toolbarContainer .MuiBox-root {
+    display: flex;
+    justify-content: flex-start; /* Ajusta según necesites */
+    padding: 30px; /* Añade un poco de espacio alrededor del toolbar */
+}
+
+.css-1t5wrdm-MuiDataGrid-filterForm {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    padding: 10px;
+    position: absolute;
+    background: white;
+    top: -121px;
+    border: 1px solid #ccc;
+}
+
+@media (max-width: 553px) {
+    .css-1t5wrdm-MuiDataGrid-filterForm {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        padding: 10px;
+        position: absolute;
+        background: white;
+        top: -159px;
+        border: 1px solid #ccc;
+        width: 115%;
+    }
+    
+}

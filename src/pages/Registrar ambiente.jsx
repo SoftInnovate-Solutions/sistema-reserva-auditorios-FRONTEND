@@ -4,12 +4,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Typography, useTheme } from '@mui/material';
 import TextField from "@mui/material/TextField";
-import Autocompletado from '../../components/autocompletado';
+import Autocompletado from '../components/autocompletado';
 import { Grid } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import './Registrar ambiente.css'
 
-import { getAllFacultades } from '../../api/formulario-api'
+import { getAllFacultades } from '../api/formulario-api'
 import { dark } from '@mui/material/styles/createPalette';
 
 
@@ -301,7 +301,6 @@ function RegistrarAmbiente() {
       >
         <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
 
-
         <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column"
           justifyContent="center"
           alignItems="center">
@@ -343,7 +342,7 @@ function RegistrarAmbiente() {
           />
           <TextField
           sx={{mb: 3}}
-            className='form-inputs'
+            className='form-inputs-corto'
             value={capacidad}
             onChange={manejadorCambiosCapacidad}
             onBlur={validarCapacidad}
@@ -444,9 +443,6 @@ function RegistrarAmbiente() {
 
           )}
         </Grid>
-
-
-
       </Box>
     </>
   );

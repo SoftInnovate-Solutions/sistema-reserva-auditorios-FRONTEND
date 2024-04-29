@@ -1,13 +1,16 @@
 import './App.css'
-import RegistrarAmbiente from './pages/Registrar ambiente/Registrar ambiente'
-// import Pruebas from './pages/pruebas'
+import RegistrarAmbiente from './pages/Registrar ambiente'
+import ListarFiltrarAmbiente from './pages/ListarFiltrarAmbiente'
+import Pruebas from './components/pruebas'
 
 function App() {
 
   return (
     <>
-    <RegistrarAmbiente/>
-    {/* <Pruebas/> */}
+      <RegistrarAmbiente />   
+      <ListarFiltrarAmbiente />
+
+      {/* <Pruebas /> */}
 
     </>
   )
