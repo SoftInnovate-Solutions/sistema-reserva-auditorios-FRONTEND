@@ -1,10 +1,10 @@
 // columnas.jsx
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 50 },
-    { field: 'nombreAmbiente', headerName: 'Nombre de ambiente', width: 230 },
-    { field: 'estado', headerName: 'Estado', width: 230 },
-    { field: 'capacidad', headerName: 'Capacidad', width: 230 },
+    { field: 'id', headerName: 'ID', width: 250 },
+    { field: 'nombreAmbiente', headerName: 'Nombre de ambiente', width: 500 },
+    { field: 'estado', headerName: 'Estado', width: 350 },
+    { field: 'capacidad', headerName: 'Capacidad', width: 350 },
   ];
   
   export default columns;

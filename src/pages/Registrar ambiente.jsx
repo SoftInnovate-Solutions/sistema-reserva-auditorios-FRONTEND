@@ -8,8 +8,7 @@ import Autocompletado from '../components/autocompletado';
 import { Grid } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import './Registrar ambiente.css'
-
-import { getAllFacultades } from '../api/formulario-api'
+import { useNavigate } from 'react-router-dom';
 import { dark } from '@mui/material/styles/createPalette';
 
 
@@ -32,7 +31,8 @@ const style = {
 function RegistrarAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => {setOpen(false); window.location.reload(); }
+  const navigate = useNavigate();
+  const handleClose = () => {setOpen(false); navigate('/gestionar-ambiente'); }
   const theme = useTheme();
 
   //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -297,6 +297,7 @@ function RegistrarAmbiente() {
           p: 4, // padding
           bgcolor: "background.paper",
           boxShadow: 8,
+          textAlign: 'center'
         }}
       >
         <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
@@ -342,7 +343,7 @@ function RegistrarAmbiente() {
           />
           <TextField
           sx={{mb: 3}}
-            className='form-inputs-corto'
+            className='form-inputs'
             value={capacidad}
             onChange={manejadorCambiosCapacidad}
             onBlur={validarCapacidad}
