@@ -1,4 +1,3 @@
-// IniciarSesion.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,10 +12,8 @@ const IniciarSesion = ({ login }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     //console.log(codigoSis, '--------',contrasena)
-    // Aquí podrías realizar la validación del código SIS y la contraseña
-    // y luego llamar a la función de inicio de sesión proporcionada por el contexto de autenticación
     login({ codigoSis, contrasena });
-    navigate('/'); // Redirigir a la página principal después de iniciar sesión
+    navigate('/');
   };
 
   return (
