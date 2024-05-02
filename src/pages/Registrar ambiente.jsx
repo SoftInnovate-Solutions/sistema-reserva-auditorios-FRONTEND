@@ -241,7 +241,8 @@ function RegistrarAmbiente() {
 
   useEffect(() => {
     rellenarDatos();
-}, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente, contenidoNumeroPiso, contenidoTipoEdificacion, contenidoFacultad, contenidoTipoAmbiente, setFormData]); 
+}, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente, 
+  contenidoNumeroPiso, contenidoTipoEdificacion, contenidoFacultad, contenidoTipoAmbiente, setFormData]); 
   //#endregion
 
   //#region ----------------- IMPLEMENTACIÓN DEL ALERT Y MODAL ------------------------------------------------------------------------------------------------------ 

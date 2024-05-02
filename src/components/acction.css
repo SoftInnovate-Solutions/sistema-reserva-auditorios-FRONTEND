@@ -1,0 +1,31 @@
+.estilo-cuadroText {
+    position: absolute;
+    padding: 40px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background-color: rgba(255, 255, 255, 1);
+    border: 2px solid #000; 
+}
+
+
+.estilo-boton{
+    position: fixed;
+    top: 10px; /* Ajusta la posición vertical según tu diseño */
+    right: 10%; /* Ajusta la posición horizontal según tu diseño */
+
+    color: #840000; /* Color del texto del botón */
+    padding: 10px 20px; 
+
+    border-radius: 5px; 
+    cursor: pointer; 
+    width: 10%;
+    height: 10%;
+  }
+  
+  .title{
+    text-align: center;
+    font-size: xx-large;
+  }

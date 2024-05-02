@@ -3,10 +3,9 @@ import { DataGrid, esES } from '@mui/x-data-grid';
 import ToolBarPersonalizado from '../components/ToolBarPersonalizado';
 import './ListarFiltrarAmbiente.css';
 import { Box, Typography, useTheme } from '@mui/material';
-import columns from '../components/columnas';
 import Button from "@mui/material/Button";
-import { NavLink} from 'react-router-dom';
-
+import { NavLink } from 'react-router-dom';
+import Accion from '../components/acciones'
 
 export default function DataTable() {
   const theme = useTheme();
@@ -21,7 +20,8 @@ export default function DataTable() {
           id: index + 1,
           nombreAmbiente: item.nombre_amb,
           capacidad: item.capacidad_amb,
-          estado: item.estado_ambiente
+          estado: item.estado_ambiente,
+          idBD: item.cod_ambiente
         }));
         setTablaDatos(rowData);
 
@@ -31,12 +31,36 @@ export default function DataTable() {
         setIdsTabla(addIds)
       })
       .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-  }, [tablaDatos]);
+  }, []);
+
+  // console.log(columns)
+  const [idActual, setIdActual] = useState([]);
 
   const handleRowClick = (params) => {
     let idActual = idsTabla[params.row.id - 1]
-    console.log('ID de la fila clickeada:', params.row.id, idActual.idTabla);
+    setIdActual(idsTabla[params.row.id - 1]);
   };
+
+  const columns = [
+    { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 200 },
+    { field: 'capacidad', headerName: 'Capacidad', width: 130 },
+    { field: 'estado', headerName: 'Estado', width: 130 },
+    { field: 'idBD', headerName: 'ID-BD', width: 50 },
+    {
+      field: 'acciones',
+      headerName: 'Acciones',
+      width: 400,
+      // renderCell: (params) => (
+      //   <div>
+      //     <Button color="primary" onClick={() => handleEditar('Editar', idsTabla[params.row.id - 1])}>Editar</Button>
+      //     <Button color="secondary" onClick={() => handleEliminar('Eliminar', idsTabla[params.row.id - 1])}>Eliminar</Button>
+      //     <Button color="info" onClick={() => handleDetalles('Detalles', idsTabla[params.row.id - 1])}>Detalles</Button>
+      //     <Button color="warning" onClick={() => handleOtro('Otro', idsTabla[params.row.id - 1])}>Otro</Button>
+      //   </div>
+      // ),
+      renderCell: (params) => <Accion id={idsTabla[params.row.id - 1]} />
+    }
+  ];
 
   return (
     <Box
