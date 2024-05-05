@@ -23,6 +23,7 @@ export default function DataTable() {
           estado: item.estado_ambiente,
           idBD: item.cod_ambiente
         }));
+        
         setTablaDatos(rowData);
 
         const addIds = data.map((item) => ({

@@ -20,13 +20,22 @@ const Acciones = (id) => {
     const [datos, setDatos] = useState([]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
-            .then(response => response.json())
-            .then(data => {
-                setDatos(data);
-            })
-            .catch(error => console.error("Error al obtener los datos:", error));
+        if (id.id.idTabla != undefined) {
+            fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
+                .then(response => response.json())
+                .then(data => {
+                    setDatos(data);
+                })
+                .catch(error => console.error("Error al obtener los datos:", error));
+        }
     }, []);
+
+    const reloadCurrentRoute = () => {
+        navigate('/');
+        setTimeout(() => {
+            navigate('/gestionar-ambiente');
+        }, 1);
+    };
 
     const handleMostrar = () => {
         // console.log('Mostrar', id.id.idTabla);
@@ -64,14 +73,16 @@ const Acciones = (id) => {
 
     const handleCloseModal = () => {
         setOpenModal(false);
-        
+
     };
 
     const handleConfirmDelete = () => {
         console.log('Eliminacion confirmada');
         console.log('Eliminar', id.id.idTabla);
         handleEliminar();
-        window.location.reload();
+        // window.location.reload();
+        reloadCurrentRoute();
+        handleCloseModal();
     };
 
 

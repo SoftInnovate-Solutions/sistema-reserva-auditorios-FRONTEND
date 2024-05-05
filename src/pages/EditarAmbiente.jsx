@@ -1,5 +1,4 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import Modal from '@mui/material/Modal';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Typography, useTheme } from '@mui/material';
@@ -10,7 +9,7 @@ import './Registrar ambiente.css'
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
-import ConfirmUpdateModal from '../services/router/modal';
+import ConfirmUpdateModal from '../components/modalActualizacion';
 import { dark } from '@mui/material/styles/createPalette';
 
 
@@ -34,7 +33,6 @@ function EditarAmbiente() {
 
     const { id } = useParams();
     const navigate = useNavigate();
-    const handleClose = () => { navigate('/gestionar-ambiente'); }
     const theme = useTheme();
 
     //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -278,7 +276,7 @@ function EditarAmbiente() {
     }
 
     const validarCapacidad = () => {
-        if(typeof capacidad !== 'string'){
+        if (typeof capacidad !== 'string') {
             return false;
         }
         if (!capacidad.trim()) {
@@ -345,6 +343,7 @@ function EditarAmbiente() {
             });
             if (response.ok) {
                 console.log('Ambiente modificado exitosamente');
+                navigate('/gestionar-ambiente');
             } else {
                 const errorMessage = await response.text();
                 console.error('Error al crear el ambiente:', errorMessage);
@@ -376,7 +375,7 @@ function EditarAmbiente() {
 
     useEffect(() => {
         if (contenidoEstadoAmbiente != null && contenidoNumeroPiso != null && contenidoTipoAmbiente != null &&
-            contenidoFacultad != null && contenidoTipoAmbiente != null) {
+            contenidoFacultad != null && contenidoTipoEdificacion != null) {
             rellenarDatos();
         }
     }, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente,
@@ -389,7 +388,16 @@ function EditarAmbiente() {
     const [openModal, setOpenModal] = useState(false);
 
     const handleOpenModal = () => {
-        setOpenModal(true);
+        if (validarTodosLosInputs()) {
+            if (contenidoTipoAmbiente != null && contenidoEstadoAmbiente != null && contenidoTipoEdificacion != null &&
+                contenidoFacultad != null && contenidoNumeroPiso != null) {
+                setOpenModal(true);
+            }else{
+                setMostrarAlerta(true);
+            }
+        } else {
+            setMostrarAlerta(true);
+        }
     };
 
     const handleCloseModal = () => {
@@ -402,7 +410,7 @@ function EditarAmbiente() {
         // console.log(id);
         // console.log(capacidad);
         manejarEnvio()
-        handleClose()
+        handleCloseModal()
         // handleClose
     };
 

@@ -27,7 +27,7 @@ import MisReservas from './pages/MisReservas';
 import Historial from './pages/historial';
 import NotificacionesUsuario from './pages/NotificacionesUsuario';
 
-import Pruebas from './services/router/pruebas.jsx'
+import Pruebas from './services/pruebas.jsx'
 
 function App() {
   const [rol, setRol] = useState(localStorage.getItem('saveRol'));
