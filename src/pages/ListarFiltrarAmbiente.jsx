@@ -88,12 +88,15 @@ export default function DataTable() {
           Toolbar: ToolBarPersonalizado,
         }}
         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
+        pageSize={tablaDatos.length} // Tamaño de página para mostrar toda la lista
+        disablePagination={true} // Desactiva la paginación
+        // Forma para ver paginas de listas
+        //  initialState={{
+        //   pagination: {
+        //     paginationModel: { page: 0, pageSize: 10 },
+        //   },
+        // }}
+        // pageSizeOptions={[5, 10]}
         onRowClick={handleRowClick}
       />
     </Box>
