@@ -53,7 +53,7 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
     id: tipo.cod_edificacion,
     label: tipo.nombre_edi,
   }));
-
+  
   const opcionesFacultad = tiposFacultad.map(tipo => ({
     label: tipo.nombre_fac,
   }));
@@ -71,9 +71,6 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
     label: tipo.nombre_ea,
   }));
   //#endregion
-  //#endregion
-
-
 
   //#region - IMPLEMENTACIÓN DE SELECCIÓN DE ID CON AUTOCOMPLETADO EN FORMULARIO PARA ENVIÓ A API
 
@@ -122,7 +119,7 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
   //#endregion
 
   // Evaluar la opción y obtener el conjunto de opciones correspondiente
-  const opcionesElegida = eval(options); // Utilizar eval() puede ser riesgoso, ver explicación más abajo
+  const opcionesElegida = eval(options);
 
   const [value, setValue] = useState(null);
 

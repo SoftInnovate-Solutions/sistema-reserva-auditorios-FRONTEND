@@ -1,17 +1,40 @@
-// import React from 'react';
-// import ArrayComponent from '../../components/apiMostrarRestante'; // Asegúrate de que la ruta del import sea correcta
+// import React, { useState } from 'react';
+// import Button from '@mui/material/Button';
+// import ConfirmUpdateModal from './modal'; // Ajusta la ruta según la ubicación de tu componente
 
-// const MainComponent = () => {
+// const App = () => {
+//   const [openModal, setOpenModal] = useState(false);
+
+//   const handleOpenModal = () => {
+//     setOpenModal(true);
+//   };
+
+//   const handleCloseModal = () => {
+//     setOpenModal(false);
+//   };
+
+//   const handleConfirmUpdate = () => {
+//     // Lógica para confirmar la actualización
+//     console.log('Actualización confirmada');
+//     handleCloseModal();
+//   };
+
 //   return (
 //     <div>
-
-//       {/* Usar el componente ArrayComponent con propiedades */}
-//       <ArrayComponent idTipo={'5'} idEstado={'3'} idEdificacion={'5'} idFacultad={'6'} idPiso={'13'} />
+//       <Button variant="contained" color="primary" onClick={handleOpenModal}>
+//         Abrir Modal
+//       </Button>
+//       <ConfirmUpdateModal
+//         open={openModal}
+//         handleClose={handleCloseModal}
+//         handleConfirm={handleConfirmUpdate}
+//       />
 //     </div>
 //   );
 // };
 
-// export default MainComponent;
+// export default App;
+
 export default function pruebas() {
 
     return (

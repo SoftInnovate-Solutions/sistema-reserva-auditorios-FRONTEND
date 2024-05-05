@@ -12,12 +12,17 @@ import Footer from "./components/footer";
 
 import IniciarSesion from './pages/IniciarSesion';
 
+//RUTAS ADMINISTRADOR
 import GestionAmbiente from './pages/GestionarAmbiente';
+import RegistrarAmbiente from './pages/Registrar ambiente';
+import EditarAmbiente from './pages/EditarAmbiente.jsx'
 import AjustarReserva from './pages/AjustarReserva';
 import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
-import RegistrarAmbiente from './pages/Registrar ambiente';
 
+
+
+//RUTAS USUARIO
 import MisReservas from './pages/MisReservas';
 import Historial from './pages/historial';
 import NotificacionesUsuario from './pages/NotificacionesUsuario';
@@ -56,6 +61,7 @@ function App() {
                     <Route path='/' element={<Inicio />}></Route>
                     <Route path='/gestionar-ambiente' element={<GestionAmbiente />}></Route>
                     <Route path='/registrar-ambiente' element={<RegistrarAmbiente />}></Route>
+                    <Route path='/editar-ambiente/:id' element={<EditarAmbiente />}></Route>
                     <Route path='/ajustar-reserva' element={<AjustarReserva />}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
                     <Route path='/notificaciones' element={<Notificaciones />}></Route>

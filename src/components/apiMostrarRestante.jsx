@@ -79,11 +79,11 @@ const ArrayComponent = ({ idTipo, idEstado, idEdificacion, idFacultad, idPiso })
 
   return (
     <div>
-      <p>{tiposAmbiente}</p>
-      <p>{tiposEstadoAmbiente}</p>
-      <p>{tiposEdificacion}</p>
-      <p>{tiposFacultad}</p>
-      <p>{tiposNumeroPiso}</p>
+      <p>Tipo de ambiente: {tiposAmbiente}</p>
+      <p>Estado de ambiente: {tiposEstadoAmbiente}</p>
+      <p>Tipo de edificación: {tiposEdificacion}</p>
+      <p>Facultad: {tiposFacultad}</p>
+      <p>Piso: {tiposNumeroPiso}</p>
     </div>
   );
 };

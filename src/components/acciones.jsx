@@ -2,18 +2,25 @@ import React, { useState, useEffect } from 'react';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import './acction.css'
+import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
+import ModalEliminacion from '../components/modalEliminacion'
 
 const Acciones = (id) => {
 
+    const navigate = useNavigate();
+
+    //variables mostrar
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    //variables modal eliminar
+    const [openModal, setOpenModal] = useState(false);
     const [datos, setDatos] = useState([]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`) // URL de tu API
+        fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
             .then(response => response.json())
             .then(data => {
                 setDatos(data);
@@ -22,24 +29,54 @@ const Acciones = (id) => {
     }, []);
 
     const handleMostrar = () => {
-        console.log('Mostrar', id.id.idTabla);
-        console.log(datos);
+        // console.log('Mostrar', id.id.idTabla);
+        // console.log(datos);
         handleOpen();
     };
 
     const handleEditar = () => {
         console.log('Editar', id.id.idTabla);
-        // Aquí añades la lógica para eliminar
+        navigate(`/editar-ambiente/${id.id.idTabla}`);
     };
 
-    const handleEliminar = () => {
-        console.log('Eliminar', id.id.idTabla);
-        // Aquí añades la lógica para ver detalles
+    const handleEliminar = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/ambiente/delete/${id.id.idTabla}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                console.log('Ambiente eliminado exitosamente');
+            } else {
+                const errorMessage = await response.text();
+                console.error('Error al eliminar el ambiente:', errorMessage);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+        }
     };
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        
+    };
+
+    const handleConfirmDelete = () => {
+        console.log('Eliminacion confirmada');
+        console.log('Eliminar', id.id.idTabla);
+        handleEliminar();
+        window.location.reload();
+    };
+
 
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
-        // Aquí añades la lógica para otra acción
     };
 
     return (
@@ -47,7 +84,12 @@ const Acciones = (id) => {
             <div>
                 <Button color="primary" onClick={handleMostrar}>Mostrar</Button>
                 <Button color="secondary" onClick={handleEditar}>Editar</Button>
-                <Button color="info" onClick={handleEliminar}>Eliminar</Button>
+                <Button color="info" onClick={handleOpenModal}>Eliminar</Button>
+                <ModalEliminacion
+                    open={openModal}
+                    handleClose={handleCloseModal}
+                    handleDelete={handleConfirmDelete}
+                />
                 <Button color="warning" onClick={handleConfiguraciones}>Configuraciones</Button>
             </div>
             <div>
@@ -66,7 +108,7 @@ const Acciones = (id) => {
                     }}
                 >
                     <div>
-                        {datos != undefined ? ( // Verificar si datos está definido y no es null
+                        {datos != undefined ? (
                             <div className='estilo-cuadroText'>
                                 <div className='estilo-boton'>
                                     <Button onClick={handleClose}>x</Button>
@@ -76,7 +118,8 @@ const Acciones = (id) => {
                                 <p>Descripción: {datos.descripcion_amb}</p>
                                 <p>Ubicación: {datos.ubicacion_amb}</p>
                                 <p>Capacidad: {datos.capacidad_amb}</p>
-                                {datos.cod_tipo_ambiente != undefined && datos.cod_estado_ambiente != undefined && datos.cod_edificacion != undefined && datos.cod_facultad != undefined && datos.cod_piso != undefined ? (
+                                {datos.cod_tipo_ambiente != undefined && datos.cod_estado_ambiente != undefined &&
+                                    datos.cod_edificacion != undefined && datos.cod_facultad != undefined && datos.cod_piso != undefined ? (
                                     <ApiMostraRestante
                                         idTipo={datos.cod_tipo_ambiente.toString()}
                                         idEstado={datos.cod_estado_ambiente.toString()}
