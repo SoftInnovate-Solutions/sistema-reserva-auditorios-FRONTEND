@@ -366,6 +366,7 @@ function RegistrarAmbiente() {
             className='form-inputs'
             etiqueta="Tipo de ambiente:"
           />
+          
           <Autocompletado
             disablePortal
             idOptionSelec={obtenerIdEstadoAmbiente}

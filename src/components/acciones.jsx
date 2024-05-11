@@ -4,7 +4,14 @@ import Button from '@mui/material/Button';
 import './acction.css'
 import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
-import ModalEliminacion from '../components/modalEliminacion'
+import ModalEliminacion from '../components/modalEliminacion';
+import Tooltip from '@mui/material/Tooltip';
+
+//iconos
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const Acciones = (id) => {
 
@@ -20,15 +27,19 @@ const Acciones = (id) => {
     const [datos, setDatos] = useState([]);
 
     useEffect(() => {
-        if (id.id.idTabla != undefined) {
-            fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
-                .then(response => response.json())
-                .then(data => {
-                    setDatos(data);
-                })
-                .catch(error => console.error("Error al obtener los datos:", error));
+        // console.log("lo que llega primero:",id);
+        if (id != null || id != undefined) {
+            // console.log("segundo",id.id);
+            if (id.id != undefined) {
+                fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        setDatos(data);
+                    })
+                    .catch(error => console.error("Error al obtener los datos:", error));
+            }
         }
-    }, []);
+    }, [id]);
 
     const reloadCurrentRoute = () => {
         navigate('/');
@@ -38,14 +49,25 @@ const Acciones = (id) => {
     };
 
     const handleMostrar = () => {
-        // console.log('Mostrar', id.id.idTabla);
-        // console.log(datos);
+        if (id != null || id != undefined) {
+            // console.log("segundo",id.id);
+            if (id.id != undefined) {
+                fetch(`http://127.0.0.1:5000/ambiente/one/${id.id.idTabla}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        setDatos(data);
+                    })
+                    .catch(error => console.error("Error al obtener los datos:", error));
+            }
+        }
         handleOpen();
     };
 
     const handleEditar = () => {
-        console.log('Editar', id.id.idTabla);
-        navigate(`/editar-ambiente/${id.id.idTabla}`);
+        if(id.id != undefined){
+            console.log('Editar', id.id.idTabla);
+            navigate(`/editar-ambiente/${id.id.idTabla}`);
+        }
     };
 
     const handleEliminar = async () => {
@@ -88,20 +110,29 @@ const Acciones = (id) => {
 
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
+        navigate('/disponibilidad-ambiente');
     };
 
     return (
         <>
-            <div>
-                <Button color="primary" onClick={handleMostrar}>Mostrar</Button>
-                <Button color="secondary" onClick={handleEditar}>Editar</Button>
-                <Button color="info" onClick={handleOpenModal}>Eliminar</Button>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                <Tooltip title="Mostrar" placement="top">
+                    <RemoveRedEyeIcon color="primary" onClick={handleMostrar} />
+                </Tooltip>
+                <Tooltip title="Editar" placement="top">
+                    <EditNoteIcon color="secondary" onClick={handleEditar} />
+                </Tooltip>
+                <Tooltip title="Eliminar" placement="top">
+                    <DeleteIcon color="info" onClick={handleOpenModal} />
+                </Tooltip>
+                <Tooltip title="Configuraciones" placement="top">
+                    <SettingsIcon color="warning" onClick={handleConfiguraciones} />
+                </Tooltip>
                 <ModalEliminacion
                     open={openModal}
                     handleClose={handleCloseModal}
                     handleDelete={handleConfirmDelete}
                 />
-                <Button color="warning" onClick={handleConfiguraciones}>Configuraciones</Button>
             </div>
             <div>
                 <Modal

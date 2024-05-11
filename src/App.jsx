@@ -19,7 +19,7 @@ import EditarAmbiente from './pages/EditarAmbiente.jsx'
 import AjustarReserva from './pages/AjustarReserva';
 import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
-
+import DisponibilidadAmbiente from './pages/DisponibilidadAmbiente.jsx';
 
 
 //RUTAS USUARIO
@@ -62,6 +62,7 @@ function App() {
                     <Route path='/gestionar-ambiente' element={<GestionAmbiente />}></Route>
                     <Route path='/registrar-ambiente' element={<RegistrarAmbiente />}></Route>
                     <Route path='/editar-ambiente/:id' element={<EditarAmbiente />}></Route>
+                    <Route path='/disponibilidad-ambiente' element={<DisponibilidadAmbiente />}></Route>                    
                     <Route path='/ajustar-reserva' element={<AjustarReserva />}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
                     <Route path='/notificaciones' element={<Notificaciones />}></Route>
