@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 
 import Layaut from "./components/layaut";
-import Button from "./components/button";
+
 import NavBar from "./components/navbar";
 
 
@@ -44,7 +44,7 @@ function App() {
         <>
           {rol === 'admi' ? (
             <>
-              <div className="bg-casas min-h-screen"style={{backgroundImage: "url('~src/imagenes/PAGE VACIO.png')"}}>
+              <div className="bg-fondo min-h-screen">
                 <NavBar></NavBar>
                 <Layaut>
 
@@ -62,7 +62,7 @@ function App() {
             </>
           ) : (
             <>
-              <div className="bg-casas  min-h-screen"style={{backgroundImage: "url('~src/imagenes/PAGE VACIO.png')"}} >
+              <div className= "bg-fondo min-h-screen">
                 <NavBar></NavBar>
                 <Layaut>
 

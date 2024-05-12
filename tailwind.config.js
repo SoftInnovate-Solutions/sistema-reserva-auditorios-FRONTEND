@@ -14,7 +14,7 @@ export default {
         casas: '#D6D5C9'
       },
       backgroundImage : theme =>({
-        'fondo': "url('~src/imagenes/PAGE VACIO.png')",
+        'fondo': "url('E:/proyect/cardan/sistema-reserva-auditorios-FRONTEND/src/imagenes/PAGE VACIO.png')",
       })  
     },
   },

@@ -1,5 +1,3 @@
-
-
 const Layaut = (props) => {
   return (
     <>
@@ -11,3 +9,4 @@ const Layaut = (props) => {
   )
 }
 export default Layaut
+
