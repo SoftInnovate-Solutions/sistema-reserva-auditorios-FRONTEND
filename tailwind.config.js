@@ -12,7 +12,10 @@ export default {
         'primary':  '#5c059b',
         'secondary': '#1E293B',
         casas: '#D6D5C9'
-      }
+      },
+      backgroundImage : theme =>({
+        'fondo': "url('~src/imagenes/PAGE VACIO.png')",
+      })  
     },
   },
   plugins: [],
