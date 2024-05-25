@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Link } from 'react-router-dom'; 
 const MisReservas = () => {
   const [reservas, setReservas] = useState([
     { id: 1, nombre: 'Reserva 1', aula: 'Aula 624', grupo: 'Grupo 1', fecha: '2024-05-12', hora: '06:45 - 08:15' },
@@ -13,19 +13,10 @@ const MisReservas = () => {
     { id: 9, nombre: 'Reserva 9', aula: 'Aula 693A', grupo: 'Grupo 3', fecha: '2024-05-14', hora: '09:45 - 11:15' },
   ]);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
-  const [nuevaReserva, setNuevaReserva] = useState('');
+  const [nuevaReservaNombre, setNuevaReservaNombre] = useState('');
 
   const handleCrearReserva = () => {
-    const nuevaReserva = {
-      id: reservas.length + 1,
-      nombre: nuevaReserva,
-      aula: '',
-      grupo: '',
-      fecha: '',
-      hora: ''
-    };
-    setReservas([...reservas, nuevaReserva]);
-    setNuevaReserva('');
+    
   };
 
   const handleEliminarReserva = (id) => {
@@ -45,10 +36,11 @@ const MisReservas = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Mis Reservas</h2>
-        <button onClick={handleCrearReserva} className="bg-primary text-white px-4 py-2 rounded-md">Reservar Ambiente</button>
+        {}
+        <Link to="/calendario" className="bg-primary text-white px-4 py-2 rounded-md">Crear Reserva</Link>
       </div>
       <div className="bg-white p-4 shadow-md rounded-md">
-        {/* Lista de reservas existentes */}
+        {}
         <ul className="mt-4">
           {reservas.map(reserva => (
             <li key={reserva.id} className="flex justify-between items-center border-b border-gray-300 py-2">
@@ -63,7 +55,7 @@ const MisReservas = () => {
         </ul>
       </div>
 
-      {/* Modal para mostrar los detalles de la reserva */}
+      {}
       {reservaSeleccionada && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-6 rounded-md">
@@ -73,9 +65,7 @@ const MisReservas = () => {
             <p><strong>Grupo:</strong> {reservaSeleccionada.grupo}</p>
             <p><strong>Fecha:</strong> {reservaSeleccionada.fecha}</p>
             <p><strong>Hora:</strong> {reservaSeleccionada.hora}</p>
-            <button onClick={handleCloseModal} className="bg-primary text-white
-            
-           px-4 py-2 rounded-md mt-4">Cerrar</button>
+            <button onClick={handleCloseModal} className="bg-primary text-white px-4 py-2 rounded-md mt-4">Cerrar</button>
           </div>
         </div>
       )}
