@@ -26,6 +26,7 @@ import DisponibilidadAmbiente from './pages/DisponibilidadAmbiente.jsx';
 import MisReservas from './pages/MisReservas';
 import Historial from './pages/historial';
 import NotificacionesUsuario from './pages/NotificacionesUsuario';
+import Calendario from './pages/Calendario';
 
 // import Pruebas from './services/pruebas.jsx'
 
@@ -86,6 +87,7 @@ function App() {
                     <Route path='/' element={<Inicio />}></Route>
                     <Route path='/mis-reservas' element={<MisReservas />}></Route>
                     <Route path='/historial' element={<Historial />}></Route>
+                    <Route path='/Calendario' element={<Calendario />}></Route>
                     <Route path='/notificaciones' element={<NotificacionesUsuario />}></Route>
                     <Route path='*' element={<Navigate to="/"></Navigate>}></Route>
                   </Routes>
