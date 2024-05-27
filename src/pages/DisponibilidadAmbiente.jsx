@@ -24,7 +24,7 @@ function DisponibilidadAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const navigate = useNavigate();
-  const handleClose = () => { setOpen(false); navigate('/administrar-ambiente'); }
+  const handleClose = () => { setOpen(false); manejarEnvio; navigate('/administrar-ambiente'); }
 
   const { id } = useParams();
   const theme = useTheme();
@@ -40,12 +40,25 @@ function DisponibilidadAmbiente() {
   const [errorCapacidadMax, setErrorCapacidadMax] = useState(false);
   const [mensajeErrorCapacidadMax, setMensajeErrorCapacidadMax] = useState('');
 
+  const [general_inicio, setGeneral_inicio] = useState('');
+  const [general_final, setGeneral_final] = useState('');
+
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/ambiente/one_setting/${id}`)
       .then(response => response.json())
       .then(data => {
         setCapacidadMax(data.albergacion_max_amb);
         setCapacidadMin(data.albergacion_min_amb);
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+  }, [id]);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+      .then(response => response.json())
+      .then(data => {
+        setGeneral_final(data.fecha_fin_general_per);
+        setGeneral_inicio(data.fecha_inicio_general_per);
       })
       .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
   }, [id]);
@@ -199,8 +212,8 @@ function DisponibilidadAmbiente() {
     const datosAutocompletados = {
       cod_ambiente: idd,  // Reemplaza con el valor adecuado si es necesario
       configuracion: grid,
-      fecha_inicio_general_per: "2024-05-01",
-      fecha_fin_general_per: "2024-05-02"
+      fecha_inicio_general_per: general_inicio,
+      fecha_fin_general_per: general_final
     };
 
     const datosCapacidad = {
