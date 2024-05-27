@@ -37,22 +37,35 @@ const MisReservas = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Mis Reservas</h2>
         {}
-        <Link to="/calendario" className="bg-primary text-white px-4 py-2 rounded-md">Crear Reserva</Link>
+        <Link to="/calendario" className="bg-primary text-white px-4 py-2 rounded-md">Reservar Ambiente</Link>
       </div>
-      <div className="bg-white p-4 shadow-md rounded-md">
+      <div className="bg-gray-100 p-4 shadow-md rounded-md">
         {}
-        <ul className="mt-4">
-          {reservas.map(reserva => (
-            <li key={reserva.id} className="flex justify-between items-center border-b border-gray-300 py-2">
-              <span>{reserva.nombre}</span>
-              <span>{reserva.hora}</span>
-              <div>
-                <button onClick={() => handleVerReserva(reserva)} className="text-blue-500 mr-2">Ver Reserva</button>
-                <button onClick={() => handleEliminarReserva(reserva.id)} className="text-red-500">Eliminar</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ul className="mt-4 space-y-4">
+           {reservas.map(reserva => (
+               <li key={reserva.id} className="p-4 bg-gray rounded-lg shadow flex justify-between items-center">
+                 <div className="flex-1 pr-4">
+                     <div className="font-bold text-lg">{reserva.nombre}</div>
+                        <div className="text-gray-500">{reserva.hora}</div>
+                          </div>
+                             <div className="bg-gray-500 p-2 rounded flex flex-col space-y-2">
+        <button 
+          onClick={() => handleVerReserva(reserva)} 
+          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+        >
+          Ver Reserva
+        </button>
+         <button 
+          onClick={() => handleEliminarReserva(reserva.id)} 
+          className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+        >
+          Eliminar
+        </button>
+      </div>
+    </li>
+  ))}
+</ul>
+
       </div>
 
       {}

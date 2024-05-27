@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { Link } from 'react-router-dom'; 
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendario.css';  
@@ -128,7 +129,25 @@ const Calendario = () => {
 
   return (
     <div>
-      <h2>Calendario de Reservas</h2>
+
+      <h2>Calendario</h2>
+      <div className="flex justify-between items-center mb-4">
+        <Link to="/mis-reservas" className="bg-primary text-white px-4 py-2 rounded-md">Mis Reservas</Link>
+        <div className="flex space-x-4">
+          <select className="bg-gray-200 p-2 rounded-md">
+            <option value="">Seleccionar Opción 1</option>
+            <option value="opcion1">Opción 1</option>
+            <option value="opcion2">Opción 2</option>
+          </select>
+          <select className="bg-gray-200 p-2 rounded-md">
+            <option value="">Seleccionar Opción 2</option>
+            <option value="opcion1">Opción 1</option>
+            <option value="opcion2">Opción 2</option>
+          </select>
+        </div>
+      </div>
+      
+      <div className="bg-gray-100 p-4 shadow-md rounded-md">
       <Calendar
         localizer={localizer}
         events={eventos}
@@ -140,7 +159,7 @@ const Calendario = () => {
         step={90}
         timeslots={1}
         min={new Date(2024, 4, 1, 8, 15)}
-        max={new Date(2024, 4, 12, 20, 15)}
+        max={new Date(2024, 4, 12, 21, 45)}
         eventPropGetter={eventPropGetter}
         components={{
           event: ({ event }) => (
@@ -152,7 +171,8 @@ const Calendario = () => {
             </button>
           ),
         }}
-      />
+       
+      /></div>
       {reserva && (
         <div className="popup-overlay">
           <div className="popup-content">
@@ -170,6 +190,7 @@ const Calendario = () => {
           </div>
         </div>
       )}
+      
     </div>
   );
 };
