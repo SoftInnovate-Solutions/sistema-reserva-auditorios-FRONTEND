@@ -11,7 +11,7 @@ export default {
       colors:{
         'primary':  '#5c059b',
         'secondary': '#1E293B',
-        casas: '#D6D5C9'
+        // casas: '#D6D5C9'
       }
     },
   },

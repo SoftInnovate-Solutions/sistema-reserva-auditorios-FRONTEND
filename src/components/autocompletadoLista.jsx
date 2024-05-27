@@ -124,9 +124,12 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
   const [value, setValue] = useState(null);
 
   const onChange = (event, newValue) => {
+    console.log(newValue);
     if (newValue != null) {
       setValue(newValue);
       idOptionSelec(obtenerIdCampoAutocompletado(newValue.label));
+    }else{
+      idOptionSelec(-1);
     }
   };
   const getOptionLabel = (option) => option.label;
@@ -134,19 +137,22 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
   const isOptionEqualToValue = (option, value) => option.label === value.label;
 
   return (
+    <>
     <Autocomplete
-      disablePortal
+      freeSolo
       id={id}
       options={opcionesElegida}
       value={values}
       onChange={onChange}
       getOptionLabel={getOptionLabel}
       isOptionEqualToValue={isOptionEqualToValue}
-      className='form-inputs'
       renderInput={(params) => (
         <TextField {...params} label={etiqueta} />
       )}
+      sx={{ width: '100%' }}
+
     />
+    </>
   );
 }
 

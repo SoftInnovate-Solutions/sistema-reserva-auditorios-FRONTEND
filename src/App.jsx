@@ -12,28 +12,40 @@ import Footer from "./components/footer";
 
 import IniciarSesion from './pages/IniciarSesion';
 
-import GestionAmbiente from './pages/GestionarAmbiente';
-import AjustarReserva from './pages/AjustarReserva';
+//RUTAS ADMINISTRADOR
+import AdminstrarAmbiente from './pages/AdministrarAmbiente.jsx';
+import RegistrarAmbiente from './pages/Registrar ambiente';
+import EditarAmbiente from './pages/EditarAmbiente.jsx'
+import AdministrarPeriodo from './pages/AdministrarPeriodo.jsx';
 import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
-import RegistrarAmbiente from './pages/Registrar ambiente';
+import DisponibilidadAmbiente from './pages/DisponibilidadAmbiente.jsx';
 
+
+//RUTAS USUARIO
 import MisReservas from './pages/MisReservas';
 import Historial from './pages/historial';
 import NotificacionesUsuario from './pages/NotificacionesUsuario';
+
+// import Pruebas from './services/pruebas.jsx'
 
 function App() {
   const [rol, setRol] = useState(localStorage.getItem('saveRol'));
 
   const handleLogin = (userData) => {
-    setRol(userData.codigoSis);
+    // console.log(userData.rol);
+    // console.log(localStorage.getItem('nombre_usuario'));
+    // console.log(localStorage.getItem('cod_usuario'));
+    // console.log(userData);
+    setRol(userData.rol);
     if (localStorage.getItem('saveRol') == null) {
-      localStorage.setItem('saveRol', userData.codigoSis)
+      localStorage.setItem('saveRol', userData.rol)
     } 
   };
 
   return (
     <>
+    {/* <Pruebas />  */}
       {rol === null ? (
         <>
           <Routes>
@@ -43,7 +55,7 @@ function App() {
         </>
       ) : (
         <>
-          {rol === 'admi' ? (
+          {rol === 'administrador' ? (
             <>
               <div className="bg-casas min-h-screen">
                 <NavBar></NavBar>
@@ -51,9 +63,11 @@ function App() {
 
                   <Routes>
                     <Route path='/' element={<Inicio />}></Route>
-                    <Route path='/gestionar-ambiente' element={<GestionAmbiente />}></Route>
+                    <Route path='/administrar-ambiente' element={<AdminstrarAmbiente />}></Route>
                     <Route path='/registrar-ambiente' element={<RegistrarAmbiente />}></Route>
-                    <Route path='/ajustar-reserva' element={<AjustarReserva />}></Route>
+                    <Route path='/editar-ambiente/:id' element={<EditarAmbiente />}></Route>
+                    <Route path='/disponibilidad-ambiente/:id' element={<DisponibilidadAmbiente />}></Route>                    
+                    <Route path='/administrar-periodo' element={<AdministrarPeriodo />}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
                     <Route path='/notificaciones' element={<Notificaciones />}></Route>
                     <Route path='*' element={<Navigate to="/"></Navigate>}></Route>

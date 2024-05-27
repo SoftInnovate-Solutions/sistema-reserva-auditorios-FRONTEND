@@ -1,0 +1,27 @@
+    .header-container {
+        background-color: #e8e7e7; 
+        border-radius: 26px; 
+        margin-top: 40px;
+        box-shadow: 0px 0px 0px 2px #000000;
+    }
+
+    .btn-logout {
+        padding: 10px 20px; /* Padding interno del botón */
+        background-color: #898686; /* Color de fondo del botón (rojo en este caso) */
+        color: #ffffff; /* Color del texto del botón (blanco en este caso) */
+        border: none; /* Eliminar borde del botón */
+        border-radius: 5px; /* Radio de las esquinas del botón para darle forma redondeada */
+        text-decoration: none; /* Eliminar subrayado del texto */
+        cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+        transition: background-color 0.3s ease; /* Transición suave para el cambio de color de fondo */
+    }
+    
+    .btn-logout:hover {
+        background-color: #342222; /* Color de fondo del botón al pasar el cursor (rojo más oscuro en este caso) */
+    }
+    
+
+    .footer-container {
+        background-color: #e8e7e7; 
+        box-shadow: 0px 0px 0px 2px #000000;
+    }

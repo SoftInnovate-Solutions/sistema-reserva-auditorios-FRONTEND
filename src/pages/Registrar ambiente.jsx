@@ -32,7 +32,7 @@ function RegistrarAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const navigate = useNavigate();
-  const handleClose = () => {setOpen(false); navigate('/gestionar-ambiente'); }
+  const handleClose = () => { setOpen(false); navigate('/administrar-ambiente'); }
   const theme = useTheme();
 
   //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -98,8 +98,8 @@ function RegistrarAmbiente() {
       return true;
     }
 
-    if (nombreAmbiente.trim().length > 20) {
-      setMensajeErrorAmbiente('El nombre de ambiente no debe exceder los 20 caracteres.');
+    if (nombreAmbiente.trim().length > 60) {
+      setMensajeErrorAmbiente('El nombre de ambiente no debe exceder los 60 caracteres.');
       setErrorAmbiente(true);
       return true;
     }
@@ -219,29 +219,30 @@ function RegistrarAmbiente() {
     }
   };
 
-    // Declaración, añadir varibales necesarias y uso de funcionalidad 
-    const [formData, setFormData] = useState("");
+  // Declaración, añadir varibales necesarias y uso de funcionalidad 
+  const [formData, setFormData] = useState("");
 
-    const rellenarDatos = () => {
-      const datosAutocompletados = {
-        nombre_amb: nombreAmbiente,
-        capacidad_amb: capacidad,
-        ubicacion_amb: ubicacion,
-        descripcion_amb: descripcion,
-        albergacion_max_amb: 1,
-        albergacion_min_amb: 1,
-        cod_estado_ambiente: contenidoEstadoAmbiente,
-        cod_piso: contenidoNumeroPiso,
-        cod_edificacion: contenidoTipoEdificacion,
-        cod_facultad: contenidoFacultad,
-        cod_tipo_ambiente: contenidoTipoAmbiente
-      };
-      setFormData(datosAutocompletados);
+  const rellenarDatos = () => {
+    const datosAutocompletados = {
+      nombre_amb: nombreAmbiente,
+      capacidad_amb: capacidad,
+      ubicacion_amb: ubicacion,
+      descripcion_amb: descripcion,
+      albergacion_max_amb: capacidad,
+      albergacion_min_amb: 1,
+      cod_estado_ambiente: contenidoEstadoAmbiente,
+      cod_piso: contenidoNumeroPiso,
+      cod_edificacion: contenidoTipoEdificacion,
+      cod_facultad: contenidoFacultad,
+      cod_tipo_ambiente: contenidoTipoAmbiente
     };
+    setFormData(datosAutocompletados);
+  };
 
   useEffect(() => {
     rellenarDatos();
-}, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente, contenidoNumeroPiso, contenidoTipoEdificacion, contenidoFacultad, contenidoTipoAmbiente, setFormData]); 
+  }, [nombreAmbiente, capacidad, ubicacion, descripcion, contenidoEstadoAmbiente,
+    contenidoNumeroPiso, contenidoTipoEdificacion, contenidoFacultad, contenidoTipoAmbiente, setFormData]);
   //#endregion
 
   //#region ----------------- IMPLEMENTACIÓN DEL ALERT Y MODAL ------------------------------------------------------------------------------------------------------ 
@@ -342,7 +343,7 @@ function RegistrarAmbiente() {
             variant="standard"
           />
           <TextField
-          sx={{mb: 3}}
+            sx={{ mb: 3 }}
             className='form-inputs'
             value={capacidad}
             onChange={manejadorCambiosCapacidad}
@@ -365,6 +366,7 @@ function RegistrarAmbiente() {
             className='form-inputs'
             etiqueta="Tipo de ambiente:"
           />
+
           <Autocompletado
             disablePortal
             idOptionSelec={obtenerIdEstadoAmbiente}
