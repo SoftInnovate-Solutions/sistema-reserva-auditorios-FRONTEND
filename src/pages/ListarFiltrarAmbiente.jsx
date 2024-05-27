@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid, esES } from '@mui/x-data-grid';
+import { DataGrid, esES, GridToolbarContainer } from '@mui/x-data-grid';
 import ToolBarPersonalizado from '../components/ToolBarPersonalizado';
 import './ListarFiltrarAmbiente.css';
 import { Box, Typography, useTheme, Button, Grid } from '@mui/material';
@@ -40,13 +40,13 @@ export default function DataTable() {
 
         const columns = [
           { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
-          { field: 'capacidad', headerName: 'Capacidad', width: 250 },
-          { field: 'estado', headerName: 'Estado', width: 250 },
-          { field: 'idBD', headerName: 'ID-BD', width: 100 },
+          { field: 'capacidad', headerName: 'Capacidad', width: 150 },
+          { field: 'estado', headerName: 'Estado', width: 150 },
+          { field: 'idBD', headerName: 'ID-BD', width: 80 },
           {
             field: 'acciones',
             headerName: 'Acciones',
-            width: 250,
+            width: 180,
             renderCell: (params) => <Accion id={addIds[params.row.id - 1]} />
           }
         ];
@@ -119,7 +119,7 @@ export default function DataTable() {
 
           const columns2 = [
             { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
-            { field: 'capacidad', headerName: 'Capacidad', width: 250 },
+            { field: 'capacidad', headerName: 'Capacidad', width: 50 },
             { field: 'estado', headerName: 'Estado', width: 250 },
             { field: 'idBD', headerName: 'ID-BD', width: 100 },
             {
@@ -272,6 +272,10 @@ export default function DataTable() {
         bgcolor: "background.paper",
         boxShadow: 8,
         textAlign: 'center',
+        width: '80%',
+        margin: '0 auto', // centrado horizontal
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary, textAlign: 'center' }}>LISTA DE AMBIENTES</Typography>
@@ -356,7 +360,7 @@ export default function DataTable() {
       </Grid>
 
       <NavLink to="/registrar-ambiente">
-        <Button type="submit" variant="contained" sx={{ marginTop: '-28px', textAlign: 'right' }} className='formboton'>
+        <Button type="submit" variant="contained" sx={{ marginTop: '-28px', textAlign: 'right' }} className='form-boton'>
           AGREGAR
         </Button>
       </NavLink>
@@ -365,11 +369,12 @@ export default function DataTable() {
         rows={tablaDatos}
         columns={columnasTabla}
         components={{
-          Toolbar: ToolBarPersonalizado,
+          Toolbar: GridToolbarContainer,
         }}
         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
         pageSize={tablaDatos.length} // Tamaño de página para mostrar toda la lista
         disablePagination={true} // Desactiva la paginación
+        
         // Forma para ver paginas de listas
         //  initialState={{
         //   pagination: {
@@ -382,3 +387,5 @@ export default function DataTable() {
     </Box>
   );
 }
+
+  

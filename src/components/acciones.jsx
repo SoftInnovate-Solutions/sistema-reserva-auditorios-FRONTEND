@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
+import { Modal, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
 import './acction.css'
 import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
@@ -44,7 +43,7 @@ const Acciones = (id) => {
     const reloadCurrentRoute = () => {
         navigate('/');
         setTimeout(() => {
-            navigate('/gestionar-ambiente');
+            navigate('/administrar-ambiente');
         }, 1);
     };
 
@@ -64,7 +63,7 @@ const Acciones = (id) => {
     };
 
     const handleEditar = () => {
-        if(id.id != undefined){
+        if (id.id != undefined) {
             console.log('Editar', id.id.idTabla);
             navigate(`/editar-ambiente/${id.id.idTabla}`);
         }
@@ -110,7 +109,7 @@ const Acciones = (id) => {
 
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
-        navigate('/disponibilidad-ambiente');
+        navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
     };
 
     return (
@@ -135,7 +134,53 @@ const Acciones = (id) => {
                 />
             </div>
             <div>
-                <Modal
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    fullWidth
+                    maxWidth="sm"
+                >
+                    <DialogTitle>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span>Detalles de ambiente</span>
+                            <Button onClick={handleClose} style={{ minWidth: 'auto', padding: '0' }}>x</Button>
+                        </div>
+                    </DialogTitle>
+                    <DialogContent dividers>
+                        {datos !== undefined ? (
+                            <div >
+                                <p><strong>Nombre del Ambiente:</strong> {datos.nombre_amb}</p>
+                                <p><strong>Descripción:</strong> {datos.descripcion_amb}</p>
+                                <p>
+                                    <strong>
+                                        Ubicación:
+                                        {' '}
+                                        <Link href={datos.ubicacion_amb}>{datos.ubicacion_amb}</Link>
+                                    </strong>
+                                </p>
+                                <p><strong>Capacidad:</strong> {datos.capacidad_amb}</p>
+                                {datos.cod_tipo_ambiente !== undefined && datos.cod_estado_ambiente !== undefined &&
+                                    datos.cod_edificacion !== undefined && datos.cod_facultad !== undefined && datos.cod_piso !== undefined ? (
+                                    <ApiMostraRestante
+                                        idTipo={datos.cod_tipo_ambiente.toString()}
+                                        idEstado={datos.cod_estado_ambiente.toString()}
+                                        idEdificacion={datos.cod_edificacion.toString()}
+                                        idFacultad={datos.cod_facultad.toString()}
+                                        idPiso={datos.cod_piso.toString()}
+                                    />
+                                ) : (
+                                    <p>No se pueden mostrar los datos adicionales</p>
+                                )}
+                            </div>
+                        ) : (
+                            <p>Cargando datos...</p>
+                        )}
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose} color="primary">Cerrar</Button>
+                    </DialogActions> */}
+                </Dialog>
+                {/* <Modal
                     open={open}
                     onClose={handleClose}
                     sx={{
@@ -172,16 +217,13 @@ const Acciones = (id) => {
                                 ) : (
                                     <p>No se pueden mostrar los datos adicionales</p>
                                 )}
-                                {/* Otros campos del objeto */}
                             </div>
                         ) : (
                             <p>Cargando datos...</p>
                         )}
                     </div>
-
-
-                </Modal>
-            </div>
+                </Modal> */}
+            </div >
         </>
     );
 };

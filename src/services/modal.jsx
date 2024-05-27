@@ -1,37 +1,34 @@
-import React, { forwardRef } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
+import * as React from 'react';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es'; // Importa la localización en español
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const ConfirmUpdateModal = forwardRef(({ open, handleClose, handleConfirm }, ref) => {
+// Configura dayjs para usar español
+dayjs.locale('es');
 
-    return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            ref={ref}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">{"Confirmar Actualización"}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Estás a punto de actualizar los detalles del ambiente. ¿Deseas continuar?
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleConfirm} color="primary" autoFocus>
-                    Actualizar
-                </Button>
-                <Button onClick={handleClose} color="secondary">
-                    Cancelar
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
-});
+export default function ResponsiveDatePickers() {
+  const [selectedDate, setSelectedDate] = React.useState(dayjs());
 
-export default ConfirmUpdateModal;
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+    console.log(newDate.format('YYYY-MM-DD'));
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      <DemoContainer components={['DatePicker']}>
+        <DemoItem label="Variante adaptable">
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            openTo="month"
+            views={['year', 'month', 'day']}
+          />
+        </DemoItem>
+      </DemoContainer>
+    </LocalizationProvider>
+  );
+}

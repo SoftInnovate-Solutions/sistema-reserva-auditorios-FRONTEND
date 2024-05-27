@@ -1,13 +1,11 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Typography, useTheme } from '@mui/material';
+import { Grid, Typography, useTheme } from '@mui/material';
 import TextField from "@mui/material/TextField";
-import { Grid } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import './Registrar ambiente.css'
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import ConfirmUpdateModal from '../components/modalActualizacion';
 import { dark } from '@mui/material/styles/createPalette';
@@ -104,7 +102,7 @@ function EditarAmbiente() {
                 .then(response => response.json())
                 .then(data => {
                     setTiposAmbiente(data);
-                    const tipoEncontrado = data.find(tipo => tipo.cod_tipo_ambiente === datos.cod_tipo_ambiente.toString());
+                    const tipoEncontrado = data.find(tipo => tipo.cod_tipo_ambiente === datos.cod_tipo_ambiente);
                     if (tipoEncontrado) {
                         setTipoAmbiente([tipoEncontrado.nombre_ta]);
                         const opciones = data.map(tipo => ({ label: tipo.nombre_ta }));
@@ -127,7 +125,7 @@ function EditarAmbiente() {
                 .then(response => response.json())
                 .then(data => {
                     setTiposEstadoAmbiente(data);
-                    const tipoEncontrado = data.find(tipo => tipo.cod_estado_ambiente === datos.cod_estado_ambiente.toString());
+                    const tipoEncontrado = data.find(tipo => tipo.cod_estado_ambiente === datos.cod_estado_ambiente);
                     if (tipoEncontrado) {
                         setTipoEstadoAmbiente([tipoEncontrado.nombre_ea]);
                         const opciones = data.map(tipo => ({ label: tipo.nombre_ea }));
@@ -149,7 +147,7 @@ function EditarAmbiente() {
                 .then(response => response.json())
                 .then(data => {
                     setTiposEdificacion(data);
-                    const tipoEncontrado = data.find(tipo => tipo.cod_edificacion === datos.cod_edificacion.toString());
+                    const tipoEncontrado = data.find(tipo => tipo.cod_edificacion === datos.cod_edificacion);
                     if (tipoEncontrado) {
                         setTipoEdificacion([tipoEncontrado.nombre_edi]);
                         const opciones = data.map(tipo => ({ label: tipo.nombre_edi }));
@@ -172,7 +170,7 @@ function EditarAmbiente() {
                 .then(response => response.json())
                 .then(data => {
                     setTiposFacultad(data);
-                    const tipoEncontrado = data.find(tipo => tipo.cod_facultad === datos.cod_facultad.toString());
+                    const tipoEncontrado = data.find(tipo => tipo.cod_facultad === datos.cod_facultad);
                     if (tipoEncontrado) {
                         setTipoFacultad([tipoEncontrado.nombre_fac]);
                         const opciones = data.map(tipo => ({ label: tipo.nombre_fac }));
@@ -194,7 +192,7 @@ function EditarAmbiente() {
                 .then(response => response.json())
                 .then(data => {
                     setTiposNumeroPiso(data);
-                    const tipoEncontrado = data.find(tipo => tipo.cod_piso === datos.cod_piso.toString());
+                    const tipoEncontrado = data.find(tipo => tipo.cod_piso === datos.cod_piso);
                     if (tipoEncontrado) {
                         setTipoNumeroPiso([tipoEncontrado.nombre_piso]);
                         const opciones = data.map(tipo => ({ label: tipo.nombre_piso }));
@@ -231,8 +229,8 @@ function EditarAmbiente() {
             return true;
         }
 
-        if (nombreAmbiente.trim().length > 20) {
-            setMensajeErrorAmbiente('El nombre de ambiente no debe exceder los 20 caracteres.');
+        if (nombreAmbiente.trim().length > 60) {
+            setMensajeErrorAmbiente('El nombre de ambiente no debe exceder los 60 caracteres.');
             setErrorAmbiente(true);
             return true;
         }
@@ -343,7 +341,7 @@ function EditarAmbiente() {
             });
             if (response.ok) {
                 console.log('Ambiente modificado exitosamente');
-                navigate('/gestionar-ambiente');
+                navigate('/administrar-ambiente');
             } else {
                 const errorMessage = await response.text();
                 console.error('Error al crear el ambiente:', errorMessage);

@@ -9,6 +9,8 @@ export const NavBar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('saveRol'); // Borra el dato del localStorage
+    localStorage.removeItem('nombre_usuario');
+    localStorage.removeItem('cod_usuario')
     window.location.reload(); // Recarga la página
   };
 
@@ -24,19 +26,19 @@ export const NavBar = () => {
   }, []);
   return (
     <>
-      {rol === 'admi' ? (
+      {rol === 'administrador' ? (
         <header className="header-container text-gray-600 body-font">
           <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
             <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
               <img src="src/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
-              <span className="ml-3 text-xl font-semibold text-white" style={{ textShadow: '0 1px 5px #000' }}>
+              <span className="ml-3 text-xl font-semibold text-dark" >
                 SISTEMA DE RESERVACIÓN DE AMBIENTES
               </span>
             </a>
             <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
 
-              <NavLink to="/gestionar-ambiente" className={({ isActive })  => isActive ? activeLink : btnLink}>Gestionar ambiente</NavLink>
-              <NavLink to="/ajustar-reserva" className={({ isActive }) => isActive ? activeLink : btnLink}>Ajustar reserva</NavLink>
+              <NavLink to="/administrar-ambiente" className={({ isActive })  => isActive ? activeLink : btnLink}>Administrar ambiente</NavLink>
+              <NavLink to="/administrar-periodo" className={({ isActive }) => isActive ? activeLink : btnLink}>Administrar Periodo de reserva</NavLink>
               <NavLink to="/dashboard" className={({ isActive }) => isActive ? activeLink : btnLink}>Dashboard</NavLink>
               <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeLink : btnLink}>Notificaciones</NavLink>
             </nav>
