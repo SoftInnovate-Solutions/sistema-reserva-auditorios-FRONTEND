@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { Box, Typography, useTheme, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom'; 
+
 const MisReservas = () => {
+  const theme = useTheme();
   const [reservas, setReservas] = useState([
 
   ]);
@@ -25,6 +28,19 @@ const MisReservas = () => {
   };
 
   return (
+    <Box
+    //estilo
+    sx={{
+      p: 4, // padding
+      bgcolor: "background.paper",
+      boxShadow: 8,
+      textAlign: 'center',
+      width: '80%',
+      margin: '0 auto', // centrado horizontal
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Mis Reservas</h2>
@@ -75,6 +91,7 @@ const MisReservas = () => {
         </div>
       )}
     </div>
+    </Box>
   );
 }
 

@@ -1,10 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { Box, Typography, useTheme, Button, Grid } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendario.css';
 import Autocomplete from '@mui/material/Autocomplete';
+
+moment.updateLocale('es', {
+  months: [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ],
+  monthsShort: [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ],
+  weekdays: [
+    'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+  ],
+  weekdaysShort: [
+    'Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'
+  ],
+  weekdaysMin: [
+    'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'
+  ]
+});
+moment.locale('es');
+const localizer = momentLocalizer(moment);
 
 const generarPeriodosAleatorios = (inicio, fin, intervalo, cantidad, fechaInicio, fechaFin) => {
 
@@ -41,10 +65,11 @@ const ambientesDisponibles = [
 
 ];
 
-const localizer = momentLocalizer(moment);
+
 
 const Calendario = () => {
   ///////////////
+  const theme = useTheme();
   const [idUsuario, setIdUsuario] = useState(localStorage.getItem('cod_usuario'));
   const [selectedImparticion, setSelectedImparticion] = useState(null);
   const handleImparticion = (event, newValue) => {
@@ -184,41 +209,54 @@ const Calendario = () => {
   };
 
   return (
-    <div>
+    <Box
+      //estilo
+      sx={{
+        p: 4, // padding
+        bgcolor: "background.paper",
+        boxShadow: 8,
+        textAlign: 'center',
+        width: '80%',
+        margin: '0 auto', // centrado horizontal
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div>
 
-      <h2>Calendario</h2>
-      <div className="flex justify-between items-center mb-4">
-        <Link to="/mis-reservas" className="bg-primary text-white px-4 py-2 rounded-md">Mis Reservas</Link>
-        <div className="flex space-x-4">
-          <select
-            className="bg-gray-200 p-2 rounded-md"
-            onChange={handleChange}
-            value={selectedOption}
-          >
-            {DataImparticiones.length > 0 && (
-              DataImparticiones.map((data, index) => (
-                <option key={index} value={`${data.cantidad_estudiantes_imp}`}>
-                  {data.imparticion}
-                </option>
-              ))
-            )}
-          </select>
+        <h2>Calendario</h2>
+        <div className="flex justify-between items-center mb-4">
+          <Link to="/mis-reservas" className="bg-primary text-white px-4 py-2 rounded-md">Mis Reservas</Link>
+          <div className="flex space-x-4">
+            <select
+              className="bg-gray-200 p-2 rounded-md"
+              onChange={handleChange}
+              value={selectedOption}
+            >
+              {DataImparticiones.length > 0 && (
+                DataImparticiones.map((data, index) => (
+                  <option key={index} value={`${data.cantidad_estudiantes_imp}`}>
+                    {data.imparticion}
+                  </option>
+                ))
+              )}
+            </select>
 
-          <select
-            className="bg-gray-200 p-2 rounded-md"
-            onChange={handleChangeAmb}
-            value={selectedOptionAmb}
-          >
-            {DataAmbientesDisp.length > 0 && (
-              DataAmbientesDisp.map((data, index) => (
-                <option key={index} value={`${data.cod_ambiente}`}>
-                  {data.nombre_amb}
-                </option>
-              ))
-            )}
-          </select>
+            <select
+              className="bg-gray-200 p-2 rounded-md"
+              onChange={handleChangeAmb}
+              value={selectedOptionAmb}
+            >
+              {DataAmbientesDisp.length > 0 && (
+                DataAmbientesDisp.map((data, index) => (
+                  <option key={index} value={`${data.cod_ambiente}`}>
+                    {data.nombre_amb}
+                  </option>
+                ))
+              )}
+            </select>
 
-          {/* <select className="bg-gray-200 p-2 rounded-md">
+            {/* <select className="bg-gray-200 p-2 rounded-md">
 
             {DataImparticiones[0]!=undefined && (
               <>
@@ -228,7 +266,7 @@ const Calendario = () => {
             )}
           </select> */}
 
-          {/* <Autocomplete
+            {/* <Autocomplete
               value={selectedImparticion}
               onChange={handleImparticion}
               options={opcionesImparticion}
@@ -237,59 +275,74 @@ const Calendario = () => {
               renderInput={(params) => <TextField {...params} label="Selecciona un rol" variant="outlined" />}
               sx={{ marginTop: '22px', mb: 3 }}
             /> */}
-          {/* <select className="bg-gray-200 p-2 rounded-md">
+            {/* <select className="bg-gray-200 p-2 rounded-md">
             <option value="">Seleccionar Opción 2</option>
             <option value="opcion1">Opción 1</option>
             <option value="opcion2">Opción 2</option>
           </select> */}
-        </div>
-      </div>
-
-      <div className="bg-gray-100 p-4 shadow-md rounded-md">
-        <Calendar
-          localizer={localizer}
-          events={eventos}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500 }}
-          selectable
-          onSelectSlot={handleSeleccionFechaHora}
-          step={90}
-          timeslots={1}
-          min={new Date(2024, 4, 1, 8, 15)}
-          max={new Date(2024, 4, 12, 21, 45)}
-          eventPropGetter={eventPropGetter}
-          components={{
-            event: ({ event }) => (
-              <button
-                style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }} 
-                onClick={() => handleReservar(event.resource, event.start, event.end)}
-              >
-                {event.title}
-              </button>
-            ),
-          }}
-
-        />
-      
-      </div>
-      {reserva && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <h3 className="text-lg font-semibold mb-4">Confirmar Reserva</h3>
-            <p><strong>Nombre:</strong> {reserva.ambiente.nombre}</p>
-            <p><strong>Capacidad:</strong> {reserva.ambiente.capacidadMinima} - {reserva.ambiente.capacidadMaxima}</p>
-            <p><strong>Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
-            <p><strong>Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
-            <div className="mt-4 flex justify-between">
-              <button onClick={confirmarReserva} className="bg-green-500 text-white px-4 py-2 rounded-md">Confirmar</button>
-              <button onClick={cancelarReserva} className="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</button>
-            </div>
           </div>
         </div>
-      )}
 
-    </div>
+        <div className="bg-gray-100 p-4 shadow-md rounded-md">
+          <Calendar
+            localizer={localizer}
+            events={eventos}
+            startAccessor="start"
+            endAccessor="end"
+            messages={{
+              next: 'Siguiente',
+              previous: 'Anterior',
+              today: 'Hoy',
+              month: 'Mes',
+              week: 'Semana',
+              day: 'Día',
+              agenda: 'Agenda',
+              date: 'Fecha',
+              time: 'Hora',
+              event: 'Evento',
+              noEventsInRange: 'No hay eventos en este rango.',
+              showMore: total => `+ Ver más (${total})`,
+            }}
+            style={{ height: 500 }}
+            selectable
+            onSelectSlot={handleSeleccionFechaHora}
+            step={90}
+            timeslots={1}
+            min={new Date(2024, 4, 1, 8, 15)}
+            max={new Date(2024, 4, 12, 21, 45)}
+            eventPropGetter={eventPropGetter}
+            components={{
+              event: ({ event }) => (
+                <button
+                  style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }}
+                  onClick={() => handleReservar(event.resource, event.start, event.end)} n
+                >
+                  {event.title}
+                </button>
+              ),
+            }}
+
+          />
+
+        </div>
+        {reserva && (
+          <div className="popup-overlay">
+            <div className="popup-content">
+              <h3 className="text-lg font-semibold mb-4">Confirmar Reserva</h3>
+              <p><strong>Nombre:</strong> {reserva.ambiente.nombre}</p>
+              <p><strong>Capacidad:</strong> {reserva.ambiente.capacidadMinima} - {reserva.ambiente.capacidadMaxima}</p>
+              <p><strong>Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
+              <p><strong>Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
+              <div className="mt-4 flex justify-between">
+                <button onClick={confirmarReserva} className="bg-green-500 text-white px-4 py-2 rounded-md">Confirmar</button>
+                <button onClick={cancelarReserva} className="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </Box>
   );
 };
 

@@ -1,29 +1,52 @@
-import * as React from 'react';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es'; // Importa la localización en español
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import React from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'moment/locale/es';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-// Configura dayjs para usar español
-dayjs.locale('es');
+// Configura moment para que use el idioma español
+moment.locale('es');
 
-export default function ResponsiveDatePickers() {
+// Crea el localizador usando moment
+const localizer = momentLocalizer(moment);
+
+const MyCalendar = () => {
+  const events = [
+    {
+      title: 'Reunión',
+      start: new Date(),
+      end: new Date(),
+    },
+  ];
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <DemoContainer
-        components={[
-          'DatePicker',
-        ]}
-      >
-        <DemoItem label="Fecha de inicio">
-          <DatePicker openTo="month" views={['year', 'month', 'day']} />
-        </DemoItem>
-        <DemoItem label="Fecha Fin">
-          <DatePicker openTo="month" views={['year', 'month', 'day']} />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider>
+    <div style={{ height: '500px' }}>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        messages={{
+          date: 'Fecha',
+          time: 'Hora',
+          event: 'Evento',
+          allDay: 'Todo el día',
+          week: 'Semana',
+          work_week: 'Semana laboral',
+          day: 'Día',
+          month: 'Mes',
+          previous: 'Anterior',
+          next: 'Siguiente',
+          yesterday: 'Ayer',
+          tomorrow: 'Mañana',
+          today: 'Hoy',
+          agenda: 'Agenda',
+          noEventsInRange: 'No hay eventos en este rango.',
+          showMore: total => `+ Ver más (${total})`,
+        }}
+      />
+    </div>
   );
-}
+};
+
+export default MyCalendar;
