@@ -46,6 +46,10 @@ function EditarAmbiente() {
     const [contenidoTipoAmbiente, setContenidoTipoAmbiente] = React.useState(null);
     const [contenidoEstadoAmbiente, setContenidoEstadoAmbiente] = React.useState(null);
 
+    // Declaración, añadir varibales necesarias y uso de funcionalidad 
+    const [formData, setFormData] = useState("");
+    const [formDataCapacidad, setFormDataCapacidad] = useState("");
+
     // Manejo de cambios en tiempo real en campos de entrada de texto.
     const manejadorCambiosNombreAmbiente = (event) => {
         setNombreAmbiente(event.target.value);
@@ -337,7 +341,14 @@ function EditarAmbiente() {
                 },
                 body: JSON.stringify(formData),
             });
-            if (response.ok) {
+
+            const response2 = await fetch(`http://127.0.0.1:5000/ambiente/update_setting/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(formDataCapacidad),
+            });
+
+            if (response.ok && response2.ok) {
                 console.log('Ambiente modificado exitosamente');
                 navigate('/administrar-ambiente');
             } else {
@@ -348,9 +359,6 @@ function EditarAmbiente() {
             console.error('Error de red:', error);
         }
     };
-
-    // Declaración, añadir varibales necesarias y uso de funcionalidad 
-    const [formData, setFormData] = useState("");
 
     const rellenarDatos = () => {
 
@@ -366,6 +374,13 @@ function EditarAmbiente() {
             nombre_amb: nombreAmbiente,
             ubicacion_amb: ubicacion,
         };
+
+        const datosCapacidad = {
+            albergacion_max_amb: capacidad * porcentajeMax,
+            albergacion_min_amb: capacidad * porcentajeMin
+        }
+
+        setFormDataCapacidad(datosCapacidad);
         setFormData(datosAutocompletados);
     };
 
