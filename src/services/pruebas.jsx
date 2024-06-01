@@ -1,23 +1,30 @@
-import React from 'react';
+// App.js
+import React, { useState } from 'react';
+import Button from '@mui/material/Button';
+import DisabledModal from './modal';
 
-function App() {
-    // Función para abrir la nueva ventana
-    const abrirNuevaVentana = () => {
-        // URL de la página a la que se abrirá la nueva ventana
-        const url = 'https://www.google.com/maps/@-17.3936905,-66.1448234,16z?entry=ttu';
+const App = () => {
+    const [openModal, setOpenModal] = useState(false);
 
-        // Abre una nueva ventana con la URL especificada
-        window.open(url, '_blank');
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
     };
 
     return (
-        <div className="App">
-            <header className="App-header">
-                {/* Botón para abrir la nueva ventana */}
-                <button onClick={abrirNuevaVentana}>Abrir Nueva Ventana</button>
-            </header>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <Button variant="contained" color="primary" onClick={handleOpenModal}>
+                Mostrar Modal
+            </Button>
+            <DisabledModal
+                open={openModal}
+                handleClose={handleCloseModal}
+            />
         </div>
     );
-}
+};
 
 export default App;

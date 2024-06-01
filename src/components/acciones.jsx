@@ -4,6 +4,7 @@ import './acction.css'
 import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
 import ModalEliminacion from '../components/modalEliminacion';
+import ModalPeriodo from '../components/modalAvisoPeriodo'
 import Tooltip from '@mui/material/Tooltip';
 
 //iconos
@@ -16,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 const Acciones = (id) => {
 
     const navigate = useNavigate();
+    const [hayPeriodoReservas, setHayPeriodoReservas] = useState(false);
 
     //variables mostrar
     const [open, setOpen] = useState(false);
@@ -32,6 +34,17 @@ const Acciones = (id) => {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+    };
+
+    //variables para el modal de aviso del periodo
+    const [openModalPeriodo, setOpenModalPeriodo] = useState(false);
+
+    const handleOpenModalPeriodo = () => {
+        setOpenModalPeriodo(true);
+    };
+
+    const handleCloseModalPeriodo = () => {
+        setOpenModalPeriodo(false);
     };
 
     useEffect(() => {
@@ -75,12 +88,8 @@ const Acciones = (id) => {
 
     //-------------------------  E  L  I  M  I  N  A  R  ------------------------------
     const handleConfirmDelete = () => {
-        console.log('Eliminacion confirmada');
         console.log('Eliminar', id.id.idTabla);
         handleEliminar();
-        // window.location.reload();
-        reloadCurrentRoute();
-        handleCloseModal();
     };
 
     const handleEliminar = async () => {
@@ -93,6 +102,8 @@ const Acciones = (id) => {
             });
             if (response.ok) {
                 console.log('Ambiente eliminado exitosamente');
+                reloadCurrentRoute();
+                handleCloseModal();
             } else {
                 const errorMessage = await response.text();
                 console.error('Error al eliminar el ambiente:', errorMessage);
@@ -110,9 +121,23 @@ const Acciones = (id) => {
     };
 
     //-------------------------  C  O  N  F  I  G  U  R  A  C  I  O  N  E  S  ------------------------------
+
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
-        navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+        fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+            .then(response => response.json())
+            .then(data => {
+                if (data != undefined) {
+                    if (Object.keys(data).length != 0) {
+                        navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+                    }else{
+                        handleOpenModalPeriodo();
+                    }
+                } else {
+                    handleOpenModalPeriodo();
+                }
+            })
+            .catch(error => console.error("Error al cargar periodo de reservas:", error));
     };
 
     const abrirEnNuevaVentana = (e) => {
@@ -140,6 +165,11 @@ const Acciones = (id) => {
                     handleClose={handleCloseModal}
                     handleDelete={handleConfirmDelete}
                 />
+                <ModalPeriodo
+                    open={openModalPeriodo}
+                    handleClose={handleCloseModalPeriodo}
+                />
+
             </div>
             <div>
                 <Dialog

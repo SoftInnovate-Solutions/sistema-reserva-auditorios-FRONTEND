@@ -12,9 +12,8 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 300,
+  width: 500,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   pt: 2,
   px: 4,
@@ -40,7 +39,7 @@ function DisponibilidadAmbiente() {
     "15:45 - 17:15", "17:15 - 18:45", "18:45 - 20:15", "20:15 - 21:45"];
   const bloqueInicial = Array.from({ length: 10 }, () => Array(7).fill(1));
   const [bloquesAmbientes, setBloquesAmbientes] = useState(bloqueInicial);
-  const [hayPeriodo, setHayPeriodo] = useState(false);
+  // const [hayPeriodo, setHayPeriodo] = useState(false);
   const [mostrarBloques, setMostrarBloques] = useState(false);
 
 
@@ -76,7 +75,7 @@ function DisponibilidadAmbiente() {
     fetch(`http://127.0.0.1:5000/ajuste_ambiente/get_ajuste_ambiente/${id}`)
       .then(response => response.json())
       .then(data => {
-        if(data.configuracion.length>0){
+        if (data.configuracion.length > 0) {
           setMostrarBloques(true)
         }
         setBloquesAmbientes(data.configuracion);
@@ -88,7 +87,7 @@ function DisponibilidadAmbiente() {
     fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
       .then(response => response.json())
       .then(data => {
-        setHayPeriodo(true);
+        // setHayPeriodo(true);
         setGeneral_final(data.fecha_fin_general_per);
         setGeneral_inicio(data.fecha_inicio_general_per);
       })
@@ -231,7 +230,7 @@ function DisponibilidadAmbiente() {
       const response2 = await fetch(`http://127.0.0.1:5000/ambiente/update_setting/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', },
-        body: JSON.stringify(formDataCapacidad),  
+        body: JSON.stringify(formDataCapacidad),
       });
 
       if (response.ok && response2.ok) {
@@ -274,8 +273,8 @@ function DisponibilidadAmbiente() {
   const ChildModal = forwardRef(({ handleClose }, ref) => {
     return (
       <Box ref={ref} sx={style} tabIndex={0}>
-        <span style={{ fontSize: '48px', color: '#4caf50', display: 'block', marginBottom: '16px' }}>&#10003;</span>
-        <h2 id="child-modal-title">Guardado correctamente</h2>
+        <span style={{ fontSize: '48px', color: '#4caf50', display: 'block', marginBottom: '20px' }}>&#10003;</span>
+        <h2 id="child-modal-title">Configuración de disponibilidad guardada correctamente</h2>
         <Button onClick={handleClose}>OK</Button>
       </Box>
     );
@@ -321,119 +320,108 @@ function DisponibilidadAmbiente() {
         <h2>Configuración de disponibilidad:</h2>
       </Box>
 
-      {hayPeriodo && (
-        <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column" justifyContent="center" alignItems="center">
-          <Grid sx={{ mt: 2 }}>
-            <h2>Fecha inicio: {general_inicio} -  Fecha final: {general_final}</h2>
-          </Grid>
-
-          {!mostrarBloques &&
-            <Button type="submit" variant="contained" onClick={createBloques} sx={{ marginTop: '18px', width: '50%' }} className='formboton'>
-              CREAR BLOQUES DE DIAS PARA ESTE AMBIENTE
-            </Button>
-          }
-
-          {mostrarBloques && (
-            <>
-              <div className="diasSemana">
-                {diasSemana.map((dia, index) => (
-                  <div key={index} className="cellDA">{dia}</div>
-                ))}
-              </div>
-
-              {bloquesAmbientes.map((row, rowIndex) => (
-                <div key={rowIndex} className="row">
-                  {row.map((cell, colIndex) => (
-                    <React.Fragment key={`${rowIndex}-${colIndex}`}>
-                      {colIndex === 0 ? (
-                        <div className='estiloHorario'>{horario[rowIndex]}</div>
-                      ) : null}
-
-                      <div
-                        className={`cellDA ${cell === 0 ? 'red' : 'green'}`}
-                        onClick={() => handleCellClick(rowIndex, colIndex)}
-                      />
-                    </React.Fragment>
-                  ))}
-                </div>
-              ))}
-
-
-              <div className="contenedorDND">
-                <span className="availability">Disponible</span>
-                <div className="circle green"></div>
-                <span className="availability">No disponible</span>
-                <div className="circle red"></div>
-              </div>
-            </>
-          )}
-        </Grid>
-      )}
-
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '25px', marginTop: '25px' }}>
-        <h2>Configuración de capacidad del ambiente: </h2>
-      </Box>
-
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <TextField
-            sx={{ mb: 3, width: '100%' }}
-            type="number"
-            value={capacidadMin}
-            onChange={manejadorCambiosCapacidadMin}
-            onBlur={validarCapacidadMin}
-            error={errorCapacidadMin}
-            helperText={errorCapacidadMin ? mensajeErrorCapacidadMin : ''}
-            label="Capacidad Minima: "
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            sx={{ mb: 3, width: '100%' }}
-            value={capacidadActual}
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Capacidad Actual:  "
-          />
-
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            sx={{ mb: 3, width: '100%' }}
-            type='number'
-            value={capacidadMax}
-            onChange={manejadorCambiosCapacidadMax}
-            onBlur={validarCapacidadMax}
-            error={errorCapacidadMax}
-            helperText={errorCapacidadMax ? mensajeErrorCapacidadMax : ''}
-            label="Capacidad Maxima:  "
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+      <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column" justifyContent="center" alignItems="center">
+        <Grid sx={{ mt: 2 }}>
+          <h2>Fecha inicio: {general_inicio} -  Fecha final: {general_final}</h2>
         </Grid>
       </Grid>
+      
+      {!mostrarBloques &&
+        <Button type="submit" variant="contained" onClick={createBloques} sx={{ marginTop: '18px', width: '50%' }} className='formboton'>
+          CREAR BLOQUES DE DIAS PARA ESTE AMBIENTE
+        </Button>
+      }
 
-      {/* <Grid >
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
+      {mostrarBloques && (
+        <>
+          <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column" justifyContent="center" alignItems="center">
 
-        </Grid>
+            <div className="diasSemana">
+              {diasSemana.map((dia, index) => (
+                <div key={index} className="cellDA">{dia}</div>
+              ))}
+            </div>
 
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
+            {bloquesAmbientes.map((row, rowIndex) => (
+              <div key={rowIndex} className="row">
+                {row.map((cell, colIndex) => (
+                  <React.Fragment key={`${rowIndex}-${colIndex}`}>
+                    {colIndex === 0 ? (
+                      <div className='estiloHorario'>{horario[rowIndex]}</div>
+                    ) : null}
 
-        </Grid>
+                    <div
+                      className={`cellDA ${cell === 0 ? 'red' : 'green'}`}
+                      onClick={() => handleCellClick(rowIndex, colIndex)}
+                    />
+                  </React.Fragment>
+                ))}
+              </div>
+            ))}
 
-        <h1>{capacidadActual}</h1>
+            <div className="contenedorDND">
+              <span className="availability">Disponible</span>
+              <div className="circle green"></div>
+              <span className="availability">No disponible</span>
+              <div className="circle red"></div>
+            </div>
 
-      </Grid> */}
+          </Grid>
 
-      <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
-        GUARDAR DISPONIBILIDAD
-      </Button>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '25px', marginTop: '25px' }}>
+            <h2>Configuración de capacidad del ambiente: </h2>
+          </Box>
+
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField
+                sx={{ mb: 3, width: '100%' }}
+                type="number"
+                value={capacidadMin}
+                onChange={manejadorCambiosCapacidadMin}
+                onBlur={validarCapacidadMin}
+                error={errorCapacidadMin}
+                helperText={errorCapacidadMin ? mensajeErrorCapacidadMin : ''}
+                label="Capacidad Minima: "
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                sx={{ mb: 3, width: '100%' }}
+                value={capacidadActual}
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Capacidad Actual:  "
+              />
+
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                sx={{ mb: 3, width: '100%' }}
+                type='number'
+                value={capacidadMax}
+                onChange={manejadorCambiosCapacidadMax}
+                onBlur={validarCapacidadMax}
+                error={errorCapacidadMax}
+                helperText={errorCapacidadMax ? mensajeErrorCapacidadMax : ''}
+                label="Capacidad Maxima:  "
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
+            GUARDAR DISPONIBILIDAD
+          </Button>
+        </>
+      )
+      }
 
       <Modal
         open={open}
@@ -444,25 +432,40 @@ function DisponibilidadAmbiente() {
         <ChildModal handleClose={handleClose} />
       </Modal>
 
-      {mostrarAlerta && (
-        <Alert
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '1rem',
+      {
+        mostrarAlerta && (
+          <Alert
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '1rem',
 
-          }}
-          variant="filled"
-          severity="error"
-        >
-          Verifique los datos.
-        </Alert>
+            }}
+            variant="filled"
+            severity="error"
+          >
+            Verifique los datos.
+          </Alert>
 
-      )}
-    </Box>
+        )
+      }
+    </Box >
   );
 
 }
 
 export default DisponibilidadAmbiente;
+
+{/* <Grid >
+<Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
+
+</Grid>
+
+<Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
+
+</Grid>
+
+<h1>{capacidadActual}</h1>
+
+</Grid> */}
