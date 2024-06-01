@@ -21,6 +21,9 @@ const style = {
     textAlign: 'center',
 };
 
+let porcentajeMin = 0.5;
+let porcentajeMax = 1.10;
+
 function EditarAmbiente() {
 
     const { id } = useParams();

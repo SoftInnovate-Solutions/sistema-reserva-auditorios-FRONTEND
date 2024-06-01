@@ -22,6 +22,9 @@ const style = {
   textAlign: 'center',
 };
 
+let porcentajeMin = 0.5;
+let porcentajeMax = 1.10;
+
 function RegistrarAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -35,7 +38,7 @@ function RegistrarAmbiente() {
   // Declarar variables para el cuadro de entrada con autocompletado
   const [contenidoTipoEdificacion, setContenidoTipoEdificacion] = useState(null);
   const [contenidoFacultad, setContenidoFacultad] = useState(null);
-  const [contenidoNumeroPiso, setContenidoNumeroPiso] = useState(null);
+  const [contenidoNumeroPiso, setContenidoNumeroPiso] = useState(1);
   const [contenidoTipoAmbiente, setContenidoTipoAmbiente] = useState(null);
   const [contenidoEstadoAmbiente, setContenidoEstadoAmbiente] = useState(null);
 
@@ -223,9 +226,10 @@ function RegistrarAmbiente() {
       capacidad_amb: capacidad,
       ubicacion_amb: ubicacion,
       descripcion_amb: descripcion,
-      albergacion_max_amb: capacidad,
-      albergacion_min_amb: 1,
+      albergacion_max_amb: capacidad*porcentajeMax,
+      albergacion_min_amb: capacidad*porcentajeMin,
       cod_estado_ambiente: contenidoEstadoAmbiente,
+      // cod_piso: contenidoNumeroPiso,
       cod_piso: contenidoNumeroPiso,
       cod_edificacion: contenidoTipoEdificacion,
       cod_facultad: contenidoFacultad,
@@ -429,7 +433,7 @@ function RegistrarAmbiente() {
             className='form-inputs'
             etiqueta="Facultad:"
           />
-          <Autocompletado
+          {/* <Autocompletado
             disablePortal
             idOptionSelec={obtenerIdPiso}
             id="combo-box-demo"
@@ -439,7 +443,7 @@ function RegistrarAmbiente() {
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, contenidoNumeroPiso) => option.label === contenidoNumeroPiso.label}
             className='form-inputs'
-            etiqueta="Piso:" />
+            etiqueta="Piso:" /> */}
 
           <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
             REGISTRAR

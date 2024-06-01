@@ -38,7 +38,7 @@ export const NavBar = () => {
             <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
 
               <NavLink to="/administrar-ambiente" className={({ isActive })  => isActive ? activeLink : btnLink}>Administrar ambiente</NavLink>
-              <NavLink to="/administrar-periodo" className={({ isActive }) => isActive ? activeLink : btnLink}>Administrar Periodo de reserva</NavLink>
+              <NavLink to="/administrar-periodo" className={({ isActive }) => isActive ? activeLink : btnLink}>Administrar periodo de reserva</NavLink>
               <NavLink to="/dashboard" className={({ isActive }) => isActive ? activeLink : btnLink}>Dashboard</NavLink>
               <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeLink : btnLink}>Notificaciones</NavLink>
             </nav>

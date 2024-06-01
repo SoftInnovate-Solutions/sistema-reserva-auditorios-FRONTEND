@@ -22,7 +22,11 @@ const style = {
   textAlign: 'center',
 };
 
+let porcentajeMin = 0.5;
+let porcentajeMax = 1.10;
+
 function DisponibilidadAmbiente() {
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const navigate = useNavigate();
@@ -95,7 +99,8 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMin = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * 0.5 && parseInt(inputNumero) <= capacidadActual)) {
+      console.log(capacidadActual * 0.5);
+      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * porcentajeMin && parseInt(inputNumero) <= capacidadActual)) {
         setCapacidadMin(inputNumero);
       }
       setErrorCapacidadMin(false);
@@ -110,7 +115,7 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMax = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= capacidadActual * 1.10)) {
+      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= capacidadActual * porcentajeMax)) {
         setCapacidadMax(inputNumero);
       }
       setErrorCapacidadMax(false);
@@ -157,6 +162,8 @@ function DisponibilidadAmbiente() {
 
   const validarMinMax = () => {
     if (capacidadMin < capacidadMax) {
+      setErrorCapacidadMax(false);
+      setErrorCapacidadMin(false);
       return false;
     } else {
       setMensajeErrorCapacidadMax('La capacidad debe ser un valor maximo.');
@@ -221,13 +228,13 @@ function DisponibilidadAmbiente() {
         body: JSON.stringify(formData),
       });
 
-      // const response2 = await fetch(`http://127.0.0.1:5000/ambiente/update_setting/${id}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json', },
-      //   body: JSON.stringify(formDataCapacidad),
-      // });
+      const response2 = await fetch(`http://127.0.0.1:5000/ambiente/update_setting/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify(formDataCapacidad),  
+      });
 
-      if (response.ok) {
+      if (response.ok && response2.ok) {
         handleOpen();
         console.log('ambiente ajustado correctamente');
       } else {
@@ -371,7 +378,6 @@ function DisponibilidadAmbiente() {
         <Grid item xs={4}>
           <TextField
             sx={{ mb: 3, width: '100%' }}
-            className='form-inputs'
             type="number"
             value={capacidadMin}
             onChange={manejadorCambiosCapacidadMin}
