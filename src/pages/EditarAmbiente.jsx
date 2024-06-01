@@ -646,7 +646,7 @@ function EditarAmbiente() {
                             <TextField {...params} label={"Facultad: "} />
                         )}
                     />
-                    <Autocomplete
+                    {/* <Autocomplete
                         disablePortal
                         value={contenidoNumeroPiso}
                         options={opcionesNumeroPiso}
@@ -657,7 +657,7 @@ function EditarAmbiente() {
                         renderInput={(params) => (
                             <TextField {...params} label={"Piso: "} />
                         )}
-                    />
+                    /> */}
 
                     <Button type="submit" variant="contained" onClick={handleOpenModal} sx={{ marginTop: '18px' }} className='formboton'>
                         ACTUALIZAR

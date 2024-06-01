@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
+import { Modal, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, IconButton } from '@mui/material';
 import './acction.css'
 import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
@@ -11,6 +11,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Acciones = (id) => {
 
@@ -150,7 +151,10 @@ const Acciones = (id) => {
                     <DialogTitle>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span>Detalles de ambiente</span>
-                            <Button onClick={handleClose} style={{ minWidth: 'auto', padding: '0' }}>x</Button>
+                            <IconButton onClick={handleClose} aria-label="back">
+                                <CloseIcon fontSize='large' />
+                            </IconButton>
+                            {/* <Button onClick={handleClose} style={{ minWidth: 'auto', padding: '0' }}>x</Button> */}
                         </div>
                     </DialogTitle>
                     <DialogContent dividers>
