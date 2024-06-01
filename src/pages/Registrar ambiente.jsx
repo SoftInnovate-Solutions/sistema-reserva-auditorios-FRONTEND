@@ -1,16 +1,10 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { Typography, useTheme } from '@mui/material';
-import TextField from "@mui/material/TextField";
-import Autocompletado from '../components/autocompletado';
-import { Grid } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import './Registrar ambiente.css'
 import { useNavigate } from 'react-router-dom';
-import { dark } from '@mui/material/styles/createPalette';
-
+import { Typography, useTheme, Button, Box, Modal, Alert, TextField, Grid, IconButton } from '@mui/material';
+import Autocompletado from '../components/autocompletado';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import './Registrar ambiente.css'
 
 // Estilo para el modal
 const style = {
@@ -33,6 +27,7 @@ function RegistrarAmbiente() {
   const handleOpen = () => setOpen(true);
   const navigate = useNavigate();
   const handleClose = () => { setOpen(false); navigate('/administrar-ambiente'); }
+  const navegarAdministrarAmb = () => { navigate('/administrar-ambiente'); }
   const theme = useTheme();
 
   //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -290,6 +285,11 @@ function RegistrarAmbiente() {
 
   //#endregion
 
+  const abrirGoogleMaps = () => {
+    const url = 'https://www.google.com/maps/@-17.3936905,-66.1448234,16z?entry=ttu';
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       <Box
@@ -298,10 +298,24 @@ function RegistrarAmbiente() {
           p: 4, // padding
           bgcolor: "background.paper",
           boxShadow: 8,
-          textAlign: 'center'
+          textAlign: 'center',
+          width: '80%',
+          margin: '0 auto', // centrado horizontal
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
+
+        <Grid container alignItems="center" sx={{ mb: 3 }}>
+          <Grid item >
+            <IconButton onClick={navegarAdministrarAmb} aria-label="back">
+              <ArrowBackIcon fontSize='large' />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12} >
+            <Typography variant="h5" component="h2" sx={{ mt: 1, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
+          </Grid>
+        </Grid>
 
         <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column"
           justifyContent="center"
@@ -309,7 +323,7 @@ function RegistrarAmbiente() {
 
           <TextField
             className='form-inputs'
-            // id="nombreAmbiente"
+            sx={{ mb: 1.5 }}
             value={nombreAmbiente}
             onChange={manejadorCambiosNombreAmbiente}
             onBlur={validarNombreAmbiente}
@@ -320,6 +334,7 @@ function RegistrarAmbiente() {
           />
           <TextField
             className='form-inputs'
+            sx={{ mb: 1.5 }}
             value={descripcion}
             onChange={manejadorCambiosDescripcion}
             onBlur={validarDescripcion}
@@ -330,21 +345,31 @@ function RegistrarAmbiente() {
             maxRows={3}
             variant="standard"
           />
+
+          <Grid alignItems="center" sx={{ mb: 1.5, marginLeft: '50px' }}>
+
+            <TextField
+              className='form-inputs'
+              value={ubicacion}
+              onChange={manejadorCambiosUbicacion}
+              onBlur={validarUbicacion}
+              error={errorUbicacion}
+              helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
+              label="Ubicación: "
+              multiline
+              maxRows={2}
+              variant="standard"
+            />
+            <IconButton onClick={abrirGoogleMaps} aria-label="back">
+              <AddLocationAltIcon fontSize='large' />
+            </IconButton>
+
+          </Grid>
+
           <TextField
+            sx={{ mb: 3, width: '15%' }}
             className='form-inputs'
-            value={ubicacion}
-            onChange={manejadorCambiosUbicacion}
-            onBlur={validarUbicacion}
-            error={errorUbicacion}
-            helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
-            label="Ubicación: "
-            multiline
-            maxRows={2}
-            variant="standard"
-          />
-          <TextField
-            sx={{ mb: 3 }}
-            className='form-inputs'
+            type='number'
             value={capacidad}
             onChange={manejadorCambiosCapacidad}
             onBlur={validarCapacidad}

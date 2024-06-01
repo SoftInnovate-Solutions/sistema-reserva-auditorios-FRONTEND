@@ -25,6 +25,14 @@ const Acciones = (id) => {
     const [openModal, setOpenModal] = useState(false);
     const [datos, setDatos] = useState([]);
 
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
     useEffect(() => {
         // console.log("lo que llega primero:",id);
         if (id != null || id != undefined) {
@@ -40,13 +48,7 @@ const Acciones = (id) => {
         }
     }, [id]);
 
-    const reloadCurrentRoute = () => {
-        navigate('/');
-        setTimeout(() => {
-            navigate('/administrar-ambiente');
-        }, 1);
-    };
-
+    //-------------------------  M  O  S  T  R  A  R  ------------------------------
     const handleMostrar = () => {
         if (id != null || id != undefined) {
             // console.log("segundo",id.id);
@@ -62,11 +64,22 @@ const Acciones = (id) => {
         handleOpen();
     };
 
+    //-------------------------  E  D  I  T  A  R  ------------------------------
     const handleEditar = () => {
         if (id.id != undefined) {
             console.log('Editar', id.id.idTabla);
             navigate(`/editar-ambiente/${id.id.idTabla}`);
         }
+    };
+
+    //-------------------------  E  L  I  M  I  N  A  R  ------------------------------
+    const handleConfirmDelete = () => {
+        console.log('Eliminacion confirmada');
+        console.log('Eliminar', id.id.idTabla);
+        handleEliminar();
+        // window.location.reload();
+        reloadCurrentRoute();
+        handleCloseModal();
     };
 
     const handleEliminar = async () => {
@@ -88,28 +101,22 @@ const Acciones = (id) => {
         }
     };
 
-    const handleOpenModal = () => {
-        setOpenModal(true);
+    const reloadCurrentRoute = () => {
+        navigate('/');
+        setTimeout(() => {
+            navigate('/administrar-ambiente');
+        }, 1);
     };
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
-
-    };
-
-    const handleConfirmDelete = () => {
-        console.log('Eliminacion confirmada');
-        console.log('Eliminar', id.id.idTabla);
-        handleEliminar();
-        // window.location.reload();
-        reloadCurrentRoute();
-        handleCloseModal();
-    };
-
-
+    //-------------------------  C  O  N  F  I  G  U  R  A  C  I  O  N  E  S  ------------------------------
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
         navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+    };
+
+    const abrirEnNuevaVentana = (e) => {
+        e.preventDefault(); // Prevenir la navegación por defecto
+        window.open(datos.ubicacion_amb, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -153,9 +160,12 @@ const Acciones = (id) => {
                                 <p><strong>Descripción:</strong> {datos.descripcion_amb}</p>
                                 <p>
                                     <strong>
-                                        Ubicación:
-                                        {' '}
-                                        <Link href={datos.ubicacion_amb}>{datos.ubicacion_amb}</Link>
+                                        Ubicación:{' '}
+                                        <Link href={datos.ubicacion_amb} passHref>
+                                            <a onClick={abrirEnNuevaVentana} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+                                                {datos.ubicacion_amb}
+                                            </a>
+                                        </Link>
                                     </strong>
                                 </p>
                                 <p><strong>Capacidad:</strong> {datos.capacidad_amb}</p>

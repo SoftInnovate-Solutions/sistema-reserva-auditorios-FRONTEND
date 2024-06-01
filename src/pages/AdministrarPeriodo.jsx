@@ -4,16 +4,24 @@ import { Autocomplete, Button, TextField, Dialog, DialogActions, DialogContent, 
 import { Delete, Edit, PieChart } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import { useNavigate } from 'react-router-dom';
 
 // Configura dayjs para usar español
 dayjs.locale('es');
 
 const PeriodoReservaAdmin = () => {
+
+  const navigate = useNavigate();
   const theme = useTheme();
   const [periodos, setPeriodos] = useState([]);
   const [open, setOpen] = useState(false);
   const [openRegistrar, setOpenRegistrar] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [verEliminar, setVerEliminar] = useState(false);
+
+  const [periodoReserva, setPeriodoReserva] = useState("");
+
+
   const [fechaInicioGeneral, setFechaInicioGeneral] = useState("");
   const [fechaFinGeneral, setFechaFinGeneral] = useState("");
 
@@ -23,15 +31,12 @@ const PeriodoReservaAdmin = () => {
   const [fechaInicioAuxiliar, setFechaInicioAuxiliar] = useState("");
   const [fechaFinAuxiliar, setFechaFinAuxiliar] = useState("");
 
-  const [fechaNotificaion, setFecahaNotificacion] = useState("");
+  const [fechaNotificaion, setFechaNotificacion] = useState("");
   const [horaNotificacion, setHoraNotificacion] = useState("");
 
-  const roles = [
-    { title: 'Docente' },
-    { title: 'Auxiliar' },
-  ];
-  const [selectedRole, setSelectedRole] = useState(null);
 
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [formData, setFormData] = useState(null);
 
   const handleRoleChange = (event, newValue) => {
     setSelectedRole(newValue);
@@ -47,7 +52,7 @@ const PeriodoReservaAdmin = () => {
   // Cargar periodos de reserva desde localStorage
   useEffect(() => {
     const storedPeriodos = localStorage.getItem('periodos');
-
+ 
     if (storedPeriodos) {
       // Parsear el string a un array u objeto
       const periodosArray = JSON.parse(storedPeriodos);
@@ -62,6 +67,7 @@ const PeriodoReservaAdmin = () => {
     }
 
     if (storedPeriodos) {
+      setVerEliminar(true);
       setPeriodos(JSON.parse(storedPeriodos));
     }
   }, []);
@@ -94,73 +100,89 @@ const PeriodoReservaAdmin = () => {
         saveToLocalStorage(newPeriodos);
         setOpenRegistrar(false);
         setOpen(false);
+        setVerEliminar(true)
         console.log('Periodo registrado existosamentes');
       } else {
         const errorMessage = await response.text();
+        console.log(formData);
         console.error('Error al crear el periodo:', errorMessage);
       }
     } catch (error) {
       console.error('Error de red:', error);
     }
-
-    // if (editing !== null) {
-    //   // Actualizar periodo existente
-    //   const updatedPeriodos = periodos.map(p => (p.id === editing ? { id: editing, rol: selectedRole.title, inicio: fechaInicio, fin: fechaFin } : p));
-    //   setPeriodos(updatedPeriodos);
-    //   saveToLocalStorage(updatedPeriodos);
-    // } else {
-
-    // }
-
-    // setEditing(null);
-    // setFechaInicio(dayjs().format('YYYY-MM-DD'));
-    // setFechaFin(dayjs().add(1, 'day').format('YYYY-MM-DD'));
   };
 
   // Declaración, añadir varibales necesarias y uso de funcionalidad 
-  const [formData, setFormData] = useState("");
 
   const rellenarDatos = () => {
     const datos = {
-      fecha_inicio_general_per: fechaInicioGeneral,
-      fecha_fin_general_per: fechaFinGeneral,
-      fecha_inicio_docente_per: fechaInicioDocente,
-      fecha_fin_docente_per: fechaFinDocente,
-      fecha_inicio_auxiliar_per: fechaInicioAuxiliar,
-      fecha_fin_auxiliar_per: fechaFinAuxiliar,
+      fecha_inicio_general_per: fechaInicioGeneral, fecha_fin_general_per: fechaFinGeneral,
+      fecha_inicio_docente_per: fechaInicioDocente, fecha_fin_docente_per: fechaFinDocente,
+      fecha_inicio_auxiliar_per: fechaInicioAuxiliar, fecha_fin_auxiliar_per: fechaFinAuxiliar,
       notificacion_per: fechaNotificaion + " " + horaNotificacion
     };
     setFormData(datos);
   };
 
-  const handleEdit = (periodo) => {
-    setEditing(periodo.id);
-    const rolActual = roles.find(r => r.title === periodo.rol) || roles[1];
-    setSelectedRole(rolActual)
-    setFechaInicio(periodo.inicio);
-    setFechaFin(periodo.fin);
-    setOpen(true);
-  };
+  useEffect(() => {
+    rellenarDatos();
+  }, [fechaInicioGeneral, fechaInicioGeneral, fechaInicioDocente, fechaFinDocente, fechaInicioAuxiliar, 
+    fechaFinAuxiliar,fechaNotificaion, horaNotificacion, setFormData]);
 
   const handleRegistrar = () => {
-    if (periodos.length < 2) {
-      setOpenRegistrar(true);
-      setEditing(null);
-      setFechaInicioGeneral("");
-      setFechaFinGeneral("");
-      setFechaInicioDocente("");
-      setFechaFinDocente("");
-      setFechaInicioAuxiliar("");
-      setFechaFinAuxiliar("");
-      setFecahaNotificacion('');
-      setHoraNotificacion("")
-    }
+    if (periodos.length < 1) {
+      setOpenRegistrar(true); setEditing(null);
+        // setFechaInicioGeneral(""); setFechaFinGeneral("");
+        // setFechaInicioDocente(""); setFechaFinDocente("");
+        // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
+        // setFechaNotificacion(''); setHoraNotificacion("")
+        setFechaInicioGeneral("2024-07-01"); 
+        setFechaFinGeneral("2024-07-15");
+        
+        setFechaInicioDocente("2024-06-01"); 
+        setFechaFinDocente("2024-06-30");
+        
+        setFechaInicioAuxiliar("2024-06-15"); 
+        setFechaFinAuxiliar("2024-06-30");
+        
+        setFechaNotificacion("2024-05-31"); 
+        setHoraNotificacion("08:00");
+        
+      }
   }
 
-  const handleDelete = (id) => {
-    const updatedPeriodos = periodos.filter(p => p.id !== id);
-    setPeriodos(updatedPeriodos);
-    saveToLocalStorage(updatedPeriodos);
+  const handleDelete = () => {
+
+    fetch('http://127.0.0.1:5000/periodo_reserva/periodo_general')
+      .then(response => response.json())
+      .then(data => {
+        setPeriodoReserva(data)
+        if (typeof data.cod_periodo_reserva === 'string') {
+          console.log('La variable es una cadena');
+        } else if (typeof data.cod_periodo_reserva === 'number') {
+          console.log('La variable es un número');
+        } else {
+          console.log('La variable no es ni cadena ni número');
+        }
+        
+        fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Periodo de reserva eliminado correctamente:', data);
+            localStorage.removeItem('periodos');
+            reloadCurrentRoute()
+          })
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+  };
+
+  const reloadCurrentRoute = () => {
+    navigate('/');
+    setTimeout(() => {
+      navigate('/administrar-periodo');
+    }, 1);
   };
 
   return (
@@ -203,48 +225,13 @@ const PeriodoReservaAdmin = () => {
 
             </ListItem>
           ))}
-          <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(periodo.id)}>
-            <Delete />
-          </IconButton>
-        </List>
+          {verEliminar && (
+            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete()}>
+              <Delete />
+            </IconButton>
+          )}
 
-        {/* <Dialog open={open} onClose={() => setOpen(false)}>
-          <DialogTitle>{editing !== null ? 'Editar Periodo de Reserva' : 'Agregar Periodo de Reserva'}</DialogTitle>
-          <DialogContent>
-            <h2 >Establecer periodo</h2>
-            <Autocomplete
-              value={selectedRole}
-              onChange={handleRoleChange}
-              options={roles}
-              getOptionLabel={(option) => option.title}
-              isOptionEqualToValue={(option, value) => option.title === value.title}
-              renderInput={(params) => <TextField {...params} label="Selecciona un rol" variant="outlined" />}
-              sx={{ marginTop: '22px', mb: 3 }}
-            />
-            <TextField
-              label="Fecha de Inicio"
-              type="date"
-              fullWidth
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 3 }}
-            />
-            <TextField
-              label="Fecha de Fin"
-              type="date"
-              fullWidth
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 3 }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)} color="primary">Cancelar</Button>
-            <Button onClick={handleSave} color="primary">{editing !== null ? 'Guardar Cambios' : 'Agregar'}</Button>
-          </DialogActions>
-        </Dialog> */}
+        </List>
 
         <Dialog open={openRegistrar} onClose={() => setOpenRegistrar(false)}>
           <DialogTitle>{'Agregar Periodo de Reserva'}</DialogTitle>
@@ -336,7 +323,7 @@ const PeriodoReservaAdmin = () => {
                   type="date"
                   fullWidth
                   value={fechaNotificaion}
-                  onChange={(e) => setFecahaNotificacion(e.target.value)}
+                  onChange={(e) => setFechaNotificacion(e.target.value)}
                   InputLabelProps={{ shrink: true }}
                   sx={{ mb: 3, marginTop: '22px' }}
                 />

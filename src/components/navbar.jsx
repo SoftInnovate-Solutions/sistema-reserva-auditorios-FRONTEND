@@ -8,16 +8,16 @@ export const NavBar = () => {
 
 
   const handleLogout = () => {
-    localStorage.removeItem('saveRol'); // Borra el dato del localStorage
-    localStorage.removeItem('nombre_usuario');
-    localStorage.removeItem('cod_usuario')
+    sessionStorage.removeItem('saveRol'); // Borra el dato del sessionStorage
+    sessionStorage.removeItem('nombre_usuario');
+    sessionStorage.removeItem('cod_usuario')
     window.location.reload(); // Recarga la página
   };
 
   const [rol, setRol] = useState(null);
 
   const obtenerRol = () => {
-    const datoGuardado = localStorage.getItem('saveRol');
+    const datoGuardado = sessionStorage.getItem('saveRol');
     setRol(datoGuardado);
   };
 

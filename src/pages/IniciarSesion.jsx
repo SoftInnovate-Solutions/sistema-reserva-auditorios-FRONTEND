@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TextField, IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-const IniciarSesion = ({login}) => {
+const IniciarSesion = ({ login }) => {
   const [codigoSis, setCodigoSis] = useState('');
   const [contrasenia, setContrasenia] = useState('');
+  const [mostrarContrasenia, setMostrarContrasenia] = useState(false);
   const [error, setError] = useState('');
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
@@ -36,9 +39,9 @@ const IniciarSesion = ({login}) => {
       const data = await res.json();
 
       if (res.ok && Object.keys(data).length > 0) {
-        login({ rol:"administrador" });
-        localStorage.setItem('nombre_usuario', data.nombre_usu)
-        localStorage.setItem('cod_usuario', data.cod_usuario)
+        login({ rol: "administrador" });
+        sessionStorage.setItem('nombre_usuario', data.nombre_usu)
+        sessionStorage.setItem('cod_usuario', data.cod_usuario)
         console.log("Ingresate como Administrador");
       } else {
         try {
@@ -56,8 +59,8 @@ const IniciarSesion = ({login}) => {
 
           if (res.ok && Object.keys(data).length > 0) {
             login({ rol: "Usuario" });
-            localStorage.setItem('nombre_usuario', data.nombre_usu)
-            localStorage.setItem('cod_usuario', data.cod_usuario)
+            sessionStorage.setItem('nombre_usuario', data.nombre_usu)
+            sessionStorage.setItem('cod_usuario', data.cod_usuario)
             console.log("Ingresaste como usuario");
           } else {
             setError('Credenciales incorrectas');
@@ -74,6 +77,11 @@ const IniciarSesion = ({login}) => {
   };
 
 
+
+  const toggleMostrarContrasenia = () => {
+    setMostrarContrasenia(!mostrarContrasenia);
+  };
+
   return (
     <div style={{ backgroundImage: 'url("./src/imagenes/fondo.jpg")', backgroundSize: 'cover', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
 
@@ -88,30 +96,46 @@ const IniciarSesion = ({login}) => {
         <h1>¡Bienvenidos al sistema de reserva de aulas!</h1>
 
         <form onSubmit={handleLogin}>
+
           <div style={{ marginTop: '40px', marginBottom: '1rem', fontSize: '15px', display: 'flex', flexDirection: 'column' }}>
             <label htmlFor="codigoSis">Código SIS:</label>
-            <input
+            <TextField
               type="text"
               id="codigoSis"
               value={codigoSis}
               onChange={handleCodigoSisChange}
               required
-              style={{ padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
             />
           </div>
+
           <div style={{ marginBottom: '1rem', fontSize: '15px', display: 'flex', flexDirection: 'column' }}>
             <label htmlFor="contrasenia">Contraseña:</label>
-            <input
-              type="password"
+            <TextField
               id="contrasenia"
+              type={mostrarContrasenia ? 'text' : 'password'}
               value={contrasenia}
               onChange={handleContraseniaChange}
               required
-              style={{ padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end" >
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={toggleMostrarContrasenia}
+                      edge="end"
+                    >
+                      {mostrarContrasenia ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
+
           <button type="submit" style={{ color: '#FFFFFF', background: '#7F265B', width: '380px', padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}>Ingresar</button>
-          {showError && <div style={{marginLeft: '80px', color: 'red', marginBottom: '0.5rem' }}>{error}</div>}
+          {showError && <div style={{ marginLeft: '80px', color: 'red', marginBottom: '0.5rem' }}>{error}</div>}
+
         </form>
 
       </div>
