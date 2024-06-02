@@ -52,7 +52,7 @@ const PeriodoReservaAdmin = () => {
   // Cargar periodos de reserva desde localStorage
   useEffect(() => {
     const storedPeriodos = localStorage.getItem('periodos');
- 
+
     if (storedPeriodos) {
       // Parsear el string a un array u objeto
       const periodosArray = JSON.parse(storedPeriodos);
@@ -126,29 +126,29 @@ const PeriodoReservaAdmin = () => {
 
   useEffect(() => {
     rellenarDatos();
-  }, [fechaInicioGeneral, fechaInicioGeneral, fechaInicioDocente, fechaFinDocente, fechaInicioAuxiliar, 
-    fechaFinAuxiliar,fechaNotificaion, horaNotificacion, setFormData]);
+  }, [fechaInicioGeneral, fechaInicioGeneral, fechaInicioDocente, fechaFinDocente, fechaInicioAuxiliar,
+    fechaFinAuxiliar, fechaNotificaion, horaNotificacion, setFormData]);
 
   const handleRegistrar = () => {
     if (periodos.length < 1) {
       setOpenRegistrar(true); setEditing(null);
-        // setFechaInicioGeneral(""); setFechaFinGeneral("");
-        // setFechaInicioDocente(""); setFechaFinDocente("");
-        // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
-        // setFechaNotificacion(''); setHoraNotificacion("")
-        setFechaInicioGeneral("2024-07-01"); 
-        setFechaFinGeneral("2024-07-15");
-        
-        setFechaInicioDocente("2024-06-01"); 
-        setFechaFinDocente("2024-06-30");
-        
-        setFechaInicioAuxiliar("2024-06-15"); 
-        setFechaFinAuxiliar("2024-06-30");
-        
-        setFechaNotificacion("2024-05-31"); 
-        setHoraNotificacion("08:00");
-        
-      }
+      // setFechaInicioGeneral(""); setFechaFinGeneral("");
+      // setFechaInicioDocente(""); setFechaFinDocente("");
+      // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
+      // setFechaNotificacion(''); setHoraNotificacion("")
+      setFechaInicioGeneral("2024-07-01");
+      setFechaFinGeneral("2024-07-15");
+
+      setFechaInicioDocente("2024-06-01");
+      setFechaFinDocente("2024-06-30");
+
+      setFechaInicioAuxiliar("2024-06-15");
+      setFechaFinAuxiliar("2024-06-30");
+
+      setFechaNotificacion("2024-05-31");
+      setHoraNotificacion("08:00");
+
+    }
   }
 
   const handleDelete = () => {
@@ -164,7 +164,7 @@ const PeriodoReservaAdmin = () => {
         } else {
           console.log('La variable no es ni cadena ni número');
         }
-        
+
         fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva}`, {
           method: 'DELETE'
         })
@@ -193,7 +193,8 @@ const PeriodoReservaAdmin = () => {
         bgcolor: "background.paper",
         boxShadow: 8,
         textAlign: 'center',
-        width: '80%',
+        // width: '50%',
+        width: '500px',
         margin: '0 auto', // centrado horizontal
         justifyContent: 'center',
         alignItems: 'center',

@@ -298,7 +298,8 @@ function DisponibilidadAmbiente() {
         bgcolor: "background.paper",
         boxShadow: 8,
         textAlign: 'center',
-        width: '80%',
+        // width: '80%',
+        width: '650px',
         margin: '0 auto', // centrado horizontal
         justifyContent: 'center',
         alignItems: 'center',
@@ -416,7 +417,7 @@ function DisponibilidadAmbiente() {
             </Grid>
           </Grid>
 
-          <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
+          <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ width: '250px', marginTop: '18px' }} className='formboton'>
             GUARDAR DISPONIBILIDAD
           </Button>
         </>

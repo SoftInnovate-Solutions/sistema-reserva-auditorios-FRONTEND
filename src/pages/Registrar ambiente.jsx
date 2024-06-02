@@ -301,7 +301,8 @@ function RegistrarAmbiente() {
           bgcolor: "background.paper",
           boxShadow: 8,
           textAlign: 'center',
-          width: '80%',
+          // width: '70%',
+          width: '600px',
           margin: '0 auto', // centrado horizontal
           justifyContent: 'center',
           alignItems: 'center',

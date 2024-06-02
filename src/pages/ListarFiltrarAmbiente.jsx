@@ -4,7 +4,7 @@ import ToolBarPersonalizado from '../components/ToolBarPersonalizado';
 import './ListarFiltrarAmbiente.css';
 import { Box, Typography, useTheme, Button, Grid, Tooltip } from '@mui/material';
 import Autocompletado from '../components/autocompletadoLista';
-import { NavLink, useNavigate  } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Accion from '../components/acciones';
 import FilterIcon from '@mui/icons-material/FilterAlt';
 
@@ -277,7 +277,8 @@ export default function DataTable() {
         bgcolor: "background.paper",
         boxShadow: 8,
         textAlign: 'center',
-        width: '80%',
+        // width: '75%',
+        width: '850px',
         margin: '0 auto', // centrado horizontal
         justifyContent: 'center',
         alignItems: 'center',
