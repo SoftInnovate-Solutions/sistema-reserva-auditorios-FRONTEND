@@ -34,10 +34,7 @@ function App() {
   const [rol, setRol] = useState(sessionStorage.getItem('saveRol'));
 
   const handleLogin = (userData) => { 
-    // console.log(userData.rol);
-    // console.log(sessionStorage.getItem('nombre_usuario'));
-    // console.log(sessionStorage.getItem('cod_usuario'));
-    // console.log(userData);
+    console.log(userData);
     setRol(userData.rol);
     if (sessionStorage.getItem('saveRol') == null) {
       sessionStorage.setItem('saveRol', userData.rol)

@@ -98,7 +98,7 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMin = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      console.log(capacidadActual * 0.5);
+      console.log(capacidadActual*porcentajeMin);
       if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * porcentajeMin && parseInt(inputNumero) <= capacidadActual)) {
         setCapacidadMin(inputNumero);
       }
@@ -199,7 +199,6 @@ function DisponibilidadAmbiente() {
   //ENVIO FORMULARIO
   const manejarEnvio = async () => {
 
-    if (validarTodosLosInputs() && !validarMinMax()) {
       try {
         await enviarPeriodo();
         // console.log("++++++ => Formulario enviado");
@@ -209,10 +208,6 @@ function DisponibilidadAmbiente() {
       } catch (error) {
         console.error('Error al enviar el formulario:', error);
       }
-    } else {
-      setMostrarAlerta(true);
-      // console.log("---------- => NAAAAAAAADA QUE ENVIAR");
-    }
   };
 
   const enviarPeriodo = async () => {

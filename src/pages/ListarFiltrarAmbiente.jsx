@@ -43,7 +43,7 @@ export default function DataTable() {
           { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
           { field: 'capacidad', headerName: 'Capacidad', width: 110 },
           { field: 'estado', headerName: 'Estado', width: 150 },
-          { field: 'idBD', headerName: 'ID-BD', width: 80 },
+          // { field: 'idBD', headerName: 'ID-BD', width: 80 },
           {
             field: 'acciones',
             headerName: 'Acciones',
@@ -122,7 +122,7 @@ export default function DataTable() {
             { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
             { field: 'capacidad', headerName: 'Capacidad', width: 110 },
             { field: 'estado', headerName: 'Estado', width: 150 },
-            { field: 'idBD', headerName: 'ID-BD', width: 80 },
+            // { field: 'idBD', headerName: 'ID-BD', width: 80 },
             {
               field: 'acciones',
               headerName: 'Acciones',
@@ -163,7 +163,7 @@ export default function DataTable() {
             { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
             { field: 'capacidad', headerName: 'Capacidad', width: 110 },
             { field: 'estado', headerName: 'Estado', width: 150 },
-            { field: 'idBD', headerName: 'ID-BD', width: 80 },
+            // { field: 'idBD', headerName: 'ID-BD', width: 80 },
             {
               field: 'acciones',
               headerName: 'Acciones',
@@ -204,7 +204,7 @@ export default function DataTable() {
             { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
             { field: 'capacidad', headerName: 'Capacidad', width: 110 },
             { field: 'estado', headerName: 'Estado', width: 150 },
-            { field: 'idBD', headerName: 'ID-BD', width: 80 },
+            // { field: 'idBD', headerName: 'ID-BD', width: 80 },
             {
               field: 'acciones',
               headerName: 'Acciones',
@@ -245,7 +245,7 @@ export default function DataTable() {
             { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
             { field: 'capacidad', headerName: 'Capacidad', width: 110 },
             { field: 'estado', headerName: 'Estado', width: 150 },
-            { field: 'idBD', headerName: 'ID-BD', width: 80 },
+            // { field: 'idBD', headerName: 'ID-BD', width: 80 },
             {
               field: 'acciones',
               headerName: 'Acciones',
