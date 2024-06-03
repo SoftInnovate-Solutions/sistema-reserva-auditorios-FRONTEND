@@ -58,6 +58,7 @@ const IniciarSesion = ({ login }) => {
           login({ rol: "Usuario" });
           sessionStorage.setItem('nombre_usuario', userRes.data.nombre_usu);
           sessionStorage.setItem('cod_usuario', userRes.data.cod_usuario);
+          sessionStorage.setItem('rol_usuario', userRes.data.cod_tipo_final);
           console.log("Ingresaste como Usuario");
         } else {
           setError('Credenciales incorrectas');

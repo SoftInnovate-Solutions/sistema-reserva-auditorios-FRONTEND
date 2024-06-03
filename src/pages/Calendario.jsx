@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, useTheme, Typography, Button, Grid } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendario.css';
 import MisReservas from './MisReservas';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 moment.updateLocale('es', {
   months: [
@@ -32,6 +33,10 @@ const localizer = momentLocalizer(moment);
 
 const Calendario = () => {
   ///////////////
+  const navigate = useNavigate();
+  const location = useLocation();
+  const reservasActuales = location.state?.reservas || [];
+
   const theme = useTheme();
   const [idUsuario] = useState(sessionStorage.getItem('cod_usuario'));
   const [nombreUsuario] = useState(sessionStorage.getItem('nombre_usuario'));
@@ -57,7 +62,21 @@ const Calendario = () => {
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/reserva/imparticiones/${idUsuario}`)
       .then(response => response.json())
-      .then(data => setDataImparticiones(data))
+      .then(data => {
+        // Función para obtener la parte de "materia - grupo" de la impartición
+        const obtenerMateriaGrupoImparticion = (imparticion) => {
+          const partes = imparticion.split(' - ');
+          return { materia: partes[0], grupo: partes[1] };
+        };
+
+        // Filtrar imparticiones que no están en reservas
+        const imparticionesFiltradas = data.filter(imparticion => {
+          const { materia, grupo } = obtenerMateriaGrupoImparticion(imparticion.imparticion);
+          return !reservasActuales.some(reserva => reserva.materia === materia && reserva.grupo === grupo);
+        });
+        
+        setDataImparticiones(imparticionesFiltradas);
+      })
       .catch(error => console.error("Error al carga imparticiones:", error));
   }, [idUsuario]);
 
@@ -300,17 +319,17 @@ const Calendario = () => {
   const confirmarReserva = () => {
     const { ambiente, start, end } = reserva;
     const formReserva = {
-        cod_usuario: parseInt(ambiente.cod_usuario),
-        cod_grupo: ambiente.cod_grupo,
-        cod_materia: ambiente.cod_materia,
-        cod_ambiente: ambiente.cod_ambiente,
-        cod_dia: ambiente.cod_dia,
-        cod_bloque: ambiente.cod_bloque,
-        fecha_res: moment(reserva.start).format('YYYY-MM-DD'),
-        cantidad_estudiantes_res: 60,
-        cantidad_estudiantes_res_total: 60
-      }
-    
+      cod_usuario: parseInt(ambiente.cod_usuario),
+      cod_grupo: ambiente.cod_grupo,
+      cod_materia: ambiente.cod_materia,
+      cod_ambiente: ambiente.cod_ambiente,
+      cod_dia: ambiente.cod_dia,
+      cod_bloque: ambiente.cod_bloque,
+      fecha_res: moment(reserva.start).format('YYYY-MM-DD'),
+      cantidad_estudiantes_res: cantActEst,
+      cantidad_estudiantes_res_total: cantEstudiantes
+    }
+
     // Objeto con los datos de la reserva a enviar
     const reservaData = {
       cod_ambiente: ambiente.cod_ambiente,
@@ -335,13 +354,14 @@ const Calendario = () => {
       })
       .then(data => {
         console.log('Reserva enviada:', data);
+        navigate('/mis-reservas');
         setReserva(null); // Reiniciar la reserva después de enviarla
       })
       .catch(error => {
         console.error('Error al enviar la reserva:', error);
       });
   };
-  
+
 
   const cancelarReserva = () => {
     setReserva(null);
@@ -392,8 +412,8 @@ const Calendario = () => {
   };
 
   const mostrarHorarioAmbiente = () => {
-    console.log(Object.keys(DataFechaBloques).length);
-    console.log(DataFechaBloques);
+    // console.log(Object.keys(DataFechaBloques).length);
+    // console.log(DataFechaBloques);
 
     if (DataAmbientesDisp.length > 0) {
       const getNombreAmbiente = (id_codAmbiente) => {
@@ -450,6 +470,8 @@ const Calendario = () => {
   // useEffect(() => {
   //   realizarLlamadasFetch();
   // }, [DataFechaBloques, setDataFechaBloques]);
+
+
 
   return (
     <Box
@@ -572,8 +594,8 @@ const Calendario = () => {
             <div className="popup-content" style={{ backgroundColor: '#fff', padding: '60px', borderRadius: '8px', maxWidth: '500px' }}>
               <Typography variant="h5" component="h2" sx={{ mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>CONFIRMAR RESERVA</Typography>
               <div >
-                <p><strong>Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
-                <p><strong>Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
+                <p><strong>Hora de Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
+                <p><strong>Hora de Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
                 <p><strong>Fecha:</strong> {moment(reserva.start).format('YYYY-MM-DD')}</p>
                 <p><strong>Nombre:</strong> {reserva.ambiente.NombreUsuario}</p>
                 <p><strong>Materia:</strong> {reserva.ambiente.Materia}</p>

@@ -98,8 +98,9 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMin = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      console.log(capacidadActual*porcentajeMin);
-      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * porcentajeMin && parseInt(inputNumero) <= capacidadActual)) {
+      console.log(capacidadActual * porcentajeMin);
+      // if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * porcentajeMin && parseInt(inputNumero) <= capacidadActual)) {
+      if (inputNumero === '' || (parseInt(inputNumero) >= 0 && parseInt(inputNumero) <= capacidadActual)) {
         setCapacidadMin(inputNumero);
       }
       setErrorCapacidadMin(false);
@@ -114,7 +115,8 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMax = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= capacidadActual * porcentajeMax)) {
+      // if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= capacidadActual * porcentajeMax)) {
+      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= 1000)) {
         setCapacidadMax(inputNumero);
       }
       setErrorCapacidadMax(false);
@@ -199,15 +201,15 @@ function DisponibilidadAmbiente() {
   //ENVIO FORMULARIO
   const manejarEnvio = async () => {
 
-      try {
-        await enviarPeriodo();
-        // console.log("++++++ => Formulario enviado");
-        if (!open) {
-          handleOpen();
-        }
-      } catch (error) {
-        console.error('Error al enviar el formulario:', error);
+    try {
+      await enviarPeriodo();
+      // console.log("++++++ => Formulario enviado");
+      if (!open) {
+        handleOpen();
       }
+    } catch (error) {
+      console.error('Error al enviar el formulario:', error);
+    }
   };
 
   const enviarPeriodo = async () => {
@@ -321,7 +323,7 @@ function DisponibilidadAmbiente() {
           <h2>Fecha inicio: {general_inicio} -  Fecha final: {general_final}</h2>
         </Grid>
       </Grid>
-      
+
       {!mostrarBloques &&
         <Button type="submit" variant="contained" onClick={createBloques} sx={{ marginTop: '18px', width: '50%' }} className='formboton'>
           CREAR BLOQUES DE DIAS PARA ESTE AMBIENTE

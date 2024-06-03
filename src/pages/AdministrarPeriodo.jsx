@@ -132,23 +132,24 @@ const PeriodoReservaAdmin = () => {
   const handleRegistrar = () => {
     if (periodos.length < 1) {
       setOpenRegistrar(true); setEditing(null);
-      setFechaInicioGeneral(""); setFechaFinGeneral("");
-      setFechaInicioDocente(""); setFechaFinDocente("");
-      setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
-      setFechaNotificacion(''); setHoraNotificacion("");
-
       
-      // setFechaInicioGeneral("2024-07-01");
-      // setFechaFinGeneral("2024-07-02");
+      // setFechaInicioGeneral(""); setFechaFinGeneral("");
+      // setFechaInicioDocente(""); setFechaFinDocente("");
+      // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
+      // setFechaNotificacion(''); setHoraNotificacion("");
 
-      // setFechaInicioDocente("2024-06-01");
-      // setFechaFinDocente("2024-06-30");
 
-      // setFechaInicioAuxiliar("2024-06-15");
-      // setFechaFinAuxiliar("2024-06-30");
+      setFechaInicioGeneral("2024-07-01");
+      setFechaFinGeneral("2024-07-02");
 
-      // setFechaNotificacion("2024-05-31");
-      // setHoraNotificacion("08:00");
+      setFechaInicioDocente("2024-06-01");
+      setFechaFinDocente("2024-06-30");
+
+      setFechaInicioAuxiliar("2024-06-15");
+      setFechaFinAuxiliar("2024-06-30");
+
+      setFechaNotificacion("2024-05-31");
+      setHoraNotificacion("08:00");
 
     }
   }
