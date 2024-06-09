@@ -123,88 +123,6 @@ const Calendario = () => {
     fetchData();
   }, [selectedOptionAmb, DataFechaAmbientes, setDataFechaBloques]);
 
-
-  // useEffect(() => {
-
-  //   if (DataAmbientesDisp.length > 0) {
-  //     const getNombreAmbiente = (id_codAmbiente) => {
-  //       const ambiente = DataAmbientesDisp.find(amb => amb.cod_ambiente === id_codAmbiente);
-  //       return ambiente ? ambiente.nombre_amb : 'No encontrado';
-  //     };
-
-
-  //     // const reservaData = {
-  //     //   NombreUsuario: nombreUsuario,
-  //     //   Materia: selectedOptionImparticion,
-  //     //   Grupo: selectedOptionImparticion,
-  //     //   NumeroEstudiantes: cantEstudiantes,
-  //     //   Ambiente: selectedOptionAmb
-  //     // }
-
-  //     // const addReserva = {
-  //     //   "cod_usuario": 13,
-  //     //   "cod_grupo": 1,
-  //     //   "cod_materia": 5,
-  //     //   "cod_ambiente": 3,
-  //     //   "cod_dia": 7,
-  //     //   "cod_bloque": 5,
-  //     //   "fecha_res": "2024-07-01"
-  //     // }
-  //     // console.log(reservaData);
-
-  //     realizarLlamadasFetch();
-  //     const eventosPrueba = [];
-  //     if (DataFechaBloques.length > 0) {
-  //       DataFechaBloques.forEach((subArray, index) => {
-  //         // detallesAmbiente()
-
-  //         // console.log(`Elemento de DataFechaBloques ${index}:`);
-  //         const fecha = subArray.fecha
-  //         // console.log(fecha);
-  //         const bloquesUnAmbiente = Object.keys(subArray);
-
-  //         // console.log(bloquesUnAmbiente);
-  //         bloquesUnAmbiente.forEach((key, index) => {
-
-  //           console.log();
-  //           // Verificar si no es el último elemento
-  //           if (index !== bloquesUnAmbiente.length - 1) {
-  //             const obj = subArray[key];
-  //             const { nombre_blo } = obj;
-  //             const evento = {
-  //               title: getNombreAmbiente(parseInt(selectedOptionAmb)),
-  //               start: moment(`${fecha} ${obtenerHoraInicio(nombre_blo)}`).toDate(),
-  //               end: moment(`${fecha} ${obtenerHoraFin(nombre_blo)}`).toDate(),
-  //               resource: detallesAmbiente(selectedOptionAmb),
-  //               // backgroundColor: 'green'
-  //             };
-  //             eventosPrueba.push(evento);
-  //           }
-
-  //         });
-
-  //       });
-
-  //       // console.log(eventosPrueba);
-  //     }
-
-  //     const MIsEvents = DataFechaAmbientes.map(fechaObj => ({
-  //       title: getNombreAmbiente(parseInt(selectedOptionAmb)),
-  //       start: moment(fechaObj.fecha).toDate(),
-  //       end: moment(fechaObj.fecha).toDate()
-  //     }));
-
-
-  //     const events = DataFechaBloques.map(({ fecha, horaInicio, horaFin }) => ({
-  //       title: getNombreAmbiente(parseInt(selectedOptionAmb)),
-  //       start: moment(`${fecha} ${horaInicio}`).toDate(),
-  //       end: moment(`${fecha} ${horaFin}`).toDate()
-  //     }));
-
-  //     setEventos(eventosPrueba);
-  //   }
-  // }, [DataFechaAmbientes, DataAmbientesDisp, DataFechaBloques]);
-
   // --------------- LOGICA PARA HACER CADA LLAMADA PARA CADA FECHA Y UN COD DE AMBIENTE
 
   const realizarLlamadasFetch = async () => {
@@ -240,8 +158,6 @@ const Calendario = () => {
     // Actualiza el estado con los datos de todas las llamadas
     setDataFechaBloques(dataTotal);
   };
-
-
 
   // --------------------
   // Función para obtener detalles de un ambiente

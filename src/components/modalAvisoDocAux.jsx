@@ -7,7 +7,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 
-const ModalAvisoPeriodo = forwardRef(({ open, handleClose }, ref) => {
+const ModalAvisoPeriodo = forwardRef(({ rol, fechaInicio, fechaFin, open, handleClose }, ref) => {
+    
+    const invertirFechas = (periodo) => {
+        const [year, month, day] = periodo.split("-");
+        const fechaReformateado = `${day}/${month}/${year}`;
+    
+        return `${fechaReformateado}`;
+      };
+      
     return (
         <Dialog
             open={open}
@@ -16,13 +24,13 @@ const ModalAvisoPeriodo = forwardRef(({ open, handleClose }, ref) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             maxWidth="xs"
-            fullWidth={true} 
+            fullWidth={true}
         >
             <Box>
                 <DialogTitle id="alert-dialog-title">{"Aviso"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        No se establecio un periodo de examenes.
+                        Usted no puede realizar la reserva, ya que el periodo de reservas para {rol}, es del {invertirFechas(fechaInicio)} al {invertirFechas(fechaFin)}.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

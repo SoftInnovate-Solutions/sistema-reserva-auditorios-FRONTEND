@@ -1,50 +1,81 @@
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import Popover from '@mui/material/Popover';
+import Box from '@mui/material/Box';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
-const localizer = momentLocalizer(moment);
+function DateRangePicker() {
+  const [anchorEl, setAnchorEl] = useState(null);
 
-const eventos = [
-  {
-    title: 'Reunión',
-    start: new Date(2024, 4, 1, 10, 0),
-    end: new Date(2024, 4, 1, 11, 30),
-    backgroundColor: 'red',
-    resource: 'Sala 1'
-  },
-  // más eventos...
-];
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-const handleReservar = (resource, start, end) => {
-  console.log("Reserva:", { resource, start, end });
-  // manejar reserva
-};
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-const MyCalendar = () => (
-  <Calendar
-    localizer={localizer}
-    events={eventos}
-    startAccessor="start"
-    endAccessor="end"
-    style={{ height: 500 }}
-    selectable
-    onSelectSlot={(slotInfo) => console.log(slotInfo)}
-    step={90}
-    timeslots={1}
-    min={new Date(2024, 4, 1, 8, 15)}
-    max={new Date(2024, 4, 12, 21, 45)}
-    eventPropGetter={(event) => ({ style: { backgroundColor: event.backgroundColor } })}
-    components={{
-      event: ({ event }) => (
-        <button
-          style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }}
-          onClick={() => handleReservar(event.resource, event.start, event.end)}
-        >
-          {event.title}
-        </button>
-      ),
-    }}
-  />
-);
+  const open = Boolean(anchorEl);
+  const id = open ? 'date-range-popover' : undefined;
 
-export default MyCalendar;
+  return (
+    <div>
+      <TextField
+        onClick={handleClick}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <DateRangeIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder="Seleccione el rango de fechas"
+        variant="outlined"
+        fullWidth
+      />
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <Box p={2}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
+            <TextField
+              type="date"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="Desde"
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
+            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
+            <TextField
+              type="date"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="Hasta"
+            />
+          </div>
+        </Box>
+      </Popover>
+    </div>
+  );
+}
+
+export default DateRangePicker;
