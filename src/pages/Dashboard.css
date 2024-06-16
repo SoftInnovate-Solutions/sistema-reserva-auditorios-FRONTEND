@@ -1,30 +1,38 @@
-/* styles.css */
-
 .chart {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  justify-content: center; /* Alinear al centro horizontalmente */
+  justify-content: center; 
   height: 300px;
   width: 100%;
   border: 1px solid #ccc;
   padding: 10px;
-  margin: auto; /* Centrar el contenedor */
+  margin: auto; 
 }
 
 
 .bar {
   flex: 1;
   margin-right: 5%;
-  background-color: rgb(23, 187, 23);
+  background-color: rgb(50, 233, 50);
   transition: height 0.5s ease;
-  /* Transición suave al cambiar la altura */
+  position: relative;
+}
+
+.barUsuario {
+  flex: 1;
+  margin-right: 5%;
+  background-color: rgb(14, 144, 161);
+  transition: height 0.5s ease;
   position: relative;
 }
 
 .bar:last-child {
   margin-right: 0;
-  /* Elimina el margen derecho del último elemento */
+}
+
+.barUsuario:last-child {
+  margin-right: 0;
 }
 
 .label {

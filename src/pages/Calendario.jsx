@@ -9,6 +9,9 @@ import './Calendario.css';
 import MisReservas from './MisReservas';
 import { NavLink, useNavigate } from 'react-router-dom';
 
+import Politica2 from '../components/politica2'
+import Politica1 from '../components/politica1'
+
 moment.updateLocale('es', {
   months: [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -28,362 +31,29 @@ moment.updateLocale('es', {
     'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'
   ]
 });
-moment.locale('es');  
+moment.locale('es');
 const localizer = momentLocalizer(moment);
 
 const Calendario = () => {
   ///////////////
   const navigate = useNavigate();
-  const location = useLocation();
-  const reservasActuales = location.state?.reservas || [];
-
   const theme = useTheme();
-  const [idUsuario] = useState(sessionStorage.getItem('cod_usuario'));
-  const [nombreUsuario] = useState(sessionStorage.getItem('nombre_usuario'));
 
-  const [DataImparticiones, setDataImparticiones] = useState([]);
-  const [DataAmbientesDisp, setDataAmbientesDisp] = useState([]);
-  const [DataFechaAmbientes, setDataFechaAmbientes] = useState([]);
-  const [DataFechaBloques, setDataFechaBloques] = useState([]); //fecha y sus 10 bloques libres o no libres
+  const [verOpcionesPolitica1, setOpcionesVerPolitica1] = useState(false);
+  const [verOpcionesPolitica2, setOpcionesVerPolitica2] = useState(false);
 
-
-  const [selectedOptionAmb, setSelectedOptionAmb] = useState(""); //contiene id ambiente
-  const [selectedOptionImparticion, setSelectedOptionImparticion] = useState(""); //contiene id impartición
-  const [cantEstudiantes, setCantEstudiantes] = useState(0);
-  const [cantActEst, setCantActualEst] = useState(0);
-
-  const [eventos, setEventos] = useState([]);
-  const [cantidadEstudiantes] = useState(81);
-  const [reserva, setReserva] = useState(null);
-
-  let porcentajeMin = 0.01;
-  let porcentajeMax = 10;
-
-  useEffect(() => {
-    fetch(`http://127.0.0.1:5000/reserva/imparticiones/${idUsuario}`)
-      .then(response => response.json())
-      .then(data => {
-        // Función para obtener la parte de "materia - grupo" de la impartición
-        const obtenerMateriaGrupoImparticion = (imparticion) => {
-          const partes = imparticion.split(' - ');
-          return { materia: partes[0], grupo: partes[1] };
-        };
-
-        // Filtrar imparticiones que no están en reservas
-        const imparticionesFiltradas = data.filter(imparticion => {
-          const { materia, grupo } = obtenerMateriaGrupoImparticion(imparticion.imparticion);
-          return !reservasActuales.some(reserva => reserva.materia === materia && reserva.grupo === grupo);
-        });
-
-        setDataImparticiones(data);
-      })
-      .catch(error => console.error("Error al carga imparticiones:", error));
-  }, [idUsuario]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const dataTotal = []; // Array para almacenar la data de todas las llamadas
-      const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmb);
-
-      // Array para almacenar las promesas fetch
-      const fetchPromises = [];
-
-      for (const item of DataFechaAmbientes) {
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            "cod_ambiente": ambienteActual.cod_ambiente,
-            "fecha_aa": item.fecha
-          }),
-        };
-
-        // Almacenar la promesa fetch en el array
-        const fetchPromise = fetch('http://127.0.0.1:5000/reserva/get_bloque', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-            // Agregar la fecha a la data recibida
-            const dataConFecha = { fecha: item.fecha, ...data };
-
-            // Almacenar la data en el array dataTotal
-            dataTotal.push(dataConFecha);
-          })
-          .catch(error => console.error('Error al hacer la solicitud POST:', error));
-
-        fetchPromises.push(fetchPromise);
-      }
-
-      // Esperar a que todas las promesas fetch se completen antes de actualizar el estado
-      await Promise.all(fetchPromises);
-
-      // Actualizar el estado con los datos de todas las llamadas
-      setDataFechaBloques(dataTotal);
-    };
-
-    fetchData();
-  }, [selectedOptionAmb, DataFechaAmbientes, setDataFechaBloques]);
-
-  // --------------- LOGICA PARA HACER CADA LLAMADA PARA CADA FECHA Y UN COD DE AMBIENTE
-
-  const realizarLlamadasFetch = async () => {
-    const dataTotal = []; // Array para almacenar la data de todas las llamadas
-    const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmb);
-    // Itera sobre cada item en DataFechaAmbientes
-    for (const item of DataFechaAmbientes) {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          "cod_ambiente": ambienteActual.cod_ambiente,
-          "fecha_aa": item.fecha
-        }),
-      };
-
-      try {
-        // Realiza la solicitud POST
-        const response = await fetch('http://127.0.0.1:5000/reserva/get_bloque', requestOptions);
-        const data = await response.json();
-
-        // Agrega la fecha a la data recibida
-        const dataConFecha = { fecha: item.fecha, ...data };
-
-        // Almacena la data en el array dataTotal
-        dataTotal.push(dataConFecha);
-      } catch (error) {
-        console.error('Error al hacer la solicitud POST:', error);
-        // Maneja el error según sea necesario, por ejemplo, continuar con la siguiente iteración
-      }
-    }
-
-    // Actualiza el estado con los datos de todas las llamadas
-    setDataFechaBloques(dataTotal);
-  };
-
-  // --------------------
-  // Función para obtener detalles de un ambiente
-  const detallesAmbiente = (selectedOptionAmbiente, cod_bloque, cod_dia) => {
-    if (selectedOptionAmb.length > 0) {
-      const imparticionActual = DataImparticiones.find(item => item.cod_imparticion == selectedOptionImparticion);
-      const [materia, grupo] = imparticionActual.imparticion.split(" - ");
-      const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmbiente);
-
-      // console.log(Data);
-      const reservaData = {
-        NombreUsuario: nombreUsuario,
-        Materia: materia,
-        Grupo: grupo,
-        NumeroEstudiantes: cantEstudiantes,
-        Ambiente: ambienteActual.nombre_amb,
-
-        cod_usuario: idUsuario,
-        cod_grupo: imparticionActual.cod_grupo,
-        cod_materia: imparticionActual.cod_materia,
-        cod_ambiente: ambienteActual.cod_ambiente,
-        cod_dia: cod_dia,
-        cod_bloque: cod_bloque
-      }
-      return reservaData;
-    }
-  };
-
-  // Función para obtener la hora de inicio
-  const obtenerHoraInicio = (texto) => {
-    // Obtener la parte de la hora de inicio del texto (ej. '09:45:00')
-    const horaInicio = texto.split(' - ')[0].split(': ')[1];
-    return horaInicio;
-  };
-
-  // Función para obtener la hora de fin
-  const obtenerHoraFin = (texto) => {
-    // Obtener la parte de la hora de fin del texto (ej. '11:15:00')
-    const horaFin = texto.split(' - ')[1];
-    return horaFin;
-  };
-
-  const handleSeleccionFechaHora = ({ start, end }) => {
-    const ambienteId = 1;
-    const cantidadEstudiantes = 30;
-
-    if (capacidadAmbienteValida(ambienteId, cantidadEstudiantes)) {
-      setEventos([...eventos, { start, end, title: 'Nueva Reserva', backgroundColor: 'blue' }]);
-    } else {
-      alert('La capacidad del ambiente no es válida para la cantidad de estudiantes.');
-    }
-  };
-
-  const capacidadAmbienteValida = (ambienteId, cantidadEstudiantes) => {
-    const ambiente = ambientesDisponibles.find(ambiente => ambiente.id === ambienteId);
-    return cantidadEstudiantes >= ambiente.capacidadMinima && cantidadEstudiantes <= ambiente.capacidadMaxima;
-  };
-
-  const handleReservar = (ambiente, start, end) => {
-    // console.log("-----------", ambiente, "-----------", start, "-----------", end);
-    setReserva({ ambiente, start, end });
-  };
-
-
-  const confirmarReserva = () => {
-    const { ambiente, start, end } = reserva;
-    const formReserva = {
-      cod_usuario: parseInt(ambiente.cod_usuario),
-      cod_grupo: ambiente.cod_grupo,
-      cod_materia: ambiente.cod_materia,
-      cod_ambiente: ambiente.cod_ambiente,
-      cod_dia: ambiente.cod_dia,
-      cod_bloque: ambiente.cod_bloque,
-      fecha_res: moment(reserva.start).format('YYYY-MM-DD'),
-      cantidad_estudiantes_res: cantActEst,
-      cantidad_estudiantes_res_total: cantEstudiantes
-    }
-
-    // Objeto con los datos de la reserva a enviar
-    const reservaData = {
-      cod_ambiente: ambiente.cod_ambiente,
-      start: start.toISOString(), // Convertir a formato ISO para enviar la fecha y hora
-      end: end.toISOString(), // Convertir a formato ISO para enviar la fecha y hora
-    };
-
-    console.log(formReserva);
-    console.log(JSON.stringify(formReserva));
-    fetch('http://127.0.0.1:5000/reserva/add_reserva', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formReserva),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error al enviar la reserva');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Reserva enviada:', data);
-        navigate('/mis-reservas');
-        setReserva(null); // Reiniciar la reserva después de enviarla
-      })
-      .catch(error => {
-        console.error('Error al enviar la reserva:', error);
-      });
-  };
-
-
-  const cancelarReserva = () => {
-    setReserva(null);
-  };
-
-  const handleChangeImparticion = (event) => {
-    const selectedValue = event.target.value;
-
-    // tengo el id de la impartición con eso obtenemos los datos
-    setSelectedOptionImparticion(selectedValue);
-    const imparticionActual = DataImparticiones.find(item => item.cod_imparticion == selectedValue);
-    setCantEstudiantes(imparticionActual.cantidad_estudiantes_imp);
-    setCantActualEst(imparticionActual.cantidad_estudiantes_imp)
-    fetch(`http://127.0.0.1:5000/reserva/ambientes_disponibles/${imparticionActual.cantidad_estudiantes_imp}`)
-      .then(response => response.json())
-      .then(data => setDataAmbientesDisp(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-    setSelectedOptionAmb('')
-    setDataFechaAmbientes([])
-    setEventos([]);
-  };
-
-  const handleChangeCantEst = (event) => {
-    const inputValue = event.target.value;
-    if (inputValue === '' || (parseInt(inputValue) >= 0 && parseInt(inputValue) <= cantActEst * porcentajeMax)) {
-      setCantEstudiantes(inputValue);
-      fetch(`http://127.0.0.1:5000/reserva/ambientes_disponibles/${inputValue}`)
-        .then(response => response.json())
-        .then(data => setDataAmbientesDisp(data))
-        .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-      setSelectedOptionAmb('')
-      setDataFechaAmbientes([])
-      setEventos([]);
-    }
-  };
-
-  const handleChangeAmb = (event) => {
-    const selectedValue = event.target.value;
-    setSelectedOptionAmb(selectedValue);
-    // console.log(selectedValue);
-    fetch(`http://127.0.0.1:5000/reserva/get_calendario/${selectedValue}`)
-      .then(response => response.json())
-      .then(data => setDataFechaAmbientes(data))
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
-
-    mostrarHorarioAmbiente();
-    // console.log(`Fue presionada por esta opción:  ${selectedValue}`);
-  };
-
-  const mostrarHorarioAmbiente = () => {
-    // console.log(Object.keys(DataFechaBloques).length);
-    // console.log(DataFechaBloques);
-
-    if (DataAmbientesDisp.length > 0) {
-      const getNombreAmbiente = (id_codAmbiente) => {
-        const ambiente = DataAmbientesDisp.find(amb => amb.cod_ambiente === id_codAmbiente);
-        return ambiente ? ambiente.nombre_amb : 'No encontrado';
-      };
-
-      const eventosPrueba = [];
-      if (DataFechaBloques.length > 0) {
-        DataFechaBloques.forEach((subArray, index) => {
-          // detallesAmbiente()
-
-          // console.log(`Elemento de DataFechaBloques ${index}:`);
-          const fecha = subArray.fecha
-          // console.log(fecha);
-          const bloquesUnAmbiente = Object.keys(subArray);
-
-          // console.log(bloquesUnAmbiente);
-          bloquesUnAmbiente.forEach((key, index) => {
-
-            console.log();
-            // Verificar si no es el último elemento
-            if (index !== bloquesUnAmbiente.length - 1) {
-              const obj = subArray[key];
-              const { cod_bloque } = obj;
-              const { cod_dia } = obj;
-              const { nombre_blo } = obj;
-              const evento = {
-                title: getNombreAmbiente(parseInt(selectedOptionAmb)),
-                start: moment(`${fecha} ${obtenerHoraInicio(nombre_blo)}`).toDate(),
-                end: moment(`${fecha} ${obtenerHoraFin(nombre_blo)}`).toDate(),
-                resource: detallesAmbiente(selectedOptionAmb, cod_bloque, cod_dia),
-                backgroundColor: 'green'
-              };
-              eventosPrueba.push(evento);
-            }
-
-          });
-
-        });
-
-        // console.log(eventosPrueba);
-      }
-      setEventos(eventosPrueba);
-      // console.log(eventosPrueba);
-    }
-
+  // --------------------------------------------------------------------------------
+  const mostrarPolitica2 = () => {
+    setOpcionesVerPolitica2(true);
+    setOpcionesVerPolitica1(false);
 
   }
-  useEffect(() => {
-    mostrarHorarioAmbiente();
-  }, [selectedOptionAmb, DataFechaAmbientes, DataFechaBloques]);
 
-  const eventPropGetter = (event) => {
-    const backgroundColor = event.backgroundColor || 'yellow';
+  const mostrarPolitica1 = () => {
+    setOpcionesVerPolitica1(true);
+    setOpcionesVerPolitica2(false);
 
-    const style = {
-      backgroundColor,
-    };
-    return {
-      style: style,
-    };
-  };
-
+  }
 
   return (
     <Box
@@ -399,8 +69,8 @@ const Calendario = () => {
         alignItems: 'center',
       }}
     >
-      <div>
 
+      <div>
         <Typography variant="h5" component="h2" sx={{ mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>CALENDARIO</Typography>
         <div className="flex justify-start items-start mb-4">
           <Link to="/mis-reservas" className="bg-primary text-white px-10 py-2 rounded-md">
@@ -408,145 +78,29 @@ const Calendario = () => {
           </Link>
         </div>
 
-        {/* <Button color="primary" variant="contained" sx={{ mb: 3 }}>Generar</Button> */}
-        <div className="flex justify-between items-center mb-4 mt-5">
+        <Grid container spacing={2}>
 
-          <div className="flex space-x-4">
-            <select
-              className="bg-gray-200 p-2 rounded-md"
-              onChange={handleChangeImparticion}
-              value={selectedOptionImparticion}
-            >
-              <option value="" disabled>
-                Selecciona una materia
-              </option>
-              {DataImparticiones.length > 0 && (
-                DataImparticiones.map((data, index) => (
-                  <option key={index} value={data.cod_imparticion}>
-                    {data.imparticion}
-                  </option>
-                ))
-              )}
-            </select>
+          <Grid item md={6} lg={6} xl={6}>
+            <Button onClick={mostrarPolitica1} color="primary" variant="contained" sx={{ mb: 3 }}>Buscar por Ambiente</Button>
+          </Grid>
 
-            <TextField
-              sx={{ width: '160px' }}
-              label="Cantidad de estudiantes"
-              type="number"
-              value={cantEstudiantes}
-              onChange={handleChangeCantEst}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+          <Grid item md={6} lg={6} xl={6}>
+            <Button onClick={mostrarPolitica2} color="primary" variant="contained" sx={{ mb: 3 }}>Buscar por Fecha y Capacidad</Button>
+          </Grid>
 
-            <select
-              className="bg-gray-200 p-2 rounded-md"
-              onChange={handleChangeAmb}
-              value={selectedOptionAmb}
-            >
-              <option value="" disabled>
-                Selecciona un ambiente
-              </option>
-              {DataAmbientesDisp.length > 0 && (
-                DataAmbientesDisp.map((data, index) => (
-                  <option key={index} value={`${data.cod_ambiente}`}>
-                    {data.nombre_amb}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-        </div>
+        </Grid>
 
-        <div className="bg-gray-100 p-4 shadow-md rounded-md">
-          <Calendar
-            localizer={localizer}
-            events={eventos}
-            startAccessor="start"
-            endAccessor="end"
-            messages={{
-              next: 'Siguiente',
-              previous: 'Anterior',
-              today: 'Hoy',
-              month: 'Mes',
-              week: 'Semana',
-              day: 'Día',
-              agenda: 'Agenda',
-              date: 'Fecha',
-              time: 'Hora',
-              event: 'Evento',
-              noEventsInRange: 'No hay eventos en este rango.',
-              showMore: total => `+ Ver más (${total})`,
-            }}
-            style={{ height: 600 }}
-            // selectable
-            // onSelectSlot={handleReservar}
-            step={90}
-            timeslots={1}
-            min={new Date(2024, 4, 1, 6, 45)}
-            max={new Date(2024, 4, 12, 21, 45)}
-            eventPropGetter={eventPropGetter}
-            components={{
-              event: ({ event }) => (
-                <button
-                  style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }}
-                  onClick={() => handleReservar(event.resource, event.start, event.end)}
-                >
-                  {event.title}
-                </button>
-              ),
-            }}
-
-          />
-
-        </div>
-        {reserva && (
-
-          <div className="popup-overlay">
-            <div className="popup-content" style={{ backgroundColor: '#fff', padding: '60px', borderRadius: '8px', maxWidth: '500px' }}>
-              <Typography variant="h5" component="h2" sx={{ mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>CONFIRMAR RESERVA</Typography>
-              <div >
-                <p><strong>Hora de Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
-                <p><strong>Hora de Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
-                <p><strong>Fecha:</strong> {moment(reserva.start).format('YYYY-MM-DD')}</p>
-                <p><strong>Nombre:</strong> {reserva.ambiente.NombreUsuario}</p>
-                <p><strong>Materia:</strong> {reserva.ambiente.Materia}</p>
-                <p><strong>Grupo:</strong> {reserva.ambiente.Grupo}</p>
-                <p><strong>Numero de estudiantes:</strong> {reserva.ambiente.NumeroEstudiantes}</p>
-                <p><strong>Ambiente:</strong> {reserva.ambiente.Ambiente}</p>
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button onClick={confirmarReserva} className="bg-green-500 text-white px-4 py-2 rounded-md">Confirmar</button>
-                <button onClick={cancelarReserva} className="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</button>
-              </div>
-            </div>
-          </div>
-
+        {verOpcionesPolitica2 && (
+          <Politica2 />
         )}
+
+        {verOpcionesPolitica1 && (
+          <Politica1 />
+        )}
+
       </div>
     </Box>
   );
 };
 
 export default Calendario;
-
-
-// const reservaData = {
-//   NombreUsuario: nombreUsuario,
-//   Materia: selectedOptionImparticion,
-//   Grupo: selectedOptionImparticion,
-//   NumeroEstudiantes: cantEstudiantes,
-//   Ambiente: selectedOptionAmb
-// }
-
-// const addReserva = {
-//   "cod_usuario": 13,
-//   "cod_grupo": 1,
-//   "cod_materia": 5,
-//   "cod_ambiente": 3,
-//   "cod_dia": 7,
-//   "cod_bloque": 5,
-//   "fecha_res": "2024-07-01"
-// }
-// console.log(reservaData);
