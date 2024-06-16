@@ -500,8 +500,8 @@ const PeriodoReservaAdmin = () => {
                 <IconButton edge="end" aria-label="delete" onClick={() => handleOpenModalElimExa()}>
                   <Delete />
                 </IconButton>
-                <AddAllDisponibilidad/>
-                </>
+                <AddAllDisponibilidad />
+              </>
 
             )}
 
@@ -539,6 +539,7 @@ const PeriodoReservaAdmin = () => {
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, marginTop: '22px' }}
                   />
+
                 </Grid>
               </Grid>
 

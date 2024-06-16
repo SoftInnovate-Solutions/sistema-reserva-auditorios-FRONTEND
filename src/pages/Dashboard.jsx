@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { Typography, useTheme, Grid, Box } from '@mui/material';
-import './Dashboard.css'; // Importa el archivo CSS para aplicar los estilos
+import { Typography, useTheme, Grid, Box, TextField, Button } from '@mui/material';
+import './Dashboard.css';
 
 function BarChart() {
     const theme = useTheme();
-    // Estado para almacenar los valores de las barras
     const [barsData, setBarsData] = useState([]);
-    console.log(barsData);
-    // Estado para almacenar las fechas de inicio y fin
-    const [fechaInicio, setFechaInicio] = useState('');
-    const [fechaFin, setFechaFin] = useState('');
+    const [fechaInicio, setFechaInicio] = useState("2024-07-01");
+    const [fechaFin, setFechaFin] = useState("2024-07-15");
 
-    // Función para generar el gráfico de barras
+
     const generateBarChart = async () => {
         try {
-            // Realiza la solicitud POST con las fechas
             const response = await fetch('http://127.0.0.1:5000/dashboard/reporte_ambientes', {
                 method: 'POST',
                 headers: {
@@ -26,13 +22,10 @@ function BarChart() {
                 })
             });
 
-            // Verifica si la respuesta es exitosa
             if (response.ok) {
                 const responseData = await response.json();
-                // Actualiza los datos de las barras con los datos obtenidos
-                setBarsData(responseData.map(item => item.cantidad));
+                setBarsData(responseData);
             } else {
-                // Si la respuesta no es exitosa, muestra un mensaje de error
                 console.error('Error al obtener los datos');
             }
         } catch (error) {
@@ -40,38 +33,56 @@ function BarChart() {
         }
     };
 
-    // Renderizar el componente
+    console.log(barsData);
     return (
         <Box
-            //estilo
             sx={{
-                p: 4, // padding
+                p: 4,
                 bgcolor: "background.paper",
                 boxShadow: 8,
                 textAlign: 'center',
                 // width: '50%',
                 width: '800px',
-                margin: '0 auto', // centrado horizontal
+                height: '700px',
+                margin: '0 auto',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
         >
             <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary }}>DASHBOARD</Typography>
             <div>
-                <div>
-                    {/* Campos de entrada para las fechas */}
-                    <input type="date" value={fechaInicio} onChange={e => setFechaInicio(e.target.value)} />
-                    <input type="date" value={fechaFin} onChange={e => setFechaFin(e.target.value)} />
-                    {/* Botón para generar el gráfico */}
-                    <button onClick={generateBarChart}>Generar</button>
-                </div>
-                {/* Mostrar el gráfico de barras */}
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Desde"
+                            type="date"
+                            value={fechaInicio}
+                            onChange={(e) => setFechaInicio(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: '22px', width: '50%' }}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Hasta"
+                            type="date"
+                            value={fechaFin}
+                            onChange={(e) => setFechaFin(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ width: '50%' }}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button onClick={generateBarChart} color="primary" variant="contained" sx={{ mb: 3 }}>Generar</Button>
+                    </Grid>
+                </Grid>
+
                 <div className="chart">
-                    {/* Mapear los valores para crear las barras */}
-                    {barsData.map((value, index) => (
-                        <div className="bar" key={index} style={{ height: `${value * 15}px` }}>
-                            <p className="label">{value}</p>
-                            {/* <div className="font-bold text-lg,">{reserva.ambiente}</div> */}
+                    {barsData.map((item, index) => (
+                        <div className="bar" key={index} style={{ height: `${item.cantidad * 10}px` }}>
+                            <p style={{margin:'-25px'}} >{item.cantidad}</p>
+                            <p className="label">{item.nombre_amb.trim()}</p>
                         </div>
                     ))}
                 </div>

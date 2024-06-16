@@ -28,7 +28,7 @@ moment.updateLocale('es', {
     'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'
   ]
 });
-moment.locale('es');
+moment.locale('es');  
 const localizer = momentLocalizer(moment);
 
 const Calendario = () => {
@@ -74,7 +74,7 @@ const Calendario = () => {
           const { materia, grupo } = obtenerMateriaGrupoImparticion(imparticion.imparticion);
           return !reservasActuales.some(reserva => reserva.materia === materia && reserva.grupo === grupo);
         });
-        
+
         setDataImparticiones(data);
       })
       .catch(error => console.error("Error al carga imparticiones:", error));
@@ -214,16 +214,6 @@ const Calendario = () => {
   const capacidadAmbienteValida = (ambienteId, cantidadEstudiantes) => {
     const ambiente = ambientesDisponibles.find(ambiente => ambiente.id === ambienteId);
     return cantidadEstudiantes >= ambiente.capacidadMinima && cantidadEstudiantes <= ambiente.capacidadMaxima;
-  };
-
-  const eventPropGetter = (event) => {
-    const backgroundColor = event.backgroundColor || 'yellow';
-    const style = {
-      backgroundColor,
-    };
-    return {
-      style: style,
-    };
   };
 
   const handleReservar = (ambiente, start, end) => {
@@ -383,10 +373,16 @@ const Calendario = () => {
     mostrarHorarioAmbiente();
   }, [selectedOptionAmb, DataFechaAmbientes, DataFechaBloques]);
 
-  // useEffect(() => {
-  //   realizarLlamadasFetch();
-  // }, [DataFechaBloques, setDataFechaBloques]);
+  const eventPropGetter = (event) => {
+    const backgroundColor = event.backgroundColor || 'yellow';
 
+    const style = {
+      backgroundColor,
+    };
+    return {
+      style: style,
+    };
+  };
 
 
   return (
@@ -412,6 +408,7 @@ const Calendario = () => {
           </Link>
         </div>
 
+        {/* <Button color="primary" variant="contained" sx={{ mb: 3 }}>Generar</Button> */}
         <div className="flex justify-between items-center mb-4 mt-5">
 
           <div className="flex space-x-4">
@@ -421,7 +418,7 @@ const Calendario = () => {
               value={selectedOptionImparticion}
             >
               <option value="" disabled>
-                Selecciona una opción
+                Selecciona una materia
               </option>
               {DataImparticiones.length > 0 && (
                 DataImparticiones.map((data, index) => (
@@ -449,7 +446,7 @@ const Calendario = () => {
               value={selectedOptionAmb}
             >
               <option value="" disabled>
-                Selecciona una opción
+                Selecciona un ambiente
               </option>
               {DataAmbientesDisp.length > 0 && (
                 DataAmbientesDisp.map((data, index) => (
@@ -482,7 +479,7 @@ const Calendario = () => {
               noEventsInRange: 'No hay eventos en este rango.',
               showMore: total => `+ Ver más (${total})`,
             }}
-            style={{ height: 500 }}
+            style={{ height: 600 }}
             // selectable
             // onSelectSlot={handleReservar}
             step={90}

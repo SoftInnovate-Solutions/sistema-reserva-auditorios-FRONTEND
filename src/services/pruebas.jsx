@@ -1,83 +1,107 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import DateRangeIcon from '@mui/icons-material/DateRange';
-import Popover from '@mui/material/Popover';
-import Box from '@mui/material/Box';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-function DateRangePicker() {
-  const [anchorEl, setAnchorEl] = useState(null);
+const localizer = momentLocalizer(moment);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+const myEvents = [
+  {
+    title: 'Meeting',
+    start: new Date(2024, 6, 20, 10, 0),
+    end: new Date(2024, 6, 20, 12, 0),
+    backgroundColor: 'lightblue',
+    resource: 'Room 1'
+  },
+  {
+    title: 'Lunch',
+    start: new Date(2024, 6, 20, 13, 0),
+    end: new Date(2024, 6, 20, 14, 0),
+    backgroundColor: 'lightgreen',
+    resource: 'Room 2'
+  }
+];
+
+const handleReservar = (resource, start, end) => {
+  console.log(`Reserved: ${resource} from ${start} to ${end}`);
+};
+
+const eventPropGetter = (event, start, end, isSelected) => {
+  return {
+    style: {
+      backgroundColor: event.backgroundColor,
+      border: 'none',
+      padding: 0,
+    }
   };
+};
 
-  const handleClose = () => {
-    setAnchorEl(null);
+const MyCalendar = () => {
+  const [policy, setPolicy] = useState(null);
+
+  const handleButtonClick = (policyName) => {
+    setPolicy(policyName);
+    // Aquí puedes agregar lógica adicional para manejar la política seleccionada
   };
-
- 
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'date-range-popover' : undefined;
 
   return (
     <div>
-      <TextField
-        onClick={handleClick}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <DateRangeIcon />
-            </InputAdornment>
-          ),
-        }}
-        placeholder="Seleccione el rango de fechas"
-        variant="outlined"
-        fullWidth
-      />
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <Box p={2}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
-            <TextField
-              type="date"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              label="Desde"
-            />
+      <div>
+        <button onClick={() => handleButtonClick('buscarAmbienteVerDisponibilidad')}>
+          Buscar Ambiente por Disponibilidad
+        </button>
+        <button onClick={() => handleButtonClick('buscarFechaVerAmbientesDisponibles')}>
+          Buscar Fecha y Ver Ambientes Disponibles
+        </button>
+      </div>
+      
+      <div style={{ height: '500px', marginTop: '20px' }}>
+        {policy === 'buscarAmbienteVerDisponibilidad' && (
+          <div>
+            {/* Implementar lógica para buscar ambiente y ver disponibilidad */}
+            <p>Seleccionaste: Buscar Ambiente por Disponibilidad</p>
+            {/* Aquí puedes mostrar la UI específica para esta política */}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
-            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
-            <TextField
-              type="date"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              label="Hasta"
-            />
+        )}
+        
+        {policy === 'buscarFechaVerAmbientesDisponibles' && (
+          <div>
+            {/* Implementar lógica para buscar fecha y ver ambientes disponibles */}
+            <p>Seleccionaste: Buscar Fecha y Ver Ambientes Disponibles</p>
+            {/* Aquí puedes mostrar la UI específica para esta política */}
           </div>
-        </Box>
-      </Popover>
+        )}
+
+        <Calendar
+          localizer={localizer}
+          events={myEvents}
+          startAccessor="start"
+          endAccessor="end"
+          eventPropGetter={eventPropGetter}
+          components={{
+            event: ({ event }) => (
+              <button
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  backgroundColor: event.backgroundColor,
+                  border: 'none',
+                  padding: 0,
+                  textAlign: 'left',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+                onClick={() => handleReservar(event.resource, event.start, event.end)}
+              >
+                {event.title}
+              </button>
+            ),
+          }}
+        />
+      </div>
     </div>
   );
-}
+};
 
-export default DateRangePicker;
+export default MyCalendar;
