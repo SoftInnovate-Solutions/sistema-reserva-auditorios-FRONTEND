@@ -118,8 +118,38 @@ const PeriodoReservaAdmin = () => {
     }
   }, []);
 
+  const actualizarAmbosPeriodos = () => {
+    const storedPeriodos = localStorage.getItem('periodos');
+    const storedPeriodosExa = localStorage.getItem('periodosExa');
+
+    if (storedPeriodos) {
+      setVerEliminar(true);
+      setBotonEstado(false);
+      setPeriodos(JSON.parse(storedPeriodos));
+    }
+
+    if (storedPeriodosExa) {
+      setVerEliminarExa(true);
+      setBotonEstadoExa(false);
+      setPeriodosExa(JSON.parse(storedPeriodosExa));
+    }
+  }
+
   // - - - - - - - - - - - - - - - G U A R D A D O - - - - - - - - - - - -
   const handleSave = () => {
+    actualizarAmbosPeriodos;
+
+    if (periodosExa.length > 0) {
+      if (periodosExa[0].generalInicio != '2020-01-01') {
+        setFechaInicioGeneral(periodosExa[0].docenteInicio);
+        setFechaFinGeneral(periodosExa[0].docenteFin);
+      }
+    } else {
+      if (fechaFinGeneral != "") {
+        setFechaInicioGeneral("2020-01-01");
+        setFechaFinGeneral("2020-01-01");
+      }
+    }
     // Crear nuevo periodo
     const newPeriodo = {
       id: periodos.length + 1,
@@ -147,6 +177,7 @@ const PeriodoReservaAdmin = () => {
   const handleSaveExa = async () => {
     try {
       if (!enviadoExa) {// Verifica si ya se ha enviado la solicitud
+        actualizarAmbosPeriodos;
         rellenarDatos();
         const response = await fetch('http://127.0.0.1:5000/periodo_reserva/add', {
           method: 'POST',
@@ -256,6 +287,9 @@ const PeriodoReservaAdmin = () => {
 
         setFechaInicioAuxiliar(periodos[0].auxiliarInicio);
         setFechaFinAuxiliar(periodos[0].auxiliarFin);
+
+        periodos[0].fechaInicioGeneral = fechaInicioGeneral;
+        periodos[0].fechaFinGeneral = fechaFinGeneral;
       }
     } else {
       if (fechaFinGeneral != "") {
@@ -265,7 +299,6 @@ const PeriodoReservaAdmin = () => {
         setFechaInicioAuxiliar("2020-01-01");
         setFechaFinAuxiliar("2020-01-01");
       }
-
     }
 
     const datos = {
@@ -276,6 +309,8 @@ const PeriodoReservaAdmin = () => {
     };
     setFormData(datos);
   };
+
+
 
   useEffect(() => {
     rellenarDatos();
@@ -461,7 +496,7 @@ const PeriodoReservaAdmin = () => {
 
           {botonEstadoExa && (<>
             <Button variant="contained" color="primary" onClick={handleRegistrarExa}>Agregar</Button>
-            <IconButton edge="end" aria-label="delete" sx={{opacity: 0}} onClick={() => handleUpss()}>
+            <IconButton edge="end" aria-label="delete" sx={{ opacity: 0 }} onClick={() => handleUpss()}>
               <Delete />
             </IconButton>
           </>)}

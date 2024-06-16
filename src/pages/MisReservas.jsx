@@ -39,8 +39,8 @@ const MisReservas = () => {
   };
 
   const handleVerReserva = (id) => {
-    console.log(id);
-    console.log(reservas[id-1]);
+    // console.log(id);
+    // console.log(reservas[id-1]);
 
     setReservaSeleccionada(reservas[id-1])
     // fetch(`http://127.0.0.1:5000/reserva/one/${id}`)
