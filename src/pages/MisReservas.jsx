@@ -10,6 +10,7 @@ const MisReservas = () => {
   const periodoReserva = JSON.parse(localStorage.getItem('periodos'));
   const [idUsuario] = useState(sessionStorage.getItem('cod_usuario'));
   const [rol] = useState(sessionStorage.getItem('rol_usuario'))
+  const NombreUsuario = sessionStorage.getItem('nombre_usuario');
   const [reservas, setReservas] = useState([]);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -38,16 +39,29 @@ const MisReservas = () => {
   };
 
   const handleVerReserva = (id) => {
-    fetch(`http://127.0.0.1:5000/reserva/one/${id}`)
-      .then(response => response.json())
-      .then(data => setReservaSeleccionada(data))
-      .catch(error => console.error("Error al carga imparticiones:", error));
+    console.log(id);
+    console.log(reservas[id-1]);
+
+    setReservaSeleccionada(reservas[id-1])
+    // fetch(`http://127.0.0.1:5000/reserva/one/${id}`)
+    //   .then(response => response.json())
+    //   .then(data => setReservaSeleccionada(data))
+    //   .catch(error => console.error("Error al carga imparticiones:", error));
+
   };
 
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/reserva/all/${idUsuario}`)
       .then(response => response.json())
-      .then(data => setReservas(data))
+      .then(data => {
+        // Añadir un id a cada elemento del array
+        const dataConIds = data.map((element, index) => {
+          return { ...element, id: index + 1 }; 
+        });
+
+        // Establecer las reservas con los ids añadidos
+        setReservas(dataConIds);
+      })
       .catch(error => console.error("Error al carga imparticiones:", error));
     if (rol === 'Docente') {
       fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_docente`)
@@ -151,7 +165,7 @@ const MisReservas = () => {
                 </div>
                 <div className="bg-gray-500 p-2 rounded flex flex-col space-y-2">
                   <button
-                    onClick={() => handleVerReserva(reserva.cod_reserva)}
+                    onClick={() => handleVerReserva(reserva.id)}
                     className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
                   >
                     Ver Reserva
@@ -177,10 +191,11 @@ const MisReservas = () => {
               <strong> {reservaSeleccionada.fecha_res}</strong>
               <p><strong>{reservaSeleccionada.hora}</strong></p>
               <p><strong>Ambiente:</strong> {reservaSeleccionada.ambiente}</p>
-              <p><strong>Reservado por:</strong> {reservaSeleccionada.instructor}</p>
+              <p><strong>Reservado por:</strong> {NombreUsuario}</p>
+              {/* <p><strong>Reservado por:</strong> {reservaSeleccionada.instructor}</p> */}
               <p><strong>Materia:</strong> {reservaSeleccionada.materia}</p>
               <p><strong>Grupo:</strong> {reservaSeleccionada.grupo}</p>
-              <p><strong>Cantidad de estudiantes:</strong> {reservaSeleccionada.numero_estudiantes}</p>
+              {/* <p><strong>Cantidad de estudiantes:</strong> {reservaSeleccionada.numero_estudiantes}</p> */}
               <button onClick={handleCloseModal} className="bg-primary text-white px-4 py-2 rounded-md mt-4">Cerrar</button>
             </div>
           </div>

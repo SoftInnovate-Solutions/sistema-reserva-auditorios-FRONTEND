@@ -254,11 +254,11 @@ const Calendario = () => {
     };
 
     console.log(formReserva);
+    console.log(JSON.stringify(formReserva));
     fetch('http://127.0.0.1:5000/reserva/add_reserva', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Aquí puedes agregar más headers si es necesario, como tokens de autorización, etc.
       },
       body: JSON.stringify(formReserva),
     })
