@@ -54,7 +54,9 @@ const Calendario = () => {
     const [cantActEst, setCantActualEst] = useState(0);
 
     const [eventos, setEventos] = useState([]);
-    const [cantidadEstudiantes] = useState(81);
+    const [capMinAmb, setCapMinAmb] = useState(0);
+    const [capMaxAmb, setCapMaxAmb] = useState(0);
+    const [verCapacidad, setVerCapacidad] = useState(false);
     const [reserva, setReserva] = useState(null);
 
     let porcentajeMin = 0.01;
@@ -254,6 +256,7 @@ const Calendario = () => {
         setSelectedOptionAmb('')
         setDataFechaAmbientes([])
         setEventos([]);
+        setVerCapacidad(false);
     };
 
     const handleChangeCantEst = (event) => {
@@ -267,6 +270,7 @@ const Calendario = () => {
             setSelectedOptionAmb('')
             setDataFechaAmbientes([])
             setEventos([]);
+            setVerCapacidad(false);
         }
     };
 
@@ -280,6 +284,15 @@ const Calendario = () => {
             .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
 
         mostrarHorarioAmbiente();
+
+        fetch(`http://127.0.0.1:5000/ambiente/one_setting/${selectedValue}`)
+            .then(response => response.json())
+            .then(data => {
+                setCapMinAmb(data.albergacion_min_amb);
+                setCapMaxAmb(data.albergacion_max_amb);
+                setVerCapacidad(true);
+            })
+            .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
         // console.log(`Fue presionada por esta opción:  ${selectedValue}`);
     };
 
@@ -402,6 +415,12 @@ const Calendario = () => {
                             ))
                         )}
                     </select>
+                    {verCapacidad && (
+                        <Typography sx={{marginTop: '14px'}} variant="body1">
+                           Capacidad: {capMinAmb} - {capMaxAmb}
+                        </Typography>
+                    )}
+
                 </div>
             </div>
 

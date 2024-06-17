@@ -27,7 +27,9 @@ export default function DataTable() {
         const rowData = data.map((item, index) => ({
           id: index + 1,
           nombreAmbiente: item.nombre_amb,
+          capacidad_min: item.capacidad_min_amb,
           capacidad: item.capacidad_amb,
+          capacidad_max: item.capacidad_max_amb,
           estado: item.estado_ambiente,
           idBD: item.cod_ambiente
         }));
@@ -41,8 +43,10 @@ export default function DataTable() {
 
         const columns = [
           { field: 'nombreAmbiente', headerName: 'Nombre del Ambiente', width: 250 },
-          { field: 'capacidad', headerName: 'Capacidad', width: 110 },
-          { field: 'estado', headerName: 'Estado', width: 150 },
+          { field: 'capacidad_min', headerName: 'Capacida min', width: 120 },
+          { field: 'capacidad', headerName: 'Capacidad', width: 80 },
+          { field: 'capacidad_max', headerName: 'Capacidad max', width: 120 },
+          { field: 'estado', headerName: 'Estado', width: 120 },
           // { field: 'idBD', headerName: 'ID-BD', width: 80 },
           {
             field: 'acciones',
@@ -278,7 +282,7 @@ export default function DataTable() {
         boxShadow: 8,
         textAlign: 'center',
         // width: '75%',
-        width: '850px',
+        width: '980px',
         margin: '0 auto', // centrado horizontal
         justifyContent: 'center',
         alignItems: 'center',
