@@ -42,11 +42,12 @@ const MisReservas = () => {
     // console.log(id);
     // console.log(reservas[id-1]);
 
-    setReservaSeleccionada(reservas[id-1])
-    // fetch(`http://127.0.0.1:5000/reserva/one/${id}`)
-    //   .then(response => response.json())
-    //   .then(data => setReservaSeleccionada(data))
-    //   .catch(error => console.error("Error al carga imparticiones:", error));
+    // setReservaSeleccionada(reservas[id-1])
+
+    fetch(`http://127.0.0.1:5000/reserva/one/${id}`)
+      .then(response => response.json())
+      .then(data => setReservaSeleccionada(data))
+      .catch(error => console.error("Error al carga imparticiones:", error));
 
   };
 
@@ -165,7 +166,7 @@ const MisReservas = () => {
                 </div>
                 <div className="bg-gray-500 p-2 rounded flex flex-col space-y-2">
                   <button
-                    onClick={() => handleVerReserva(reserva.id)}
+                    onClick={() => handleVerReserva(reserva.cod_reserva)}
                     className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
                   >
                     Ver Reserva
@@ -191,11 +192,11 @@ const MisReservas = () => {
               <strong> {reservaSeleccionada.fecha_res}</strong>
               <p><strong>{reservaSeleccionada.hora}</strong></p>
               <p><strong>Ambiente:</strong> {reservaSeleccionada.ambiente}</p>
-              <p><strong>Reservado por:</strong> {NombreUsuario}</p>
-              {/* <p><strong>Reservado por:</strong> {reservaSeleccionada.instructor}</p> */}
+              {/* <p><strong>Reservado por:</strong> {NombreUsuario}</p> */}
+              <p><strong>Reservado por:</strong> {reservaSeleccionada.instructor}</p>
               <p><strong>Materia:</strong> {reservaSeleccionada.materia}</p>
               <p><strong>Grupo:</strong> {reservaSeleccionada.grupo}</p>
-              {/* <p><strong>Cantidad de estudiantes:</strong> {reservaSeleccionada.numero_estudiantes}</p> */}
+              <p><strong>Cantidad de estudiantes:</strong> {reservaSeleccionada.numero_estudiantes}</p>
               <button onClick={handleCloseModal} className="bg-primary text-white px-4 py-2 rounded-md mt-4">Cerrar</button>
             </div>
           </div>
