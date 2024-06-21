@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 
-const DisabledModal = forwardRef(({ open, handleClose }, ref) => {
+const ModalAvisoPeriodo = forwardRef(({ open, handleClose }, ref) => {
     return (
         <Dialog
             open={open}
@@ -22,7 +22,7 @@ const DisabledModal = forwardRef(({ open, handleClose }, ref) => {
                 <DialogTitle id="alert-dialog-title">{"Aviso"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        No está habilitado.
+                        No se establecio un periodo de examenes.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -35,4 +35,4 @@ const DisabledModal = forwardRef(({ open, handleClose }, ref) => {
     );
 });
 
-export default DisabledModal;
+export default ModalAvisoPeriodo;

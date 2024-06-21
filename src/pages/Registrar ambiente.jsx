@@ -1,16 +1,10 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { Typography, useTheme } from '@mui/material';
-import TextField from "@mui/material/TextField";
-import Autocompletado from '../components/autocompletado';
-import { Grid } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import './Registrar ambiente.css'
 import { useNavigate } from 'react-router-dom';
-import { dark } from '@mui/material/styles/createPalette';
-
+import { Typography, useTheme, Button, Box, Modal, Alert, TextField, Grid, IconButton } from '@mui/material';
+import Autocompletado from '../components/autocompletado';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import './Registrar ambiente.css'
 
 // Estilo para el modal
 const style = {
@@ -18,21 +12,23 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 300,
+  width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  // border: '2px solid #000',
   boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
+  pt: 2, px: 4, pb: 3,
   textAlign: 'center',
 };
+
+let porcentajeMin = 0.5;
+let porcentajeMax = 1.10;
 
 function RegistrarAmbiente() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const navigate = useNavigate();
   const handleClose = () => { setOpen(false); navigate('/administrar-ambiente'); }
+  const navegarAdministrarAmb = () => { navigate('/administrar-ambiente'); }
   const theme = useTheme();
 
   //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -40,7 +36,7 @@ function RegistrarAmbiente() {
   // Declarar variables para el cuadro de entrada con autocompletado
   const [contenidoTipoEdificacion, setContenidoTipoEdificacion] = useState(null);
   const [contenidoFacultad, setContenidoFacultad] = useState(null);
-  const [contenidoNumeroPiso, setContenidoNumeroPiso] = useState(null);
+  const [contenidoNumeroPiso, setContenidoNumeroPiso] = useState(1);
   const [contenidoTipoAmbiente, setContenidoTipoAmbiente] = useState(null);
   const [contenidoEstadoAmbiente, setContenidoEstadoAmbiente] = useState(null);
 
@@ -228,9 +224,10 @@ function RegistrarAmbiente() {
       capacidad_amb: capacidad,
       ubicacion_amb: ubicacion,
       descripcion_amb: descripcion,
-      albergacion_max_amb: capacidad,
-      albergacion_min_amb: 1,
+      albergacion_max_amb: capacidad*porcentajeMax,
+      albergacion_min_amb: capacidad*porcentajeMin,
       cod_estado_ambiente: contenidoEstadoAmbiente,
+      // cod_piso: contenidoNumeroPiso,
       cod_piso: contenidoNumeroPiso,
       cod_edificacion: contenidoTipoEdificacion,
       cod_facultad: contenidoFacultad,
@@ -290,6 +287,11 @@ function RegistrarAmbiente() {
 
   //#endregion
 
+  const abrirGoogleMaps = () => {
+    const url = 'https://www.google.com/maps/@-17.3936905,-66.1448234,16z?entry=ttu';
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       <Box
@@ -298,10 +300,25 @@ function RegistrarAmbiente() {
           p: 4, // padding
           bgcolor: "background.paper",
           boxShadow: 8,
-          textAlign: 'center'
+          textAlign: 'center',
+          // width: '70%',
+          width: '600px',
+          margin: '0 auto', // centrado horizontal
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
+
+        <Grid container alignItems="center" sx={{ mb: 3 }}>
+          <Grid item >
+            <IconButton onClick={navegarAdministrarAmb} aria-label="back">
+              <ArrowBackIcon fontSize='large' />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12} >
+            <Typography variant="h5" component="h2" sx={{ mt: 1, color: theme.palette.text.primary }}>REGISTRO DE AMBIENTE</Typography>
+          </Grid>
+        </Grid>
 
         <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column"
           justifyContent="center"
@@ -309,7 +326,7 @@ function RegistrarAmbiente() {
 
           <TextField
             className='form-inputs'
-            // id="nombreAmbiente"
+            sx={{ mb: 1.5 }}
             value={nombreAmbiente}
             onChange={manejadorCambiosNombreAmbiente}
             onBlur={validarNombreAmbiente}
@@ -320,6 +337,7 @@ function RegistrarAmbiente() {
           />
           <TextField
             className='form-inputs'
+            sx={{ mb: 1.5 }}
             value={descripcion}
             onChange={manejadorCambiosDescripcion}
             onBlur={validarDescripcion}
@@ -330,21 +348,31 @@ function RegistrarAmbiente() {
             maxRows={3}
             variant="standard"
           />
+
+          <Grid alignItems="center" sx={{ mb: 1.5, marginLeft: '50px' }}>
+
+            <TextField
+              className='form-inputs'
+              value={ubicacion}
+              onChange={manejadorCambiosUbicacion}
+              onBlur={validarUbicacion}
+              error={errorUbicacion}
+              helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
+              label="Ubicación: "
+              multiline
+              maxRows={2}
+              variant="standard"
+            />
+            <IconButton onClick={abrirGoogleMaps} aria-label="back">
+              <AddLocationAltIcon fontSize='large' />
+            </IconButton>
+
+          </Grid>
+
           <TextField
+            sx={{ mb: 3, width: '15%' }}
             className='form-inputs'
-            value={ubicacion}
-            onChange={manejadorCambiosUbicacion}
-            onBlur={validarUbicacion}
-            error={errorUbicacion}
-            helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
-            label="Ubicación: "
-            multiline
-            maxRows={2}
-            variant="standard"
-          />
-          <TextField
-            sx={{ mb: 3 }}
-            className='form-inputs'
+            type='number'
             value={capacidad}
             onChange={manejadorCambiosCapacidad}
             onBlur={validarCapacidad}
@@ -404,7 +432,7 @@ function RegistrarAmbiente() {
             className='form-inputs'
             etiqueta="Facultad:"
           />
-          <Autocompletado
+          {/* <Autocompletado
             disablePortal
             idOptionSelec={obtenerIdPiso}
             id="combo-box-demo"
@@ -414,7 +442,7 @@ function RegistrarAmbiente() {
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, contenidoNumeroPiso) => option.label === contenidoNumeroPiso.label}
             className='form-inputs'
-            etiqueta="Piso:" />
+            etiqueta="Piso:" /> */}
 
           <Button type="submit" variant="contained" onClick={manejarEnvio} sx={{ marginTop: '18px' }} className='formboton'>
             REGISTRAR

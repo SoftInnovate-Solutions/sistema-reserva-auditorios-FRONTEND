@@ -1,90 +1,204 @@
 import React, { useState, useEffect } from 'react';
+import { Box, TextField, useTheme, Typography, Button, Grid } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Link } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom';
 import moment from 'moment';
+import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './Calendario.css';  
+import './Calendario.css';
+import MisReservas from './MisReservas';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-const generarPeriodosAleatorios = (inicio, fin, intervalo, cantidad, fechaInicio, fechaFin) => {
-  const periodos = [];
-  let startTime = moment(inicio, 'HH:mm');
-  const endTime = moment(fin, 'HH:mm');
-
-  while (startTime < endTime && periodos.length < cantidad) {
-    const start = startTime.clone();
-    startTime.add(intervalo, 'minutes');
-    const end = startTime.clone();
-
-    if (Math.random() > 0.5) { 
-      const isOverlapping = periodos.some(periodo =>
-        (start.isBetween(moment(periodo.start, 'HH:mm'), moment(periodo.end, 'HH:mm'), null, '[)') ||
-        end.isBetween(moment(periodo.start, 'HH:mm'), moment(periodo.end, 'HH:mm'), null, '(]'))
-      );
-      if (!isOverlapping) {
-        const randomDate = moment(fechaInicio).add(Math.random() * (moment(fechaFin).diff(fechaInicio, 'days')), 'days');
-        periodos.push({ 
-          start: randomDate.clone().set({ hour: start.hours(), minute: start.minutes() }).toISOString(), 
-          end: randomDate.clone().set({ hour: end.hours(), minute: end.minutes() }).toISOString() 
-        });
-      }
-    }
-  }
-
-  return periodos;
-};
-
-const ambientesDisponibles = [
-  { id: 1, nombre: 'Aula 624', ubicacion: 'Edificio nuevo', descripcion: 'Aula para clases teóricas', capacidadMinima: 44, capacidadMaxima: 126 },
-  { id: 2, nombre: 'Aula 691A', ubicacion: 'bloque principal', descripcion: 'aula comun', capacidadMinima: 20, capacidadMaxima: 40 },
-  { id: 3, nombre: 'Aula 632', ubicacion: 'zona laboratorio', descripcion: 'Aula comun', capacidadMinima: 10, capacidadMaxima: 30 },
-  { id: 4, nombre: 'Aula 654', ubicacion: 'Biblioteca', descripcion: 'Aula para clases teóricas', capacidadMinima: 32, capacidadMaxima: 56 },
-  { id: 5, nombre: 'Aula 623', ubicacion: 'Multiacademico', descripcion: 'Aula para clases teóricas', capacidadMinima: 16, capacidadMaxima: 77 },
-  { id: 6, nombre: 'Aula 600', ubicacion: 'edificio nuevo', descripcion: 'Aula para clases teóricas', capacidadMinima: 12, capacidadMaxima: 33 },
-  { id: 7, nombre: 'Aula 699', ubicacion: 'bloque laboratorio', descripcion: 'Aula para clases teóricas', capacidadMinima: 14, capacidadMaxima: 67 },
-  { id: 8, nombre: 'Aula 666', ubicacion: 'multiacademico', descripcion: 'Aula para clases teóricas', capacidadMinima: 44, capacidadMaxima: 99 },
-  { id: 9, nombre: 'Aula 622', ubicacion: 'edificio nuevo', descripcion: 'Aula para clases teóricas', capacidadMinima: 55, capacidadMaxima: 88 },
-  { id: 10, nombre: 'Aula 688', ubicacion: 'laboratorio', descripcion: 'Aula para clases teóricas', capacidadMinima: 15, capacidadMaxima: 60 },
-  { id: 11, nombre: 'Aula 672', ubicacion: 'multiacademico', descripcion: 'Aula para clases teóricas', capacidadMinima: 85, capacidadMaxima: 123 },
-  { id: 12, nombre: 'Aula 612', ubicacion: 'zona comun', descripcion: 'Aula para clases teóricas', capacidadMinima: 123, capacidadMaxima: 155 },
-];
-
+moment.updateLocale('es', {
+  months: [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ],
+  monthsShort: [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ],
+  weekdays: [
+    'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+  ],
+  weekdaysShort: [
+    'Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'
+  ],
+  weekdaysMin: [
+    'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'
+  ]
+});
+moment.locale('es');
 const localizer = momentLocalizer(moment);
 
 const Calendario = () => {
+  ///////////////
+  const navigate = useNavigate();
+  const location = useLocation();
+  const reservasActuales = location.state?.reservas || [];
+
+  const theme = useTheme();
+  const [idUsuario] = useState(sessionStorage.getItem('cod_usuario'));
+  const [nombreUsuario] = useState(sessionStorage.getItem('nombre_usuario'));
+
+  const [DataImparticiones, setDataImparticiones] = useState([]);
+  const [DataAmbientesDisp, setDataAmbientesDisp] = useState([]);
+  const [DataFechaAmbientes, setDataFechaAmbientes] = useState([]);
+  const [DataFechaBloques, setDataFechaBloques] = useState([]); //fecha y sus 10 bloques libres o no libres
+
+
+  const [selectedOptionAmb, setSelectedOptionAmb] = useState(""); //contiene id ambiente
+  const [selectedOptionImparticion, setSelectedOptionImparticion] = useState(""); //contiene id impartición
+  const [cantEstudiantes, setCantEstudiantes] = useState(0);
+  const [cantActEst, setCantActualEst] = useState(0);
+
   const [eventos, setEventos] = useState([]);
   const [cantidadEstudiantes] = useState(81);
   const [reserva, setReserva] = useState(null);
 
-  const obtenerAmbientesDisponibles = (cantidadEstudiantes) => {
-    return ambientesDisponibles.filter(ambiente =>
-      cantidadEstudiantes >= ambiente.capacidadMinima && cantidadEstudiantes <= ambiente.capacidadMaxima
-    );
-  };
-
-  const generarEventosAmbientes = (cantidadEstudiantes, fechaInicio, fechaFin) => {
-    const ambientesFiltrados = obtenerAmbientesDisponibles(cantidadEstudiantes);
-    const eventosAmbientes = [];
-
-    ambientesFiltrados.forEach(ambiente => {
-      const periodosAleatorios = generarPeriodosAleatorios('08:15', '20:15', 90, 7, fechaInicio, fechaFin); 
-      periodosAleatorios.forEach(periodo => {
-        eventosAmbientes.push({
-          title: `${ambiente.nombre} (${ambiente.ubicacion})`,
-          start: new Date(periodo.start),
-          end: new Date(periodo.end),
-          resource: ambiente,
-          backgroundColor: 'green'
-        });
-      });
-    });
-
-    return eventosAmbientes;
-  };
+  let porcentajeMin = 0.01;
+  let porcentajeMax = 10;
 
   useEffect(() => {
-    const eventosGenerados = generarEventosAmbientes(cantidadEstudiantes, '2024-05-01', '2024-05-12');
-    setEventos(eventosGenerados);
-  }, [cantidadEstudiantes]);
+    fetch(`http://127.0.0.1:5000/reserva/imparticiones/${idUsuario}`)
+      .then(response => response.json())
+      .then(data => {
+        // Función para obtener la parte de "materia - grupo" de la impartición
+        const obtenerMateriaGrupoImparticion = (imparticion) => {
+          const partes = imparticion.split(' - ');
+          return { materia: partes[0], grupo: partes[1] };
+        };
+
+        // Filtrar imparticiones que no están en reservas
+        const imparticionesFiltradas = data.filter(imparticion => {
+          const { materia, grupo } = obtenerMateriaGrupoImparticion(imparticion.imparticion);
+          return !reservasActuales.some(reserva => reserva.materia === materia && reserva.grupo === grupo);
+        });
+        
+        setDataImparticiones(data);
+      })
+      .catch(error => console.error("Error al carga imparticiones:", error));
+  }, [idUsuario]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataTotal = []; // Array para almacenar la data de todas las llamadas
+      const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmb);
+
+      // Array para almacenar las promesas fetch
+      const fetchPromises = [];
+
+      for (const item of DataFechaAmbientes) {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            "cod_ambiente": ambienteActual.cod_ambiente,
+            "fecha_aa": item.fecha
+          }),
+        };
+
+        // Almacenar la promesa fetch en el array
+        const fetchPromise = fetch('http://127.0.0.1:5000/reserva/get_bloque', requestOptions)
+          .then(response => response.json())
+          .then(data => {
+            // Agregar la fecha a la data recibida
+            const dataConFecha = { fecha: item.fecha, ...data };
+
+            // Almacenar la data en el array dataTotal
+            dataTotal.push(dataConFecha);
+          })
+          .catch(error => console.error('Error al hacer la solicitud POST:', error));
+
+        fetchPromises.push(fetchPromise);
+      }
+
+      // Esperar a que todas las promesas fetch se completen antes de actualizar el estado
+      await Promise.all(fetchPromises);
+
+      // Actualizar el estado con los datos de todas las llamadas
+      setDataFechaBloques(dataTotal);
+    };
+
+    fetchData();
+  }, [selectedOptionAmb, DataFechaAmbientes, setDataFechaBloques]);
+
+  // --------------- LOGICA PARA HACER CADA LLAMADA PARA CADA FECHA Y UN COD DE AMBIENTE
+
+  const realizarLlamadasFetch = async () => {
+    const dataTotal = []; // Array para almacenar la data de todas las llamadas
+    const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmb);
+    // Itera sobre cada item en DataFechaAmbientes
+    for (const item of DataFechaAmbientes) {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "cod_ambiente": ambienteActual.cod_ambiente,
+          "fecha_aa": item.fecha
+        }),
+      };
+
+      try {
+        // Realiza la solicitud POST
+        const response = await fetch('http://127.0.0.1:5000/reserva/get_bloque', requestOptions);
+        const data = await response.json();
+
+        // Agrega la fecha a la data recibida
+        const dataConFecha = { fecha: item.fecha, ...data };
+
+        // Almacena la data en el array dataTotal
+        dataTotal.push(dataConFecha);
+      } catch (error) {
+        console.error('Error al hacer la solicitud POST:', error);
+        // Maneja el error según sea necesario, por ejemplo, continuar con la siguiente iteración
+      }
+    }
+
+    // Actualiza el estado con los datos de todas las llamadas
+    setDataFechaBloques(dataTotal);
+  };
+
+  // --------------------
+  // Función para obtener detalles de un ambiente
+  const detallesAmbiente = (selectedOptionAmbiente, cod_bloque, cod_dia) => {
+    if (selectedOptionAmb.length > 0) {
+      const imparticionActual = DataImparticiones.find(item => item.cod_imparticion == selectedOptionImparticion);
+      const [materia, grupo] = imparticionActual.imparticion.split(" - ");
+      const ambienteActual = DataAmbientesDisp.find(item => item.cod_ambiente == selectedOptionAmbiente);
+
+      // console.log(Data);
+      const reservaData = {
+        NombreUsuario: nombreUsuario,
+        Materia: materia,
+        Grupo: grupo,
+        NumeroEstudiantes: cantEstudiantes,
+        Ambiente: ambienteActual.nombre_amb,
+
+        cod_usuario: idUsuario,
+        cod_grupo: imparticionActual.cod_grupo,
+        cod_materia: imparticionActual.cod_materia,
+        cod_ambiente: ambienteActual.cod_ambiente,
+        cod_dia: cod_dia,
+        cod_bloque: cod_bloque
+      }
+      return reservaData;
+    }
+  };
+
+  // Función para obtener la hora de inicio
+  const obtenerHoraInicio = (texto) => {
+    // Obtener la parte de la hora de inicio del texto (ej. '09:45:00')
+    const horaInicio = texto.split(' - ')[0].split(': ')[1];
+    return horaInicio;
+  };
+
+  // Función para obtener la hora de fin
+  const obtenerHoraFin = (texto) => {
+    // Obtener la parte de la hora de fin del texto (ej. '11:15:00')
+    const horaFin = texto.split(' - ')[1];
+    return horaFin;
+  };
 
   const handleSeleccionFechaHora = ({ start, end }) => {
     const ambienteId = 1;
@@ -113,86 +227,329 @@ const Calendario = () => {
   };
 
   const handleReservar = (ambiente, start, end) => {
+    // console.log("-----------", ambiente, "-----------", start, "-----------", end);
     setReserva({ ambiente, start, end });
   };
 
+
   const confirmarReserva = () => {
     const { ambiente, start, end } = reserva;
-    const nuevosEventos = eventos.filter(evento => !(evento.start.getTime() === start.getTime() && evento.end.getTime() === end.getTime() && evento.resource.id === ambiente.id));
-    setEventos([...nuevosEventos, { start, end, title: `Reservado: ${ambiente.nombre}`, backgroundColor: 'green' }]);
-    setReserva(null);
+    const formReserva = {
+      cod_usuario: parseInt(ambiente.cod_usuario),
+      cod_grupo: ambiente.cod_grupo,
+      cod_materia: ambiente.cod_materia,
+      cod_ambiente: ambiente.cod_ambiente,
+      cod_dia: ambiente.cod_dia,
+      cod_bloque: ambiente.cod_bloque,
+      fecha_res: moment(reserva.start).format('YYYY-MM-DD'),
+      cantidad_estudiantes_res: cantActEst,
+      cantidad_estudiantes_res_total: cantEstudiantes
+    }
+
+    // Objeto con los datos de la reserva a enviar
+    const reservaData = {
+      cod_ambiente: ambiente.cod_ambiente,
+      start: start.toISOString(), // Convertir a formato ISO para enviar la fecha y hora
+      end: end.toISOString(), // Convertir a formato ISO para enviar la fecha y hora
+    };
+
+    console.log(formReserva);
+    console.log(JSON.stringify(formReserva));
+    fetch('http://127.0.0.1:5000/reserva/add_reserva', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formReserva),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al enviar la reserva');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Reserva enviada:', data);
+        navigate('/mis-reservas');
+        setReserva(null); // Reiniciar la reserva después de enviarla
+      })
+      .catch(error => {
+        console.error('Error al enviar la reserva:', error);
+      });
   };
+
 
   const cancelarReserva = () => {
     setReserva(null);
   };
 
-  return (
-    <div>
+  const handleChangeImparticion = (event) => {
+    const selectedValue = event.target.value;
 
-      <h2>Calendario</h2>
-      <div className="flex justify-between items-center mb-4">
-        <Link to="/mis-reservas" className="bg-primary text-white px-4 py-2 rounded-md">Mis Reservas</Link>
-        <div className="flex space-x-4">
-          <select className="bg-gray-200 p-2 rounded-md">
-            <option value="">Seleccionar Opción 1</option>
-            <option value="opcion1">Opción 1</option>
-            <option value="opcion2">Opción 2</option>
-          </select>
-          <select className="bg-gray-200 p-2 rounded-md">
-            <option value="">Seleccionar Opción 2</option>
-            <option value="opcion1">Opción 1</option>
-            <option value="opcion2">Opción 2</option>
-          </select>
+    // tengo el id de la impartición con eso obtenemos los datos
+    setSelectedOptionImparticion(selectedValue);
+    const imparticionActual = DataImparticiones.find(item => item.cod_imparticion == selectedValue);
+    setCantEstudiantes(imparticionActual.cantidad_estudiantes_imp);
+    setCantActualEst(imparticionActual.cantidad_estudiantes_imp)
+    fetch(`http://127.0.0.1:5000/reserva/ambientes_disponibles/${imparticionActual.cantidad_estudiantes_imp}`)
+      .then(response => response.json())
+      .then(data => setDataAmbientesDisp(data))
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+    setSelectedOptionAmb('')
+    setDataFechaAmbientes([])
+    setEventos([]);
+  };
+
+  const handleChangeCantEst = (event) => {
+    const inputValue = event.target.value;
+    if (inputValue === '' || (parseInt(inputValue) >= 0 && parseInt(inputValue) <= cantActEst * porcentajeMax)) {
+      setCantEstudiantes(inputValue);
+      fetch(`http://127.0.0.1:5000/reserva/ambientes_disponibles/${inputValue}`)
+        .then(response => response.json())
+        .then(data => setDataAmbientesDisp(data))
+        .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+      setSelectedOptionAmb('')
+      setDataFechaAmbientes([])
+      setEventos([]);
+    }
+  };
+
+  const handleChangeAmb = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOptionAmb(selectedValue);
+    // console.log(selectedValue);
+    fetch(`http://127.0.0.1:5000/reserva/get_calendario/${selectedValue}`)
+      .then(response => response.json())
+      .then(data => setDataFechaAmbientes(data))
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+
+    mostrarHorarioAmbiente();
+    // console.log(`Fue presionada por esta opción:  ${selectedValue}`);
+  };
+
+  const mostrarHorarioAmbiente = () => {
+    // console.log(Object.keys(DataFechaBloques).length);
+    // console.log(DataFechaBloques);
+
+    if (DataAmbientesDisp.length > 0) {
+      const getNombreAmbiente = (id_codAmbiente) => {
+        const ambiente = DataAmbientesDisp.find(amb => amb.cod_ambiente === id_codAmbiente);
+        return ambiente ? ambiente.nombre_amb : 'No encontrado';
+      };
+
+      const eventosPrueba = [];
+      if (DataFechaBloques.length > 0) {
+        DataFechaBloques.forEach((subArray, index) => {
+          // detallesAmbiente()
+
+          // console.log(`Elemento de DataFechaBloques ${index}:`);
+          const fecha = subArray.fecha
+          // console.log(fecha);
+          const bloquesUnAmbiente = Object.keys(subArray);
+
+          // console.log(bloquesUnAmbiente);
+          bloquesUnAmbiente.forEach((key, index) => {
+
+            console.log();
+            // Verificar si no es el último elemento
+            if (index !== bloquesUnAmbiente.length - 1) {
+              const obj = subArray[key];
+              const { cod_bloque } = obj;
+              const { cod_dia } = obj;
+              const { nombre_blo } = obj;
+              const evento = {
+                title: getNombreAmbiente(parseInt(selectedOptionAmb)),
+                start: moment(`${fecha} ${obtenerHoraInicio(nombre_blo)}`).toDate(),
+                end: moment(`${fecha} ${obtenerHoraFin(nombre_blo)}`).toDate(),
+                resource: detallesAmbiente(selectedOptionAmb, cod_bloque, cod_dia),
+                backgroundColor: 'green'
+              };
+              eventosPrueba.push(evento);
+            }
+
+          });
+
+        });
+
+        // console.log(eventosPrueba);
+      }
+      setEventos(eventosPrueba);
+      // console.log(eventosPrueba);
+    }
+
+
+  }
+  useEffect(() => {
+    mostrarHorarioAmbiente();
+  }, [selectedOptionAmb, DataFechaAmbientes, DataFechaBloques]);
+
+  // useEffect(() => {
+  //   realizarLlamadasFetch();
+  // }, [DataFechaBloques, setDataFechaBloques]);
+
+
+
+  return (
+    <Box
+      //estilo
+      sx={{
+        p: 4, // padding
+        bgcolor: "background.paper",
+        boxShadow: 8,
+        textAlign: 'center',
+        width: '100%',
+        margin: '0 auto', // centrado horizontal
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div>
+
+        <Typography variant="h5" component="h2" sx={{ mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>CALENDARIO</Typography>
+        <div className="flex justify-start items-start mb-4">
+          <Link to="/mis-reservas" className="bg-primary text-white px-10 py-2 rounded-md">
+            Mis Reservas
+          </Link>
         </div>
-      </div>
-      
-      <div className="bg-gray-100 p-4 shadow-md rounded-md">
-      <Calendar
-        localizer={localizer}
-        events={eventos}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        selectable
-        onSelectSlot={handleSeleccionFechaHora}
-        step={90}
-        timeslots={1}
-        min={new Date(2024, 4, 1, 8, 15)}
-        max={new Date(2024, 4, 12, 21, 45)}
-        eventPropGetter={eventPropGetter}
-        components={{
-          event: ({ event }) => (
-            <button
-              style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }}
-              onClick={() => handleReservar(event.resource, event.start, event.end)}
+
+        <div className="flex justify-between items-center mb-4 mt-5">
+
+          <div className="flex space-x-4">
+            <select
+              className="bg-gray-200 p-2 rounded-md"
+              onChange={handleChangeImparticion}
+              value={selectedOptionImparticion}
             >
-              {event.title}
-            </button>
-          ),
-        }}
-       
-      /></div>
-      {reserva && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <h3 className="text-lg font-semibold mb-4">Confirmar Reserva</h3>
-            <p><strong>Nombre:</strong> {reserva.ambiente.nombre}</p>
-            <p><strong>Ubicación:</strong> {reserva.ambiente.ubicacion}</p>
-            <p><strong>Descripción:</strong> {reserva.ambiente.descripcion}</p>
-            <p><strong>Capacidad:</strong> {reserva.ambiente.capacidadMinima} - {reserva.ambiente.capacidadMaxima}</p>
-            <p><strong>Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
-            <p><strong>Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
-            <div className="mt-4 flex justify-between">
-              <button onClick={confirmarReserva} className="bg-green-500 text-white px-4 py-2 rounded-md">Confirmar</button>
-              <button onClick={cancelarReserva} className="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</button>
-            </div>
+              <option value="" disabled>
+                Selecciona una opción
+              </option>
+              {DataImparticiones.length > 0 && (
+                DataImparticiones.map((data, index) => (
+                  <option key={index} value={data.cod_imparticion}>
+                    {data.imparticion}
+                  </option>
+                ))
+              )}
+            </select>
+
+            <TextField
+              sx={{ width: '160px' }}
+              label="Cantidad de estudiantes"
+              type="number"
+              value={cantEstudiantes}
+              onChange={handleChangeCantEst}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+
+            <select
+              className="bg-gray-200 p-2 rounded-md"
+              onChange={handleChangeAmb}
+              value={selectedOptionAmb}
+            >
+              <option value="" disabled>
+                Selecciona una opción
+              </option>
+              {DataAmbientesDisp.length > 0 && (
+                DataAmbientesDisp.map((data, index) => (
+                  <option key={index} value={`${data.cod_ambiente}`}>
+                    {data.nombre_amb}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
         </div>
-      )}
-      
-    </div>
+
+        <div className="bg-gray-100 p-4 shadow-md rounded-md">
+          <Calendar
+            localizer={localizer}
+            events={eventos}
+            startAccessor="start"
+            endAccessor="end"
+            messages={{
+              next: 'Siguiente',
+              previous: 'Anterior',
+              today: 'Hoy',
+              month: 'Mes',
+              week: 'Semana',
+              day: 'Día',
+              agenda: 'Agenda',
+              date: 'Fecha',
+              time: 'Hora',
+              event: 'Evento',
+              noEventsInRange: 'No hay eventos en este rango.',
+              showMore: total => `+ Ver más (${total})`,
+            }}
+            style={{ height: 500 }}
+            // selectable
+            // onSelectSlot={handleReservar}
+            step={90}
+            timeslots={1}
+            min={new Date(2024, 4, 1, 6, 45)}
+            max={new Date(2024, 4, 12, 21, 45)}
+            eventPropGetter={eventPropGetter}
+            components={{
+              event: ({ event }) => (
+                <button
+                  style={{ width: '100%', height: '100%', backgroundColor: event.backgroundColor }}
+                  onClick={() => handleReservar(event.resource, event.start, event.end)}
+                >
+                  {event.title}
+                </button>
+              ),
+            }}
+
+          />
+
+        </div>
+        {reserva && (
+
+          <div className="popup-overlay">
+            <div className="popup-content" style={{ backgroundColor: '#fff', padding: '60px', borderRadius: '8px', maxWidth: '500px' }}>
+              <Typography variant="h5" component="h2" sx={{ mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>CONFIRMAR RESERVA</Typography>
+              <div >
+                <p><strong>Hora de Inicio:</strong> {moment(reserva.start).format('HH:mm')}</p>
+                <p><strong>Hora de Fin:</strong> {moment(reserva.end).format('HH:mm')}</p>
+                <p><strong>Fecha:</strong> {moment(reserva.start).format('YYYY-MM-DD')}</p>
+                <p><strong>Nombre:</strong> {reserva.ambiente.NombreUsuario}</p>
+                <p><strong>Materia:</strong> {reserva.ambiente.Materia}</p>
+                <p><strong>Grupo:</strong> {reserva.ambiente.Grupo}</p>
+                <p><strong>Numero de estudiantes:</strong> {reserva.ambiente.NumeroEstudiantes}</p>
+                <p><strong>Ambiente:</strong> {reserva.ambiente.Ambiente}</p>
+              </div>
+              <div className="mt-4 flex justify-between">
+                <button onClick={confirmarReserva} className="bg-green-500 text-white px-4 py-2 rounded-md">Confirmar</button>
+                <button onClick={cancelarReserva} className="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</button>
+              </div>
+            </div>
+          </div>
+
+        )}
+      </div>
+    </Box>
   );
 };
 
 export default Calendario;
+
+
+// const reservaData = {
+//   NombreUsuario: nombreUsuario,
+//   Materia: selectedOptionImparticion,
+//   Grupo: selectedOptionImparticion,
+//   NumeroEstudiantes: cantEstudiantes,
+//   Ambiente: selectedOptionAmb
+// }
+
+// const addReserva = {
+//   "cod_usuario": 13,
+//   "cod_grupo": 1,
+//   "cod_materia": 5,
+//   "cod_ambiente": 3,
+//   "cod_dia": 7,
+//   "cod_bloque": 5,
+//   "fecha_res": "2024-07-01"
+// }
+// console.log(reservaData);

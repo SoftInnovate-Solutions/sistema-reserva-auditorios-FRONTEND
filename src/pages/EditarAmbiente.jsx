@@ -1,25 +1,18 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { Grid, Typography, useTheme } from '@mui/material';
-import TextField from "@mui/material/TextField";
-import Alert from '@mui/material/Alert';
-import './Registrar ambiente.css'
+import { Grid, Typography, useTheme, Box, Button, TextField, Alert, Autocomplete, IconButton } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import Autocomplete from '@mui/material/Autocomplete';
 import ConfirmUpdateModal from '../components/modalActualizacion';
-import { dark } from '@mui/material/styles/createPalette';
-
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import './Registrar ambiente.css';
 // Estilo para el modal
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 300,
+    width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     pt: 2,
     px: 4,
@@ -27,10 +20,14 @@ const style = {
     textAlign: 'center',
 };
 
+let porcentajeMin = 0.5;
+let porcentajeMax = 1.10;
+
 function EditarAmbiente() {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const navegarAdministrarAmb = () => { navigate('/administrar-ambiente'); }
     const theme = useTheme();
 
     //#region ----------------- PARA CAPTURAR --> EL DATO <-- DE CAMPOS QUE EXISTE EN EL REGISTRO: ---------------------------------------------------
@@ -47,6 +44,10 @@ function EditarAmbiente() {
     const [contenidoNumeroPiso, setContenidoNumeroPiso] = React.useState(null);
     const [contenidoTipoAmbiente, setContenidoTipoAmbiente] = React.useState(null);
     const [contenidoEstadoAmbiente, setContenidoEstadoAmbiente] = React.useState(null);
+
+    // Declaración, añadir varibales necesarias y uso de funcionalidad 
+    const [formData, setFormData] = useState("");
+    const [formDataCapacidad, setFormDataCapacidad] = useState("");
 
     // Manejo de cambios en tiempo real en campos de entrada de texto.
     const manejadorCambiosNombreAmbiente = (event) => {
@@ -339,7 +340,14 @@ function EditarAmbiente() {
                 },
                 body: JSON.stringify(formData),
             });
-            if (response.ok) {
+
+            const response2 = await fetch(`http://127.0.0.1:5000/ambiente/update_setting/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(formDataCapacidad),
+            });
+
+            if (response.ok && response2.ok) {
                 console.log('Ambiente modificado exitosamente');
                 navigate('/administrar-ambiente');
             } else {
@@ -350,9 +358,6 @@ function EditarAmbiente() {
             console.error('Error de red:', error);
         }
     };
-
-    // Declaración, añadir varibales necesarias y uso de funcionalidad 
-    const [formData, setFormData] = useState("");
 
     const rellenarDatos = () => {
 
@@ -368,6 +373,13 @@ function EditarAmbiente() {
             nombre_amb: nombreAmbiente,
             ubicacion_amb: ubicacion,
         };
+
+        const datosCapacidad = {
+            albergacion_max_amb: capacidad * porcentajeMax,
+            albergacion_min_amb: capacidad * porcentajeMin
+        }
+
+        setFormDataCapacidad(datosCapacidad);
         setFormData(datosAutocompletados);
     };
 
@@ -390,7 +402,7 @@ function EditarAmbiente() {
             if (contenidoTipoAmbiente != null && contenidoEstadoAmbiente != null && contenidoTipoEdificacion != null &&
                 contenidoFacultad != null && contenidoNumeroPiso != null) {
                 setOpenModal(true);
-            }else{
+            } else {
                 setMostrarAlerta(true);
             }
         } else {
@@ -508,10 +520,11 @@ function EditarAmbiente() {
         }
     }, [opcionesTipoAmbiente, tipoAmbiente, opcionesEstadoAmbiente, tipoEstadoAmbiente, opcionesTipoEdificacion, tipoEdificacion, opcionesFacultad, tipoFacultad, opcionesNumeroPiso, tipoNumeroPiso]);
 
-    // console.log(encontrarIndicePorLabel(opcionesTipoAmbiente, tipoAmbiente[0]))
-    // console.log(opcionesTipoAmbiente[1]);
-    //#endregion
-    // console.log(opcionesTipoAmbiente);
+    const abrirGoogleMaps = () => {
+        const url = 'https://www.google.com/maps/@-17.3936905,-66.1448234,16z?entry=ttu';
+        window.open(url, '_blank');
+    };
+
     return (
         <>
             <Box
@@ -520,17 +533,32 @@ function EditarAmbiente() {
                     p: 4, // padding
                     bgcolor: "background.paper",
                     boxShadow: 8,
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    // width: '80%',
+                    width: '600px',
+                    margin: '0 auto', // centrado horizontal
+                    justifyContent: 'center',
+                    alignItems: 'center',
                 }}
             >
-                <Typography variant="h5" component="h2" sx={{ mb: 5, color: theme.palette.text.primary }}>ACTUALIZACIÓN DE AMBIENTE</Typography>
+
+                <Grid container alignItems="center" sx={{ mb: 3 }}>
+                    <Grid item >
+                        <IconButton onClick={navegarAdministrarAmb} aria-label="back">
+                            <ArrowBackIcon fontSize='large' />
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12} xl={12} >
+                        <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary }}>ACTUALIZACIÓN DE AMBIENTE</Typography>
+                    </Grid>
+                </Grid>
 
                 <Grid container item xs={12} sm={12} md={12} lg={12} xl={12} direction="column"
                     justifyContent="center"
                     alignItems="center">
                     <TextField
                         className='form-inputs'
-                        // id="nombreAmbiente"
+                        sx={{ mb: 1.5 }}
                         value={nombreAmbiente}
                         onChange={manejadorCambiosNombreAmbiente}
                         onBlur={validarNombreAmbiente}
@@ -541,6 +569,7 @@ function EditarAmbiente() {
                     />
                     <TextField
                         className='form-inputs'
+                        sx={{ mb: 1.5 }}
                         value={descripcion}
                         onChange={manejadorCambiosDescripcion}
                         onBlur={validarDescripcion}
@@ -551,21 +580,29 @@ function EditarAmbiente() {
                         maxRows={3}
                         variant="standard"
                     />
+
+                    <Grid alignItems="center" sx={{ mb: 1.5, marginLeft: '50px' }}>
+
+                        <TextField
+                            className='form-inputs'
+                            value={ubicacion}
+                            onChange={manejadorCambiosUbicacion}
+                            onBlur={validarUbicacion}
+                            error={errorUbicacion}
+                            helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
+                            label="Ubicación: "
+                            multiline
+                            maxRows={2}
+                            variant="standard"
+                        />
+                        <IconButton onClick={abrirGoogleMaps} aria-label="back">
+                            <AddLocationAltIcon fontSize='large' />
+                        </IconButton>
+
+                    </Grid>
+
                     <TextField
-                        className='form-inputs'
-                        value={ubicacion}
-                        onChange={manejadorCambiosUbicacion}
-                        onBlur={validarUbicacion}
-                        error={errorUbicacion}
-                        helperText={errorUbicacion ? mensajeErrorUbicacion : ''}
-                        label="Ubicación: "
-                        multiline
-                        maxRows={2}
-                        variant="standard"
-                    />
-                    <TextField
-                        sx={{ mb: 3 }}
-                        className='form-inputs'
+                        sx={{ mb: 3, width: '15%' }}
                         value={capacidad}
                         onChange={manejadorCambiosCapacidad}
                         onBlur={validarCapacidad}
@@ -624,7 +661,7 @@ function EditarAmbiente() {
                             <TextField {...params} label={"Facultad: "} />
                         )}
                     />
-                    <Autocomplete
+                    {/* <Autocomplete
                         disablePortal
                         value={contenidoNumeroPiso}
                         options={opcionesNumeroPiso}
@@ -635,7 +672,7 @@ function EditarAmbiente() {
                         renderInput={(params) => (
                             <TextField {...params} label={"Piso: "} />
                         )}
-                    />
+                    /> */}
 
                     <Button type="submit" variant="contained" onClick={handleOpenModal} sx={{ marginTop: '18px' }} className='formboton'>
                         ACTUALIZAR

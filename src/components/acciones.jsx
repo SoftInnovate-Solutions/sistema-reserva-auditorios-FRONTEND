@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
+import { Modal, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, IconButton } from '@mui/material';
 import './acction.css'
 import { useNavigate } from 'react-router-dom';
 import ApiMostraRestante from '../components/apiMostrarRestante';
 import ModalEliminacion from '../components/modalEliminacion';
+import ModalPeriodo from '../components/modalAvisoPeriodo'
 import Tooltip from '@mui/material/Tooltip';
 
 //iconos
@@ -11,10 +12,12 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Acciones = (id) => {
 
     const navigate = useNavigate();
+    const [hayPeriodoReservas, setHayPeriodoReservas] = useState(false);
 
     //variables mostrar
     const [open, setOpen] = useState(false);
@@ -24,6 +27,25 @@ const Acciones = (id) => {
     //variables modal eliminar
     const [openModal, setOpenModal] = useState(false);
     const [datos, setDatos] = useState([]);
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    //variables para el modal de aviso del periodo
+    const [openModalPeriodo, setOpenModalPeriodo] = useState(false);
+
+    const handleOpenModalPeriodo = () => {
+        setOpenModalPeriodo(true);
+    };
+
+    const handleCloseModalPeriodo = () => {
+        setOpenModalPeriodo(false);
+    };
 
     useEffect(() => {
         // console.log("lo que llega primero:",id);
@@ -40,13 +62,7 @@ const Acciones = (id) => {
         }
     }, [id]);
 
-    const reloadCurrentRoute = () => {
-        navigate('/');
-        setTimeout(() => {
-            navigate('/administrar-ambiente');
-        }, 1);
-    };
-
+    //-------------------------  M  O  S  T  R  A  R  ------------------------------
     const handleMostrar = () => {
         if (id != null || id != undefined) {
             // console.log("segundo",id.id);
@@ -62,11 +78,18 @@ const Acciones = (id) => {
         handleOpen();
     };
 
+    //-------------------------  E  D  I  T  A  R  ------------------------------
     const handleEditar = () => {
         if (id.id != undefined) {
             console.log('Editar', id.id.idTabla);
             navigate(`/editar-ambiente/${id.id.idTabla}`);
         }
+    };
+
+    //-------------------------  E  L  I  M  I  N  A  R  ------------------------------
+    const handleConfirmDelete = () => {
+        console.log('Eliminar', id.id.idTabla);
+        handleEliminar();
     };
 
     const handleEliminar = async () => {
@@ -79,6 +102,8 @@ const Acciones = (id) => {
             });
             if (response.ok) {
                 console.log('Ambiente eliminado exitosamente');
+                reloadCurrentRoute();
+                handleCloseModal();
             } else {
                 const errorMessage = await response.text();
                 console.error('Error al eliminar el ambiente:', errorMessage);
@@ -88,28 +113,40 @@ const Acciones = (id) => {
         }
     };
 
-    const handleOpenModal = () => {
-        setOpenModal(true);
+    const reloadCurrentRoute = () => {
+        navigate('/');
+        setTimeout(() => {
+            navigate('/administrar-ambiente');
+        }, 1);
     };
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
-
-    };
-
-    const handleConfirmDelete = () => {
-        console.log('Eliminacion confirmada');
-        console.log('Eliminar', id.id.idTabla);
-        handleEliminar();
-        // window.location.reload();
-        reloadCurrentRoute();
-        handleCloseModal();
-    };
-
+    //-------------------------  C  O  N  F  I  G  U  R  A  C  I  O  N  E  S  ------------------------------
 
     const handleConfiguraciones = () => {
         console.log('Setings', id.id.idTabla);
-        navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+        fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+            .then(response => response.json())
+            .then(data => {
+                // if (data != undefined) {
+                    if (Object.keys(data).length > 0) {
+                        if(data.fecha_inicio_general_per === "2000-01-01" && data.fecha_fin_general_per === "2000-01-01"){
+                           handleOpenModalPeriodo();
+                        }else{
+                            navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+                        }
+                    }else{
+                        handleOpenModalPeriodo();
+                    }
+                // } else {
+                //     handleOpenModalPeriodo();
+                // }
+            })
+            .catch(error => console.error("Error al cargar periodo de reservas:", error));
+    };
+
+    const abrirEnNuevaVentana = (e) => {
+        e.preventDefault(); // Prevenir la navegación por defecto
+        window.open(datos.ubicacion_amb, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -132,6 +169,11 @@ const Acciones = (id) => {
                     handleClose={handleCloseModal}
                     handleDelete={handleConfirmDelete}
                 />
+                <ModalPeriodo
+                    open={openModalPeriodo}
+                    handleClose={handleCloseModalPeriodo}
+                />
+
             </div>
             <div>
                 <Dialog
@@ -143,7 +185,10 @@ const Acciones = (id) => {
                     <DialogTitle>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span>Detalles de ambiente</span>
-                            <Button onClick={handleClose} style={{ minWidth: 'auto', padding: '0' }}>x</Button>
+                            <IconButton onClick={handleClose} aria-label="back">
+                                <CloseIcon fontSize='large' />
+                            </IconButton>
+                            {/* <Button onClick={handleClose} style={{ minWidth: 'auto', padding: '0' }}>x</Button> */}
                         </div>
                     </DialogTitle>
                     <DialogContent dividers>
@@ -153,9 +198,12 @@ const Acciones = (id) => {
                                 <p><strong>Descripción:</strong> {datos.descripcion_amb}</p>
                                 <p>
                                     <strong>
-                                        Ubicación:
-                                        {' '}
-                                        <Link href={datos.ubicacion_amb}>{datos.ubicacion_amb}</Link>
+                                        Ubicación:{' '}
+                                        <Link href={datos.ubicacion_amb} passHref>
+                                            <a onClick={abrirEnNuevaVentana} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+                                                {datos.ubicacion_amb}
+                                            </a>
+                                        </Link>
                                     </strong>
                                 </p>
                                 <p><strong>Capacidad:</strong> {datos.capacidad_amb}</p>

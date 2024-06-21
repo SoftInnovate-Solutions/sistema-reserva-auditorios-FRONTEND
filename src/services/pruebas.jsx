@@ -1,29 +1,83 @@
-import * as React from 'react';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es'; // Importa la localización en español
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import Popover from '@mui/material/Popover';
+import Box from '@mui/material/Box';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
-// Configura dayjs para usar español
-dayjs.locale('es');
+function DateRangePicker() {
+  const [anchorEl, setAnchorEl] = useState(null);
 
-export default function ResponsiveDatePickers() {
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+ 
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'date-range-popover' : undefined;
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <DemoContainer
-        components={[
-          'DatePicker',
-        ]}
+    <div>
+      <TextField
+        onClick={handleClick}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <DateRangeIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder="Seleccione el rango de fechas"
+        variant="outlined"
+        fullWidth
+      />
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
       >
-        <DemoItem label="Fecha de inicio">
-          <DatePicker openTo="month" views={['year', 'month', 'day']} />
-        </DemoItem>
-        <DemoItem label="Fecha Fin">
-          <DatePicker openTo="month" views={['year', 'month', 'day']} />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider>
+        <Box p={2}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
+            <TextField
+              type="date"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="Desde"
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
+            <CalendarTodayIcon sx={{ marginRight: '8px' }} />
+            <TextField
+              type="date"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="Hasta"
+            />
+          </div>
+        </Box>
+      </Popover>
+    </div>
   );
 }
+
+export default DateRangePicker;

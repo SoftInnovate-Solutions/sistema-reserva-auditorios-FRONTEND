@@ -31,16 +31,13 @@ import Calendario from './pages/Calendario';
 // import Pruebas from './services/pruebas.jsx'
 
 function App() {
-  const [rol, setRol] = useState(localStorage.getItem('saveRol'));
+  const [rol, setRol] = useState(sessionStorage.getItem('saveRol'));
 
-  const handleLogin = (userData) => {
-    // console.log(userData.rol);
-    // console.log(localStorage.getItem('nombre_usuario'));
-    // console.log(localStorage.getItem('cod_usuario'));
-    // console.log(userData);
+  const handleLogin = (userData) => { 
+    console.log(userData);
     setRol(userData.rol);
-    if (localStorage.getItem('saveRol') == null) {
-      localStorage.setItem('saveRol', userData.rol)
+    if (sessionStorage.getItem('saveRol') == null) {
+      sessionStorage.setItem('saveRol', userData.rol)
     } 
   };
 

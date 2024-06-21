@@ -93,7 +93,7 @@ const ArrayComponent = ({ idTipo, idEstado, idEdificacion, idFacultad, idPiso })
       <p><strong>Estado de ambiente:</strong> {tiposEstadoAmbiente}</p>
       <p><strong>Tipo de edificación:</strong> {tiposEdificacion}</p>
       <p><strong>Facultad:</strong> {tiposFacultad}</p>
-      <p><strong>Piso:</strong> {tiposNumeroPiso}</p>
+      {/* <p><strong>Piso:</strong> {tiposNumeroPiso}</p> */}
     </div>
   );
 };
