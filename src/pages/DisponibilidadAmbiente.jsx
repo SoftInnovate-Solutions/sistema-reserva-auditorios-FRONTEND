@@ -235,7 +235,7 @@ function DisponibilidadAmbiente() {
   const rellenarDatos = () => {
     const idd = parseInt(id)
     const datosAutocompletados = {
-      cod_ambiente: idd,  // Reemplaza con el valor adecuado si es necesario
+      cod_ambiente: idd,  
       configuracion: bloquesAmbientes,
       fecha_inicio_general_per: general_inicio,
       fecha_fin_general_per: general_final

@@ -1,32 +1,44 @@
-/* styles.css */
-
 .chart {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    height: 300px;
-    width: 70%;
-    border: 1px solid #ccc;
-    padding: 10px;
-  }
-  
-  .bar {
-    flex: 1;
-    margin-right: 10px;
-    background-color: blue;
-    transition: height 0.5s ease; /* Transición suave al cambiar la altura */
-    position: relative;
-  }
-  
-  .bar:last-child {
-    margin-right: 0; /* Elimina el margen derecho del último elemento */
-  }
-  
-  .label {
-    position: absolute;
-    bottom: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: black;
-  }
-  
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center; 
+  height: 300px;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: auto; 
+}
+
+
+.bar {
+  flex: 1;
+  margin-right: 5%;
+  background-color: rgb(50, 233, 50);
+  transition: height 0.5s ease;
+  position: relative;
+}
+
+.barUsuario {
+  flex: 1;
+  margin-right: 5%;
+  background-color: rgb(14, 144, 161);
+  transition: height 0.5s ease;
+  position: relative;
+}
+
+.bar:last-child {
+  margin-right: 0;
+}
+
+.barUsuario:last-child {
+  margin-right: 0;
+}
+
+.label {
+  position: absolute;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: black;
+}

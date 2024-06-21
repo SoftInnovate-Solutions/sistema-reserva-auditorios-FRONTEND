@@ -43,28 +43,28 @@ export const NavBar = () => {
     <>
       {rol === 'administrador' ? (
         <header className="header-container text-gray-600 body-font">
-          <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-            <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-              <img src="src/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
-              <span className="ml-3 text-xl font-semibold text-dark" >
-                SISTEMA DE RESERVACIÓN DE AMBIENTES
-              </span>
-            </a>
-            <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-
+          <div className="container mx-auto p-5">
+            <div className="flex flex-col md:flex-row items-center">
+              <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+                <img src="src/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
+                <span className="ml-3 text-xl font-semibold text-dark" >
+                  SISTEMA DE RESERVACIÓN DE AMBIENTES
+                </span>
+              </a>
+            </div>
+            <div className="flex flex-wrap items-center justify-center md:justify-end">
               <NavLink to="/administrar-ambiente" className={({ isActive }) => isActive ? activeLink : btnLink}>Administrar ambiente</NavLink>
               <NavLink to="/administrar-periodo" className={({ isActive }) => isActive ? activeLink : btnLink}>Administrar periodo de reserva</NavLink>
+              <NavLink to="/visualizar-usuarios" className={({ isActive }) => isActive ? activeLink : btnLink}>Visualizar información de usuarios</NavLink>
               <NavLink to="/dashboard" className={({ isActive }) => isActive ? activeLink : btnLink}>Dashboard</NavLink>
-              <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeLink : btnLink}>Historial</NavLink>
-            </nav>
-            <NavLink to="/inicio" className={({ isActive }) => isActive ? activeLink : btnLink}>Inicio</NavLink>
-            <NavLink to="/salir" className={`btn-logout`} onClick={handleLogout}>Salir</NavLink>
-            {/* <button className ="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Button
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" className ="w-4 h-4 ml-1" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </button>*/}
+              <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeLink : btnLink}>Notificaciones</NavLink>
+
+              <NavLink to="/inicio" className={({ isActive }) => isActive ? activeLink : btnLink}>Inicio</NavLink>
+              <NavLink to="/salir" className={`btn-logout`} onClick={handleLogout}>Salir</NavLink>
+            </div>
           </div>
+
+
         </header>
       ) : (
         <>

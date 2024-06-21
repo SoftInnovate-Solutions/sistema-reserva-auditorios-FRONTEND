@@ -7,6 +7,7 @@ import ModalElimExamenes from '../components/modalElimExamenes';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { useNavigate } from 'react-router-dom';
+import AddAllDisponibilidad from '../components/addAllDisponibilidad';
 
 // Configura dayjs para usar español
 dayjs.locale('es');
@@ -124,7 +125,7 @@ const PeriodoReservaAdmin = () => {
             setVerEliminar(true);
             setBotonEstado(false);
             setPeriodos(data);
-            console.log(data);
+            //console.log(data);
           }
 
           if (data.fecha_inicio_general_per != "2000-01-01") {
@@ -140,22 +141,6 @@ const PeriodoReservaAdmin = () => {
       .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
   }, []);
 
-  const actualizarAmbosPeriodos = () => {
-    const storedPeriodos = localStorage.getItem('periodos');
-    const storedPeriodosExa = localStorage.getItem('periodosExa');
-
-    if (storedPeriodos) {
-      setVerEliminar(true);
-      setBotonEstado(false);
-      setPeriodos(JSON.parse(storedPeriodos));
-    }
-
-    if (storedPeriodosExa) {
-      setVerEliminarExa(true);
-      setBotonEstadoExa(false);
-      setPeriodosExa(JSON.parse(storedPeriodosExa));
-    }
-  }
 
   // - - - - - - - - - - - - - - - G U A R D A D O - - - - - - - - - - - -
   const handleSave = async () => {
@@ -179,7 +164,7 @@ const PeriodoReservaAdmin = () => {
         reloadCurrentRoute();
       } else {
         const errorMessage = await response.text();
-        console.log(formData);
+        //console.log(formData);
         console.error('Error al crear el periodo:', errorMessage);
       }
     } catch (error) {
@@ -211,7 +196,7 @@ const PeriodoReservaAdmin = () => {
         reloadCurrentRoute();
       } else {
         const errorMessage = await response.text();
-        console.log(formData);
+        //console.log(formData);
         console.error('Error al crear el periodo:', errorMessage);
       }
     } catch (error) {
@@ -251,7 +236,7 @@ const PeriodoReservaAdmin = () => {
             console.log('Periodo de reserva eliminado correctamente:', data);
             localStorage.removeItem('periodosExa');
             setBotonEstado(true);
-            reloadCurrentRoute();
+            // reloadCurrentRoute();
           })
       })
       .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
@@ -407,7 +392,6 @@ const PeriodoReservaAdmin = () => {
       }}
     >
       <Typography variant="h5" component="h2" sx={{ color: theme.palette.text.primary }}>ADMINISTRACIÓN DE PERIODOS DE RESERVA Y EXAMENES</Typography>
-
       <Grid container spacing={2}>
         <Grid item md={6} lg={6} xl={6}>
           <Typography variant="h6" component="h2" sx={{ color: theme.palette.text.primary, marginTop: "10px" }}>Periodo de reservas</Typography>
@@ -512,9 +496,13 @@ const PeriodoReservaAdmin = () => {
 
             )}
             {verEliminarExa && (
-              <IconButton edge="end" aria-label="delete" onClick={() => handleOpenModalElimExa()}>
-                <Delete />
-              </IconButton>
+              <>
+                <IconButton edge="end" aria-label="delete" onClick={() => handleOpenModalElimExa()}>
+                  <Delete />
+                </IconButton>
+                <AddAllDisponibilidad />
+              </>
+
             )}
 
             <ModalElimExamenes
@@ -551,6 +539,7 @@ const PeriodoReservaAdmin = () => {
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, marginTop: '22px' }}
                   />
+
                 </Grid>
               </Grid>
 
@@ -567,7 +556,6 @@ const PeriodoReservaAdmin = () => {
               <Delete />
             </IconButton>
           </>)}
-
         </Grid>
 
       </Grid>

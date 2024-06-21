@@ -20,7 +20,7 @@ import AdministrarPeriodo from './pages/AdministrarPeriodo.jsx';
 import Dashboard from './pages/Dashboard';
 import Notificaciones from './pages/Notificaciones';
 import DisponibilidadAmbiente from './pages/DisponibilidadAmbiente.jsx';
-
+import DatosUsuarios from './pages/DatosUsuarios.jsx'
 
 //RUTAS USUARIO
 import MisReservas from './pages/MisReservas';
@@ -66,6 +66,7 @@ function App() {
                     <Route path='/editar-ambiente/:id' element={<EditarAmbiente />}></Route>
                     <Route path='/disponibilidad-ambiente/:id' element={<DisponibilidadAmbiente />}></Route>                    
                     <Route path='/administrar-periodo' element={<AdministrarPeriodo />}></Route>
+                    <Route path='/visualizar-usuarios' element={<DatosUsuarios />}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
                     <Route path='/notificaciones' element={<Notificaciones />}></Route>
                     <Route path='*' element={<Navigate to="/"></Navigate>}></Route>
