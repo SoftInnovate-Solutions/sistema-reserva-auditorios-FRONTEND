@@ -36,6 +36,7 @@ export const NavBar = () => {
   };
 
   useEffect(() => {
+    handleIconClick();
     obtenerRol();
   }, []);
   return (
@@ -117,7 +118,6 @@ export const NavBar = () => {
                 <Typography variant="body1">Tipo usuario: {rolUsuario} </Typography>
               </Box>
             </Box>
-
           )}
         </>
       )}

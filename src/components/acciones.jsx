@@ -127,15 +127,19 @@ const Acciones = (id) => {
         fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
             .then(response => response.json())
             .then(data => {
-                if (data != undefined) {
-                    if (Object.keys(data).length != 0) {
-                        navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+                // if (data != undefined) {
+                    if (Object.keys(data).length > 0) {
+                        if(data.fecha_inicio_general_per === "2000-01-01" && data.fecha_fin_general_per === "2000-01-01"){
+                           handleOpenModalPeriodo();
+                        }else{
+                            navigate(`/disponibilidad-ambiente/${id.id.idTabla}`);
+                        }
                     }else{
                         handleOpenModalPeriodo();
                     }
-                } else {
-                    handleOpenModalPeriodo();
-                }
+                // } else {
+                //     handleOpenModalPeriodo();
+                // }
             })
             .catch(error => console.error("Error al cargar periodo de reservas:", error));
     };

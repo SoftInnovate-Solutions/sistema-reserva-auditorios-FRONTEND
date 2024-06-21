@@ -57,34 +57,46 @@ const MisReservas = () => {
       .then(data => {
         // Añadir un id a cada elemento del array
         const dataConIds = data.map((element, index) => {
-          return { ...element, id: index + 1 }; 
+          return { ...element, id: index + 1 };
         });
 
         // Establecer las reservas con los ids añadidos
         setReservas(dataConIds);
       })
       .catch(error => console.error("Error al carga imparticiones:", error));
+
     if (rol === 'Docente') {
       fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_docente`)
         .then(response => response.json())
         .then(data => {
-          if (data.existe === 1) {
+          if (data.existe > 0) {
             setEstaHabilitado(true);
           } else {
-            setFechaInicio(periodoReserva[0].docenteInicio);
-            setFechaFin(periodoReserva[0].docenteFin);
+            fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+              .then(response => response.json())
+              .then(data => {
+                setFechaInicio(data.fecha_inicio_docente_per);
+                setFechaFin(data.fecha_fin_docente_per);
+              })
+              .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
           }
         })
         .catch(error => console.error("Error al carga imparticiones:", error));
+
     } else {
       fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_auxiliar`)
         .then(response => response.json())
         .then(data => {
-          if (data.existe === 1) {
+          if (data.existe > 0) {
             setEstaHabilitado(true);
           } else {
-            setFechaInicio(periodoReserva[0].auxiliarInicio);
-            setFechaFin(periodoReserva[0].auxiliarFin)
+            fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+            .then(response => response.json())
+            .then(data => {
+              setFechaInicio(data.fecha_inicio_auxiliar_per);
+              setFechaFin(data.fecha_fin_auxiliar_per)
+            })
+            .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
           }
         })
         .catch(error => console.error("Error al carga imparticiones:", error));

@@ -98,7 +98,7 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMin = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      console.log(capacidadActual * porcentajeMin);
+      // console.log(capacidadActual * porcentajeMin);
       // if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual * porcentajeMin && parseInt(inputNumero) <= capacidadActual)) {
       if (inputNumero === '' || (parseInt(inputNumero) >= 0 && parseInt(inputNumero) <= capacidadActual)) {
         setCapacidadMin(inputNumero);
@@ -115,8 +115,7 @@ function DisponibilidadAmbiente() {
   const manejadorCambiosCapacidadMax = (event) => {
     const inputNumero = event.target.value;
     if (/^\d*$/.test(inputNumero)) {
-      // if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= capacidadActual * porcentajeMax)) {
-      if (inputNumero === '' || (parseInt(inputNumero) >= capacidadActual && parseInt(inputNumero) <= 1000)) {
+      if (inputNumero === '' || (parseInt(inputNumero) >= 0 && parseInt(inputNumero) <= 1000)) {
         setCapacidadMax(inputNumero);
       }
       setErrorCapacidadMax(false);
@@ -146,33 +145,20 @@ function DisponibilidadAmbiente() {
 
   const validarCapacidadMax = () => {
     if (!capacidadMax) {
-      setMensajeErrorCapacidadMax('la capacidad es requerido.');
+      setMensajeErrorCapacidadMax('La capacidad es requerido.');
       setErrorCapacidadMax(true);
       return true;
     }
 
-    if (capacidadMax.length > 4) {
-      setMensajeErrorCapacidadMax('La capacidad no debe exceder los 4 cifras');
+    if (parseInt(capacidadMax) < parseInt(capacidadActual)){
+      setMensajeErrorCapacidadMax('La capacidad maxima no debe ser menor a la capacidad actual');
       setErrorCapacidadMax(true);
       return true;
     }
-    setMensajeErrorCapacidadMax('');
+
+      setMensajeErrorCapacidadMax('');
     setErrorCapacidadMax(false);
     return false;
-  }
-
-  const validarMinMax = () => {
-    if (capacidadMin < capacidadMax) {
-      setErrorCapacidadMax(false);
-      setErrorCapacidadMin(false);
-      return false;
-    } else {
-      setMensajeErrorCapacidadMax('La capacidad debe ser un valor maximo.');
-      setMensajeErrorCapacidadMin('La capacidad debe ser un valor minimo');
-      setErrorCapacidadMax(true);
-      setErrorCapacidadMin(true);
-      return true;
-    }
   }
 
   const validarTodosLosInputs = () => {
@@ -200,16 +186,20 @@ function DisponibilidadAmbiente() {
 
   //ENVIO FORMULARIO
   const manejarEnvio = async () => {
-
-    try {
-      await enviarPeriodo();
-      // console.log("++++++ => Formulario enviado");
-      if (!open) {
-        handleOpen();
+    if(validarTodosLosInputs()){
+      try {
+        await enviarPeriodo();
+        // console.log("++++++ => Formulario enviado");
+        if (!open) {
+          handleOpen();
+        }
+      } catch (error) {
+        console.error('Error al enviar el formulario:', error);
       }
-    } catch (error) {
-      console.error('Error al enviar el formulario:', error);
+    }else{
+      setMostrarAlerta(true);
     }
+
   };
 
   const enviarPeriodo = async () => {

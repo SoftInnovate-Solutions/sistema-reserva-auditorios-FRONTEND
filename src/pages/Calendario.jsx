@@ -57,7 +57,7 @@ const Calendario = () => {
   const [reserva, setReserva] = useState(null);
 
   let porcentajeMin = 0.01;
-  let porcentajeMax = 1;
+  let porcentajeMax = 10;
 
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/reserva/imparticiones/${idUsuario}`)
@@ -75,7 +75,7 @@ const Calendario = () => {
           return !reservasActuales.some(reserva => reserva.materia === materia && reserva.grupo === grupo);
         });
         
-        setDataImparticiones(imparticionesFiltradas);
+        setDataImparticiones(data);
       })
       .catch(error => console.error("Error al carga imparticiones:", error));
   }, [idUsuario]);
@@ -302,7 +302,7 @@ const Calendario = () => {
 
   const handleChangeCantEst = (event) => {
     const inputValue = event.target.value;
-    if (inputValue === '' || (parseInt(inputValue) >= cantActEst * porcentajeMin && parseInt(inputValue) <= cantActEst * porcentajeMax)) {
+    if (inputValue === '' || (parseInt(inputValue) >= 0 && parseInt(inputValue) <= cantActEst * porcentajeMax)) {
       setCantEstudiantes(inputValue);
       fetch(`http://127.0.0.1:5000/reserva/ambientes_disponibles/${inputValue}`)
         .then(response => response.json())
@@ -484,7 +484,7 @@ const Calendario = () => {
             }}
             style={{ height: 500 }}
             // selectable
-            // onSelectSlot={handleSeleccionFechaHora}
+            // onSelectSlot={handleReservar}
             step={90}
             timeslots={1}
             min={new Date(2024, 4, 1, 6, 45)}

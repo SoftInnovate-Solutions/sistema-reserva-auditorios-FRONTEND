@@ -15,8 +15,8 @@ const PeriodoReservaAdmin = () => {
 
   const navigate = useNavigate();
   const theme = useTheme();
-  const [periodos, setPeriodos] = useState([]);
-  const [periodosExa, setPeriodosExa] = useState([]);
+  const [periodos, setPeriodos] = useState({});
+  const [periodosExa, setPeriodosExa] = useState({});
   const [editing, setEditing] = useState(null);
 
   // inicializacion de botones de estados para mostrar o ocultar
@@ -27,7 +27,6 @@ const PeriodoReservaAdmin = () => {
   const [openExamenes, setOpenExamenes] = useState(false);
   const [verEliminarExa, setVerEliminarExa] = useState(false);
   const [botonEstadoExa, setBotonEstadoExa] = useState(true);
-  const [enviadoExa, setEnviadoExa] = useState(false)
 
   // Variables del formulario
   const [fechaInicioGeneral, setFechaInicioGeneral] = useState("");
@@ -75,6 +74,11 @@ const PeriodoReservaAdmin = () => {
 
     // setFechaInicioDocente(""); setFechaFinDocente("");
     // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
+
+    if (Object.keys(periodosExa).length === 0) {
+      setFechaInicioGeneral("2000-01-01"); setFechaFinGeneral("2000-01-01");
+    }
+
     setFechaInicioDocente("2024-06-01");
     setFechaFinDocente("2024-06-30");
 
@@ -92,6 +96,10 @@ const PeriodoReservaAdmin = () => {
     // setFechaInicioAuxiliar(""); setFechaFinAuxiliar("");
     // setFechaNotificacion(''); setHoraNotificacion("");
     // setFechaInicioGeneral(""); setFechaFinGeneral("");
+    if (Object.keys(periodos).length === 0) {
+      setFechaInicioDocente("2000-01-01"); setFechaFinDocente("2000-01-01");
+      setFechaInicioAuxiliar("2000-01-01"); setFechaFinAuxiliar("2000-01-01");
+    }
 
     setFechaInicioGeneral("2024-07-01");
     setFechaFinGeneral("2024-07-15");
@@ -100,22 +108,36 @@ const PeriodoReservaAdmin = () => {
     setHoraNotificacion("08:00");
   }
 
-  // Cargar periodos de reserva desde localStorage
+  // Cargar datos de la BASE DE DATOS
   useEffect(() => {
-    const storedPeriodos = localStorage.getItem('periodos');
-    const storedPeriodosExa = localStorage.getItem('periodosExa');
+    fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
+      .then(response => response.json())
+      .then(data => {
 
-    if (storedPeriodos) {
-      setVerEliminar(true);
-      setBotonEstado(false);
-      setPeriodos(JSON.parse(storedPeriodos));
-    }
+        if (Object.keys(data).length > 0) {
+          if (data.fecha_inicio_docente_per != "2000-01-01") {
+            setFechaInicioDocente(data.fecha_inicio_docente_per);
+            setFechaFinDocente(data.fecha_fin_docente_per);
+            setFechaInicioAuxiliar(data.fecha_inicio_auxiliar_per);
+            setFechaFinAuxiliar(data.fecha_fin_auxiliar_per);
 
-    if (storedPeriodosExa) {
-      setVerEliminarExa(true);
-      setBotonEstadoExa(false);
-      setPeriodosExa(JSON.parse(storedPeriodosExa));
-    }
+            setVerEliminar(true);
+            setBotonEstado(false);
+            setPeriodos(data);
+            console.log(data);
+          }
+
+          if (data.fecha_inicio_general_per != "2000-01-01") {
+            setFechaInicioGeneral(data.fecha_inicio_general_per);
+            setFechaFinGeneral(data.fecha_fin_general_per);
+
+            setVerEliminarExa(true);
+            setBotonEstadoExa(false);
+            setPeriodosExa(data);
+          }
+        }
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
   }, []);
 
   const actualizarAmbosPeriodos = () => {
@@ -136,101 +158,162 @@ const PeriodoReservaAdmin = () => {
   }
 
   // - - - - - - - - - - - - - - - G U A R D A D O - - - - - - - - - - - -
-  const handleSave = () => {
-    actualizarAmbosPeriodos;
-
-    if (periodosExa.length > 0) {
-      if (periodosExa[0].generalInicio != '2020-01-01') {
-        setFechaInicioGeneral(periodosExa[0].docenteInicio);
-        setFechaFinGeneral(periodosExa[0].docenteFin);
-      }
-    } else {
-      if (fechaFinGeneral != "") {
-        setFechaInicioGeneral("2020-01-01");
-        setFechaFinGeneral("2020-01-01");
-      }
-    }
-    // Crear nuevo periodo
-    const newPeriodo = {
-      id: periodos.length + 1,
-      generalInicio: fechaInicioGeneral,
-      generalFin: fechaFinGeneral,
-      docenteInicio: fechaInicioDocente,
-      docenteFin: fechaFinDocente,
-      auxiliarInicio: fechaInicioAuxiliar,
-      auxiliarFin: fechaFinAuxiliar,
-      NotificacionF: fechaNotificaion,
-      NotificacionH: horaNotificacion
-    };
-    const newPeriodos = [...periodos, newPeriodo];
-    setPeriodos(newPeriodos);
-    saveToLocalStorage(newPeriodos);
-
-    setOpenReserva(false);
-    setVerEliminar(true);
-    setBotonEstado(false);
-    console.log('Periodo de reservas creado existosamentes');
-
-  };
-
-
-  const handleSaveExa = async () => {
+  const handleSave = async () => {
     try {
-      if (!enviadoExa) {// Verifica si ya se ha enviado la solicitud
-        actualizarAmbosPeriodos;
-        rellenarDatos();
-        const response = await fetch('http://127.0.0.1:5000/periodo_reserva/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        if (response.ok) {
-          // Crear nuevo periodo
-          const newPeriodo = {
-            id: periodosExa.length + 1, generalInicio: fechaInicioGeneral, generalFin: fechaFinGeneral,
-            docenteInicio: fechaInicioDocente, docenteFin: fechaFinDocente, auxiliarInicio: fechaInicioAuxiliar, auxiliarFin: fechaFinAuxiliar,
-            NotificacionF: fechaNotificaion, NotificacionH: horaNotificacion
-          };
-          const newPeriodos = [...periodosExa, newPeriodo];
-          setPeriodosExa(newPeriodos);
-          saveToLocalStorageExa(newPeriodos);
-
-          setOpenExamenes(false);
-          setVerEliminarExa(true);
-          setBotonEstadoExa(false);
-
-          console.log('Periodo registrado existosamentes');
-          setEnviadoExa(true); // Marca la solicitud como enviada
-        } else {
-          const errorMessage = await response.text();
-          console.log(formData);
-          console.error('Error al crear el periodo:', errorMessage);
+      rellenarDatos();
+      const response = await fetch('http://127.0.0.1:5000/periodo_reserva/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setOpenReserva(false);
+        setVerEliminar(true);
+        setBotonEstado(false);
+        console.log('Periodo de reservas creado existosamentes');
+        if (Object.keys(periodosExa).length > 0) {
+          handleDeleteAnterior();
         }
+        reloadCurrentRoute();
       } else {
-        console.log('Ya se ha enviado la solicitud'); // Opcional: puedes mostrar un mensaje o realizar otra acción si la solicitud ya se ha enviado
+        const errorMessage = await response.text();
+        console.log(formData);
+        console.error('Error al crear el periodo:', errorMessage);
       }
     } catch (error) {
       console.error('Error de red:', error);
     }
   };
 
-  // Guardar periodos de reserva en localStorage
-  const saveToLocalStorage = (newPeriodos) => {
-    localStorage.setItem('periodos', JSON.stringify(newPeriodos));
+
+  const handleSaveExa = async () => {
+    try {
+      rellenarDatos();
+      const response = await fetch('http://127.0.0.1:5000/periodo_reserva/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+
+        setOpenExamenes(false);
+        setVerEliminarExa(true);
+        setBotonEstadoExa(false);
+        console.log('Periodo registrado existosamentes');
+
+        if (Object.keys(periodos).length > 0) {
+          handleDeleteAnterior();
+        }
+        reloadCurrentRoute();
+      } else {
+        const errorMessage = await response.text();
+        console.log(formData);
+        console.error('Error al crear el periodo:', errorMessage);
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
   };
 
-  const saveToLocalStorageExa = (newPeriodos) => {
-    localStorage.setItem('periodosExa', JSON.stringify(newPeriodos));
+  // - - - - - - - E L I M I N A C I Ó N - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+  const handleDeleteAnterior = () => {
+    fetch('http://127.0.0.1:5000/periodo_reserva/periodo_general')
+      .then(response => response.json())
+      .then(data => {
+        fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva - 1}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Periodo de reserva eliminado correctamente:', data);
+            localStorage.removeItem('periodosExa');
+            setBotonEstado(true);
+            reloadCurrentRoute();
+          })
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
   };
 
-  // - - - - - - - E L I M I N A C I Ó N - - - - - - - - - - - - - - - 
+
   const handleDelete = () => {
-    console.log('Periodo de reserva eliminado correctamente. LS');
-    localStorage.removeItem('periodos');
-    setBotonEstado(true);
-    reloadCurrentRoute();
+    fetch('http://127.0.0.1:5000/periodo_reserva/periodo_general')
+      .then(response => response.json())
+      .then(data => {
+        fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Periodo de reserva eliminado correctamente:', data);
+            localStorage.removeItem('periodosExa');
+            setBotonEstado(true);
+            reloadCurrentRoute();
+          })
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+
+    if (Object.keys(periodosExa).length > 0) {
+      fetch('http://127.0.0.1:5000/periodo_reserva/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fecha_inicio_general_per: fechaInicioGeneral, fecha_fin_general_per: fechaFinGeneral,
+          fecha_inicio_docente_per: "2000-01-01", fecha_fin_docente_per: "2000-01-01",
+          fecha_inicio_auxiliar_per: "2000-01-01", fecha_fin_auxiliar_per: "2000-01-01",
+          notificacion_per: "2024-05-12 08:30:00"
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('LO LOGRO', data);
+          reloadCurrentRoute();
+          // reloadCurrentRoute();
+        })
+    }
+  };
+
+  const handleDeleteExa = () => {
+    fetch('http://127.0.0.1:5000/periodo_reserva/periodo_general')
+      .then(response => response.json())
+      .then(data => {
+        fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Periodo de reserva eliminado correctamente:', data);
+            setBotonEstadoExa(true);
+            reloadCurrentRoute();
+          })
+      })
+      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+
+    if (Object.keys(periodos).length > 0) {
+      fetch('http://127.0.0.1:5000/periodo_reserva/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fecha_inicio_general_per: "2000-01-01", fecha_fin_general_per: "2000-01-01",
+          fecha_inicio_docente_per: fechaInicioDocente, fecha_fin_docente_per: fechaFinDocente,
+          fecha_inicio_auxiliar_per: fechaInicioAuxiliar, fecha_fin_auxiliar_per: fechaFinAuxiliar,
+          notificacion_per: "2024-05-12 08:30:00"
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('LO LOGRO', data);
+          reloadCurrentRoute();
+          // reloadCurrentRoute();
+        })
+    }
   };
 
   const handleUpss = () => {
@@ -250,23 +333,34 @@ const PeriodoReservaAdmin = () => {
       .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
   };
 
-  const handleDeleteExa = () => {
+  // - - - - - - - - - - - - - - O T R A S  F U N C I O N E S - - - - - - - - - - - - - - - -
+  // Declaración, añadir varibales necesarias y uso de funcionalidad 
+  const rellenarDatos = () => {
+    const datos = {
+      fecha_inicio_general_per: fechaInicioGeneral, fecha_fin_general_per: fechaFinGeneral,
+      fecha_inicio_docente_per: fechaInicioDocente, fecha_fin_docente_per: fechaFinDocente,
+      fecha_inicio_auxiliar_per: fechaInicioAuxiliar, fecha_fin_auxiliar_per: fechaFinAuxiliar,
+      notificacion_per: "2024-05-12 08:30:00"
+    };
+    setFormData(datos);
+  };
 
-    fetch('http://127.0.0.1:5000/periodo_reserva/periodo_general')
-      .then(response => response.json())
-      .then(data => {
-        fetch(`http://127.0.0.1:5000/periodo_reserva/delete/${data.cod_periodo_reserva}`, {
-          method: 'DELETE'
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Periodo de reserva eliminado correctamente:', data);
-            localStorage.removeItem('periodosExa');
-            setBotonEstadoExa(true);
-            reloadCurrentRoute();
-          })
-      })
-      .catch(error => console.error("Error al cargar los tipos de ambiente:", error));
+  const rellenarDatos2 = () => {
+    var iniGeneral; var finGeneral;
+    if (fechaInicioGeneral === "") {
+      iniGeneral = "2000-01-01";
+      finGeneral = "2000-01-01"
+    } else {
+      iniGeneral = fechaInicioGeneral;
+      finGeneral = fechaFinGeneral
+    }
+    const datos = {
+      fecha_inicio_general_per: iniGeneral, fecha_fin_general_per: finGeneral,
+      fecha_inicio_docente_per: fechaInicioDocente, fecha_fin_docente_per: fechaFinDocente,
+      fecha_inicio_auxiliar_per: fechaInicioAuxiliar, fecha_fin_auxiliar_per: fechaFinAuxiliar,
+      notificacion_per: "2024-05-12 08:30:00"
+    };
+    setFormData(datos);
   };
 
   const reloadCurrentRoute = () => {
@@ -276,52 +370,25 @@ const PeriodoReservaAdmin = () => {
     }, 1);
   };
 
-  // - - - - - - - - - - - - - - O T R A S  F U N C I O N E S - - - - - - - - - - - - - - - -
-  // Declaración, añadir varibales necesarias y uso de funcionalidad 
-  const rellenarDatos = () => {
-    // console.log(periodos);
-    if (periodos.length > 0) {
-      if (periodos[0].docenteInicio != '2020-01-01') {
-        setFechaInicioDocente(periodos[0].docenteInicio);
-        setFechaFinDocente(periodos[0].docenteFin);
-
-        setFechaInicioAuxiliar(periodos[0].auxiliarInicio);
-        setFechaFinAuxiliar(periodos[0].auxiliarFin);
-
-        periodos[0].fechaInicioGeneral = fechaInicioGeneral;
-        periodos[0].fechaFinGeneral = fechaFinGeneral;
-      }
-    } else {
-      if (fechaFinGeneral != "") {
-        setFechaInicioDocente("2020-01-01");
-        setFechaFinDocente("2020-01-01");
-
-        setFechaInicioAuxiliar("2020-01-01");
-        setFechaFinAuxiliar("2020-01-01");
-      }
-    }
-
-    const datos = {
-      fecha_inicio_general_per: fechaInicioGeneral, fecha_fin_general_per: fechaFinGeneral,
-      fecha_inicio_docente_per: fechaInicioDocente, fecha_fin_docente_per: fechaFinDocente,
-      fecha_inicio_auxiliar_per: fechaInicioAuxiliar, fecha_fin_auxiliar_per: fechaFinAuxiliar,
-      notificacion_per: fechaNotificaion + " " + horaNotificacion
-    };
-    setFormData(datos);
-  };
-
-
-
   useEffect(() => {
     rellenarDatos();
   }, [fechaInicioGeneral, fechaFinGeneral, fechaInicioDocente, fechaFinDocente, fechaInicioAuxiliar,
-    fechaFinAuxiliar, fechaNotificaion, horaNotificacion, setFormData, enviadoExa]);
+    fechaFinAuxiliar, fechaNotificaion, horaNotificacion, setFormData]);
+
+  useEffect(() => {
+    rellenarDatos2();
+  }, [fechaInicioGeneral, fechaFinGeneral, fechaInicioDocente, fechaFinDocente, fechaInicioAuxiliar,
+    fechaFinAuxiliar, fechaNotificaion, horaNotificacion, setFormData]);
 
   const invertirFechas = (periodo) => {
-    const [year, month, day] = periodo.split("-");
-    const fechaReformateado = `${day}/${month}/${year}`;
+    if (periodo !== undefined) {
+      const [year, month, day] = periodo.split("-");
+      const fechaReformateado = `${day}/${month}/${year}`;
 
-    return `${fechaReformateado}`;
+      return `${fechaReformateado}`;
+    } else {
+      return "No disponible";
+    }
   };
 
   return (
@@ -346,15 +413,15 @@ const PeriodoReservaAdmin = () => {
           <Typography variant="h6" component="h2" sx={{ color: theme.palette.text.primary, marginTop: "10px" }}>Periodo de reservas</Typography>
 
           <List >
-            {periodos.map((periodo) => (
-              <ListItem key={periodo.id} alignItems="flex-start" sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                <ListItemText sx={{ mb: 1 }} primary="Docente:" />
-                <ListItemText sx={{ mb: 2, marginLeft: '50px' }} primary={`${invertirFechas(periodo.docenteInicio)}  -  ${invertirFechas(periodo.docenteFin)}`} />
+            {Object.keys(periodos).length > 0 && (
+              <ListItem key={periodos.id} alignItems="flex-start" sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                <ListItemText sx={{ mb: 1, marginLeft: '50px' }} primary="Docente:" />
+                <ListItemText sx={{ mb: 2, marginLeft: '100px' }} primary={`${invertirFechas(periodos.fecha_inicio_docente_per)}  -  ${invertirFechas(periodos.fecha_fin_docente_per)}`} />
 
-                <ListItemText sx={{ mb: 1 }} primary="Auxiliar:" />
-                <ListItemText sx={{ mb: 2, marginLeft: '50px' }} primary={`${invertirFechas(periodo.auxiliarInicio)}  - ${invertirFechas(periodo.auxiliarFin)}`} />
+                <ListItemText sx={{ mb: 1, marginLeft: '50px' }} primary="Auxiliar:" />
+                <ListItemText sx={{ mb: 2, marginLeft: '100px' }} primary={`${invertirFechas(periodos.fecha_inicio_auxiliar_per)}  - ${invertirFechas(periodos.fecha_fin_auxiliar_per)}`} />
               </ListItem>
-            ))}
+            )}
             {verEliminar && (
               <IconButton edge="end" aria-label="delete" onClick={() => handleOpenModalEliminar()}>
                 <Delete />
@@ -437,13 +504,13 @@ const PeriodoReservaAdmin = () => {
           <Typography variant="h6" component="h2" sx={{ color: theme.palette.text.primary, marginTop: "10px" }}>Periodo de examenes</Typography>
 
           <List >
-            {periodosExa.map((periodo) => (
+            {Object.keys(periodosExa).length > 0 && (
 
-              <ListItem key={periodo.id} alignItems="flex-start" sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                <ListItemText sx={{ mb: 2, marginLeft: '75px' }} primary={` ${invertirFechas(periodo.generalInicio)}  -  ${invertirFechas(periodo.generalFin)}`} />
+              <ListItem key={periodosExa.id} alignItems="flex-start" sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                <ListItemText sx={{ mb: 2, marginLeft: '75px' }} primary={` ${invertirFechas(periodosExa.fecha_inicio_general_per)}  -  ${invertirFechas(periodosExa.fecha_fin_general_per)}`} />
               </ListItem>
 
-            ))}
+            )}
             {verEliminarExa && (
               <IconButton edge="end" aria-label="delete" onClick={() => handleOpenModalElimExa()}>
                 <Delete />

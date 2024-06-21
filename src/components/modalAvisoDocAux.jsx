@@ -8,12 +8,17 @@ import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 
 const ModalAvisoPeriodo = forwardRef(({ rol, fechaInicio, fechaFin, open, handleClose }, ref) => {
+console.log(fechaInicio);
 
     const invertirFechas = (periodo) => {
+        if(periodo !== undefined){
         const [year, month, day] = periodo.split("-");
         const fechaReformateado = `${day}/${month}/${year}`;
 
         return `${fechaReformateado}`;
+        }else{
+            return "";
+        }
     };
 
     console.log(fechaInicio);
@@ -30,7 +35,7 @@ const ModalAvisoPeriodo = forwardRef(({ rol, fechaInicio, fechaFin, open, handle
             <Box>
                 <DialogTitle id="alert-dialog-title">{"Aviso"}</DialogTitle>
                 <DialogContent>
-                    {fechaInicio != "" ? (
+                    {fechaInicio !== undefined ? (
                         <DialogContentText id="alert-dialog-description">
                             Usted no puede realizar la reserva, ya que el periodo de reservas para {rol}, es del {invertirFechas(fechaInicio)} al {invertirFechas(fechaFin)}.
                         </DialogContentText>
