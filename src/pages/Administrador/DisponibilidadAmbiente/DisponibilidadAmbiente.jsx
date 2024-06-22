@@ -222,7 +222,7 @@ function DisponibilidadAmbiente() {
 
       if (response.ok && response2.ok) {
         handleOpen();
-        console.log('ambiente ajustado correctamente');
+        //console.log('ambiente ajustado correctamente');
       } else {
         const errorMessage = await response.text();
         console.error('Error al actualizar el periodo:', errorMessage);

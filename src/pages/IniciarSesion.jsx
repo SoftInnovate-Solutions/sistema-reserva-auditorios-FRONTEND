@@ -47,7 +47,7 @@ const IniciarSesion = ({ login }) => {
         login({ rol: "administrador" });
         sessionStorage.setItem('nombre_usuario', adminRes.data.nombre_usu);
         sessionStorage.setItem('cod_usuario', adminRes.data.cod_usuario);
-        console.log("Ingresaste como Administrador");
+        //console.log("Ingresaste como Administrador");
       } else {
         const userRes = await postData('http://127.0.0.1:5000/final/iniciar_sesion', {
           contrasenia_usu: contrasenia,
@@ -59,11 +59,11 @@ const IniciarSesion = ({ login }) => {
           sessionStorage.setItem('nombre_usuario', userRes.data.nombre_usu);
           sessionStorage.setItem('cod_usuario', userRes.data.cod_usuario);
           sessionStorage.setItem('rol_usuario', userRes.data.cod_tipo_final);
-          console.log("Ingresaste como Usuario");
+          //console.log("Ingresaste como Usuario");
         } else {
           setError('Credenciales incorrectas');
           setShowError(true);
-          console.log("Credenciales incorrectas");
+          //console.log("Credenciales incorrectas");
         }
       }
     } catch (err) {
@@ -83,7 +83,7 @@ const IniciarSesion = ({ login }) => {
 
       <div style={{ borderRadius: '20px 0px 0px 20px', width: '500px', height: '500px', padding: 45, color: '#73114B', fontSize: '20px', fontWeight: 'bold', background: '#FFE6C9' }}>
         <h1>Facilitamos la organización de tus clases, exámanes y eventos académicos</h1>
-        <div style={{ width: '300px', height: '300px', backgroundImage: 'url("./src/imagenes/estudio.png")', backgroundSize: 'cover', padding: 10 }}>
+        <div style={{ width: '300px', height: '300px', backgroundImage: 'url("./src/assets/imagenes/estudio.png")', backgroundSize: 'cover', padding: 10 }}>
 
         </div>
         <h2>Ingresa para programar tus actividades en los espacios disponibles de la universidad.</h2>

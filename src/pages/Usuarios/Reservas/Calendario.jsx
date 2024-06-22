@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, useTheme, Typography, Button, Grid } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendario.css';
-import MisReservas from './MisReservas';
-import { NavLink, useNavigate } from 'react-router-dom';
 
-import Politica2 from '../components/politica2'
-import Politica1 from '../components/politica1'
+import Politica2 from '../../../components/politica2'
+import Politica1 from '../../../components/politica1'
 
 moment.updateLocale('es', {
   months: [

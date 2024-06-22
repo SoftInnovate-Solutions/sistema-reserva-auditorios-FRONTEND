@@ -1,10 +1,10 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { Grid, Typography, useTheme, Box, Button, TextField, Alert, Autocomplete, IconButton } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import ConfirmUpdateModal from '../components/modalActualizacion';
+import ConfirmUpdateModal from '../../../components/modalActualizacion';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-import './Registrar ambiente.css';
+import './RegistrarAmbiente.css';
 // Estilo para el modal
 const style = {
     position: 'absolute',
@@ -348,7 +348,7 @@ function EditarAmbiente() {
             });
 
             if (response.ok && response2.ok) {
-                console.log('Ambiente modificado exitosamente');
+                // console.log('Ambiente modificado exitosamente');
                 navigate('/administrar-ambiente');
             } else {
                 const errorMessage = await response.text();

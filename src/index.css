@@ -8,7 +8,7 @@
     }
 }
 body {
-    background-image: url('imagenes/fondo2.webp'); /* Ruta real de tu imagen de fondo */
+    background-image: url('assets/imagenes/fondo2.webp'); /* Ruta real de tu imagen de fondo */
     background-size: cover; /* La imagen se ajustará para cubrir todo el cuerpo */
     background-position: center; /* Centra la imagen de fondo */
     background-repeat: no-repeat; /* Evita que la imagen de fondo se repita */

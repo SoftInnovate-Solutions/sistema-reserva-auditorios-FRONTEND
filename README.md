@@ -15,22 +15,15 @@ Currently, two official plugins are available:
         > npm run dev
 
 # Estructura del proyecto
-proyecto/
+
+sistema-reserva-auditorios/
 │
+├── node_modules/
 ├── public/
-│   ├── index.html
-│   └── assets/
-│       ├── css/
-│       ├── js/
-│       ├── images/
-│       └── fonts/
 │
 ├── src/
 │   ├── assets/
-│   │   ├── css/
-│   │   ├── js/
-│   │   ├── images/
-│   │   └── fonts/
+│   │   ├── imagenes/
 │   │
 │   ├── components/
 │   │   ├── Header/
@@ -58,21 +51,18 @@ proyecto/
 │   │       ├── Contact.js
 │   │       └── Contact.css
 │   │
-│   ├── services/
-│   │   └── ApiService.js
-│   │
-│   ├── router/
-│   │   ├── AppRouter.js
-│   │   └── routes.js
-│   │
-│   ├── App.js
-│   ├── index.js
-│   └── index.css
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
 │
-├── node_modules/
+├── .gitignore
+├── index-html
+├── package-lock.json
 ├── package.json
+├── postcss.config.js
 ├── README.md
-└── .gitignore
+└── tailwind.config.js
 
 Breakpoint	Rango de Ancho de Pantalla
 xs	0px o más

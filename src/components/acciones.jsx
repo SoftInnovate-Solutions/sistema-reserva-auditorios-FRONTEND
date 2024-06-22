@@ -81,14 +81,14 @@ const Acciones = (id) => {
     //-------------------------  E  D  I  T  A  R  ------------------------------
     const handleEditar = () => {
         if (id.id != undefined) {
-            console.log('Editar', id.id.idTabla);
+            // console.log('Editar', id.id.idTabla);
             navigate(`/editar-ambiente/${id.id.idTabla}`);
         }
     };
 
     //-------------------------  E  L  I  M  I  N  A  R  ------------------------------
     const handleConfirmDelete = () => {
-        console.log('Eliminar', id.id.idTabla);
+        // console.log('Eliminar', id.id.idTabla);
         handleEliminar();
     };
 
@@ -101,7 +101,7 @@ const Acciones = (id) => {
                 },
             });
             if (response.ok) {
-                console.log('Ambiente eliminado exitosamente');
+                // console.log('Ambiente eliminado exitosamente');
                 reloadCurrentRoute();
                 handleCloseModal();
             } else {
@@ -123,7 +123,7 @@ const Acciones = (id) => {
     //-------------------------  C  O  N  F  I  G  U  R  A  C  I  O  N  E  S  ------------------------------
 
     const handleConfiguraciones = () => {
-        console.log('Setings', id.id.idTabla);
+        // console.log('Setings', id.id.idTabla);
         fetch(`http://127.0.0.1:5000/periodo_reserva/periodo_general`)
             .then(response => response.json())
             .then(data => {

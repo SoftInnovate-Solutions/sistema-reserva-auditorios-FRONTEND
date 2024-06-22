@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, useTheme, Typography, Button, Grid } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../pages/Calendario.css';
-import MisReservas from '../pages/MisReservas';
-import { NavLink, useNavigate } from 'react-router-dom';
+import '../pages/Usuarios/Reservas/Calendario.css';
 
 moment.updateLocale('es', {
     months: [
@@ -211,8 +209,8 @@ const Calendario = () => {
             end: end.toISOString(), // Convertir a formato ISO para enviar la fecha y hora
         };
 
-        console.log(formReserva);
-        console.log(JSON.stringify(formReserva));
+        // console.log(formReserva);
+        // console.log(JSON.stringify(formReserva));
         fetch('http://127.0.0.1:5000/reserva/add_reserva', {
             method: 'POST',
             headers: {
@@ -227,7 +225,7 @@ const Calendario = () => {
                 return response.json();
             })
             .then(data => {
-                console.log('Reserva enviada:', data);
+                //console.log('Reserva enviada:', data);
                 navigate('/mis-reservas');
                 setReserva(null); // Reiniciar la reserva después de enviarla
             })
@@ -319,7 +317,6 @@ const Calendario = () => {
                     // console.log(bloquesUnAmbiente);
                     bloquesUnAmbiente.forEach((key, index) => {
 
-                        console.log();
                         // Verificar si no es el último elemento
                         if (index !== bloquesUnAmbiente.length - 1) {
                             const obj = subArray[key];
@@ -416,8 +413,8 @@ const Calendario = () => {
                         )}
                     </select>
                     {verCapacidad && (
-                        <Typography sx={{marginTop: '14px'}} variant="body1">
-                           Capacidad: {capMinAmb} - {capMaxAmb}
+                        <Typography sx={{ marginTop: '14px' }} variant="body1">
+                            Capacidad: {capMinAmb} - {capMaxAmb}
                         </Typography>
                     )}
 

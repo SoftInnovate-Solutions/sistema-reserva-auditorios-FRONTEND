@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import ModalPeriodo from '../components/modalAvisoDocAux'
+import ModalPeriodo from '../../components/modalAvisoDocAux'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +31,7 @@ const MisReservas = () => {
       })
       .then(data => {
         // Maneja la respuesta si es necesario
-        console.log('Reserva eliminada:', data);
+        //console.log('Reserva eliminada:', data);
         fetchReservas();
         setOpenSuccessModal(true);
       })

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, esES, GridToolbarContainer } from '@mui/x-data-grid';
-import ToolBarPersonalizado from '../components/ToolBarPersonalizado';
-import './ListarFiltrarAmbiente.css';
+import ToolBarPersonalizado from '../../../components/ToolBarPersonalizado';
+import './AdministrarAmbiente.css';
 import { Box, Typography, useTheme, Button, Grid, Tooltip } from '@mui/material';
-import Autocompletado from '../components/autocompletadoLista';
+import Autocompletado from '../../../components/autocompletadoLista';
 import { NavLink, useNavigate } from 'react-router-dom';
-import Accion from '../components/acciones';
+import Accion from '../../../components/acciones';
 import FilterIcon from '@mui/icons-material/FilterAlt';
 
 export default function DataTable() {
@@ -65,7 +65,7 @@ export default function DataTable() {
   const [idActual, setIdActual] = useState([]);
 
   const handleRowClick = (params) => {
-    console.log(params.row.id - 1);
+    //console.log(params.row.id - 1);
     let idActual = idsTabla[params.row.id - 1]
     setIdActual(idsTabla[params.row.id - 1]);
   };
@@ -101,7 +101,7 @@ export default function DataTable() {
   };
 
   const filtrarPorTipoAmbiente = () => {
-    console.log(identificacionTipoAmbiente);
+    //console.log(identificacionTipoAmbiente);
     if (identificacionTipoAmbiente != null) {
       fetch(`http://127.0.0.1:5000/ambiente/filter/"${identificacionTipoAmbiente},${identificacionFacultad},${identificacionTipoEdificacion},${identificacionEstadoAmbiente}"`)
         .then(response => response.json())

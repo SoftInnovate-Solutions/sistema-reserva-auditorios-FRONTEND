@@ -2,39 +2,34 @@ import React, { useEffect, useState } from 'react';
 
 
 import Layaut from "./components/layaut";
-import Button from "./components/button";
 import NavBar from "./components/navbar";
-import Bloques from "./components/bloques";
 
 import { Navigate, Routes, Route } from "react-router-dom";
 import Inicio from './pages/inicio';
 import Footer from "./components/footer";
-
 import IniciarSesion from './pages/IniciarSesion';
 
 //RUTAS ADMINISTRADOR
-import AdminstrarAmbiente from './pages/AdministrarAmbiente.jsx';
-import RegistrarAmbiente from './pages/Registrar ambiente';
-import EditarAmbiente from './pages/EditarAmbiente.jsx'
-import AdministrarPeriodo from './pages/AdministrarPeriodo.jsx';
-import Dashboard from './pages/Dashboard';
-import Notificaciones from './pages/Notificaciones';
-import DisponibilidadAmbiente from './pages/DisponibilidadAmbiente.jsx';
-import DatosUsuarios from './pages/DatosUsuarios.jsx'
+import AdminstrarAmbiente from './pages/Administrador/AdministrarAmbiente/AdministrarAmbiente.jsx';
+import RegistrarAmbiente from './pages/Administrador/RegistrarEditarAmbiente/RegistrarAmbiente.jsx';
+import EditarAmbiente from './pages/Administrador/RegistrarEditarAmbiente/EditarAmbiente.jsx'
+import AdministrarPeriodo from './pages/Administrador/AdministrarPeriodo.jsx';
+import Dashboard from './pages/Administrador/Dahsboard/Dashboard.jsx';
+import Notificaciones from './pages/Administrador/Notificaciones.jsx';
+import DisponibilidadAmbiente from './pages/Administrador/DisponibilidadAmbiente/DisponibilidadAmbiente.jsx';
+import DatosUsuarios from './pages/Administrador/DatosUsuarios.jsx'
 
 //RUTAS USUARIO
-import MisReservas from './pages/MisReservas';
-import Historial from './pages/historial';
-import NotificacionesUsuario from './pages/NotificacionesUsuario';
-import Calendario from './pages/Calendario';
-
-// import Pruebas from './services/pruebas.jsx'
+import MisReservas from './pages/Usuarios/MisReservas.jsx';
+import Historial from './pages/Usuarios/historial.jsx';
+import NotificacionesUsuario from './pages/Usuarios/Notificaciones.jsx';
+import Calendario from './pages/Usuarios/Reservas/Calendario.jsx';
 
 function App() {
   const [rol, setRol] = useState(sessionStorage.getItem('saveRol'));
 
   const handleLogin = (userData) => { 
-    console.log(userData);
+    // console.log(userData);
     setRol(userData.rol);
     if (sessionStorage.getItem('saveRol') == null) {
       sessionStorage.setItem('saveRol', userData.rol)

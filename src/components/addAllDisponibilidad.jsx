@@ -75,7 +75,7 @@ const ArrayComponent = () => {
                         return response.json();
                     })
                     .then(data => {
-                        console.log("Ya esta no", data);
+                        // console.log("Ya esta no", data);
                         handleOpenModalHabilitado();
                         setVerBoton(false);
                     })
@@ -85,7 +85,7 @@ const ArrayComponent = () => {
 
             });
         } else {
-            console.log("No existe periodo de examenes para habilitar ambientes");
+            // console.log("No existe periodo de examenes para habilitar ambientes");
         }
     }
 

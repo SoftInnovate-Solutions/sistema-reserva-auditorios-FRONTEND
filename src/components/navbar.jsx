@@ -46,7 +46,7 @@ export const NavBar = () => {
           <div className="container mx-auto p-5">
             <div className="flex flex-col md:flex-row items-center">
               <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                <img src="src/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
+                <img src="src/assets/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
                 <span className="ml-3 text-xl font-semibold text-dark" >
                   SISTEMA DE RESERVACIÓN DE AMBIENTES
                 </span>
@@ -71,7 +71,7 @@ export const NavBar = () => {
           <header className="header-container text-gray-600 body-font">
             <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
               <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                <img src="src/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
+                <img src="src/assets/imagenes/logo.jpg" alt="Imagen de ejemplo" className="w-12 h-12 rounded-full" />
                 <span className="ml-3 text-xl font-semibold text-white" style={{ textShadow: '0 1px 5px #000' }}>
                   SISTEMA DE RESERVACIÓN DE AMBIENTES
                 </span>

@@ -1,10 +1,10 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, useTheme, Button, Box, Modal, Alert, TextField, Grid, IconButton } from '@mui/material';
-import Autocompletado from '../components/autocompletado';
+import Autocompletado from '../../../components/autocompletado';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-import './Registrar ambiente.css'
+import './RegistrarAmbiente.css'
 
 // Estilo para el modal
 const style = {
@@ -205,7 +205,7 @@ function RegistrarAmbiente() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        console.log('Ambiente creado exitosamente');
+        //console.log('Ambiente creado exitosamente');
       } else {
         const errorMessage = await response.text();
         console.error('Error al crear el ambiente:', errorMessage);

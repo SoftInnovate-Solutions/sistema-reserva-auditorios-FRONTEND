@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Typography, useTheme, Button, Grid } from '@mui/material';
 
 const NotificacionesUsuario = () => {

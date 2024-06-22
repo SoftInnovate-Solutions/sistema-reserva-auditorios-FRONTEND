@@ -2,12 +2,12 @@ import { Typography, useTheme, Grid, Box } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import ModalElimReservas from '../components/modalElimReservas';
-import ModalElimExamenes from '../components/modalElimExamenes';
+import ModalElimReservas from '../../components/modalElimReservas';
+import ModalElimExamenes from '../../components/modalElimExamenes';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { useNavigate } from 'react-router-dom';
-import AddAllDisponibilidad from '../components/addAllDisponibilidad';
+import AddAllDisponibilidad from '../../components/addAllDisponibilidad';
 
 // Configura dayjs para usar español
 dayjs.locale('es');
@@ -157,7 +157,7 @@ const PeriodoReservaAdmin = () => {
         setOpenReserva(false);
         setVerEliminar(true);
         setBotonEstado(false);
-        console.log('Periodo de reservas creado existosamentes');
+        //console.log('Periodo de reservas creado existosamentes');
         if (Object.keys(periodosExa).length > 0) {
           handleDeleteAnterior();
         }
@@ -188,7 +188,7 @@ const PeriodoReservaAdmin = () => {
         setOpenExamenes(false);
         setVerEliminarExa(true);
         setBotonEstadoExa(false);
-        console.log('Periodo registrado existosamentes');
+        //console.log('Periodo registrado existosamentes');
 
         if (Object.keys(periodos).length > 0) {
           handleDeleteAnterior();
@@ -214,7 +214,7 @@ const PeriodoReservaAdmin = () => {
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Periodo de reserva eliminado correctamente:', data);
+            //console.log('Periodo de reserva eliminado correctamente:', data);
             localStorage.removeItem('periodosExa');
             setBotonEstado(true);
             reloadCurrentRoute();
@@ -233,7 +233,7 @@ const PeriodoReservaAdmin = () => {
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Periodo de reserva eliminado correctamente:', data);
+            //console.log('Periodo de reserva eliminado correctamente:', data);
             localStorage.removeItem('periodosExa');
             setBotonEstado(true);
             // reloadCurrentRoute();
@@ -256,7 +256,7 @@ const PeriodoReservaAdmin = () => {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('LO LOGRO', data);
+          //console.log('LO LOGRO', data);
           reloadCurrentRoute();
           // reloadCurrentRoute();
         })
@@ -272,7 +272,7 @@ const PeriodoReservaAdmin = () => {
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Periodo de reserva eliminado correctamente:', data);
+            //console.log('Periodo de reserva eliminado correctamente:', data);
             setBotonEstadoExa(true);
             reloadCurrentRoute();
           })
@@ -294,7 +294,7 @@ const PeriodoReservaAdmin = () => {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('LO LOGRO', data);
+          //console.log('LO LOGRO', data);
           reloadCurrentRoute();
           // reloadCurrentRoute();
         })
@@ -311,7 +311,7 @@ const PeriodoReservaAdmin = () => {
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Periodo de reserva eliminado correctamente:', data);
+            //console.log('Periodo de reserva eliminado correctamente:', data);
             reloadCurrentRoute();
           })
       })

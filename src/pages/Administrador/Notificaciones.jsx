@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import ModalPeriodo from '../components/modalAvisoDocAux'
+import ModalPeriodo from '../../components/modalAvisoDocAux'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 

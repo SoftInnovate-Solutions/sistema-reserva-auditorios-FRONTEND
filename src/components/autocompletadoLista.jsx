@@ -124,7 +124,7 @@ function Autocompletado({ id, idOptionSelec, values, options, etiqueta }) {
   const [value, setValue] = useState(null);
 
   const onChange = (event, newValue) => {
-    console.log(newValue);
+    // console.log(newValue);
     if (newValue != null) {
       setValue(newValue);
       idOptionSelec(obtenerIdCampoAutocompletado(newValue.label));
